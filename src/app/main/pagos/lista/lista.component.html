@@ -1,0 +1,235 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Pagos</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div *ngIf="conpermisos" class="container">
+                    <!--Pagos a proveedores-->
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="d-flex justify-content-between align-items-center m-1">
+                                <div class="d-flex align-items-center">
+                                  <label class="d-flex align-items-center"
+                                    >Mostrar
+                                    <select
+                                      class="form-control mx-25"
+                                      [(ngModel)]="page.size"
+                                      (change)="onPageSizeChange()"
+                                    >
+                                      <option value="5">5</option>
+                                      <option value="10">10</option>
+                                      <option value="25">25</option>
+                                      <option value="50">50</option>
+                                      <option value="100">100</option>
+                                    </select>
+                                  </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <br>
+                            <a
+                                class="btn btn-outline-secondary float-right"
+                                rippleEffect
+                                (click)="exportarXLX()"
+                                >Exportar EXCEL</a
+                            >
+                        </div>
+                    </div>
+                    <div class="row mt-1" >
+                        <div class="col-4">
+                          
+                          <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar filtros</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <br>
+                            <h4>Filtros</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="cboProveedor"> Proveedor </label>
+                            <select
+                                id="cboProveedor" name ="cboProveedor"
+                                class="form-control mx-25"
+                                [(ngModel)]="proveedor"
+                                (change)="changeProveedor()"
+                            >
+                                <option value="">Todos</option>
+                                <option *ngFor = "let est of proveedores" [value]="est.id">{{est.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="fechaDesde">Fecha pago desde</label>
+                            <input [(ngModel)]="fechaPagoDesde" id="first-name-vertical" class="form-control" name="fechaIngresoDesde" type="date"
+                                (change)="filterUpdate($event)" />
+                        </div>
+                        <div class="col-2">
+                            <label for="fechaHasta">Fecha pago hasta</label>
+                            <input [(ngModel)]="fechaPagoHasta" id="first-name-vertical" class="form-control" name="fechaIngresoHasta" type="date"
+                                (change)="filterUpdate($event)" />
+                        </div>
+                    </div>
+                    <br>
+                    <ngx-datatable
+                        [rows]="rows"
+                        rowHeight="auto"
+                        class="bootstrap core-bootstrap"
+                        [limit]="selectedOption"
+                        [columnMode]="ColumnMode.force"
+                        [headerHeight]="50"
+                        [footerHeight]="50"
+                        [scrollbarH]="true"
+                        [limit]="page.size"
+                        [externalPaging]="true"
+                        [count]="page.count"
+                        [offset]="page.offset"
+                        (page)="onPage($event)"
+                    >
+                        <ngx-datatable-column
+                                name="Acciones"
+                                [width]="50"
+                                [sortable]="false"
+                            >
+                            <ng-template ngx-datatable-cell-template let-row="row">
+                                <div class="d-flex align-items-center col-actions">
+                                    <div ngbDropdown container="body">
+                                        <button
+                                            ngbDropdownToggle
+                                            type="button"
+                                            class="btn icon-btn btn-sm hide-arrow px-0"
+                                            rippleEffect
+                                        >
+                                            <i
+                                                data-feather="more-vertical"
+                                                size="18"
+                                                class="cursor-pointer"
+                                            ></i>
+                                        </button>
+                                        <div ngbDropdownMenu>
+                                            <a
+                                                href="pagos/detallepago/{{row.id}}"
+                                                ngbDropdownItem
+                                                
+                                                ><i data-feather="eye" class="mr-1"></i>Ver pago</a
+                                            >
+                                            <a
+                                                href="javascript:void(0)"
+                                                ngbDropdownItem
+                                                (click)="ConfirmDeletePago(row.id)"
+                                                ><i data-feather="trash" class="mr-1"></i>Eliminar pago</a
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Numero" prop="numero" [width]="40">
+                            <ng-template let-numero="value" ngx-datatable-cell-template>
+                                <div>
+                                {{
+                                    numero
+                                }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column
+                            name="Fecha pago"
+                            prop="fechapago"
+                            [width]="110"
+                        >
+                            <ng-template let-column="column" ngx-datatable-header-template>
+                                <div>
+                                    <span style="white-space: nowrap">Fecha</span>
+                                    <br />
+                                    <span style="white-space: nowrap">pago</span>
+                                </div>
+                            </ng-template>
+                            <ng-template let-fechapago="value" ngx-datatable-cell-template>
+                                <div>
+                                    {{ fechapago | date : "dd/MM/yyyy" }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column
+                            name="Proveedor"
+                            prop="expand.proveedor.nombre"
+                            [width]="125"
+                        >
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <div>
+                                {{ row.expand?.proveedor?.nombre }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Ordenes" prop="total" [width]="125">
+                            <ng-template let-total="value" ngx-datatable-cell-template>
+                                <div>
+                                {{
+                                    !total || total === 0
+                                    ? "-"
+                                    : "$ " + formatPeso(total | number : "1.2-2")
+                                }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Pagos" prop="totalpagos" [width]="125">
+                            <ng-template let-totalpagos="value" ngx-datatable-cell-template>
+                                <div>
+                                {{
+                                    !totalpagos || totalpagos === 0
+                                    ? "-"
+                                    : "$ " + (totalpagos | number : "1.2-2")
+                                }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Descuentos" prop="totaldescuentos" [width]="125">
+                            <ng-template let-totaldescuentos="value" ngx-datatable-cell-template>
+                                <div>
+                                {{
+                                    !totaldescuentos || totaldescuentos === 0
+                                    ? "-"
+                                    : "$ " + (totaldescuentos | number : "1.2-2")
+                                }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="A cuenta" prop="totalacuentas" [width]="125">
+                            <ng-template let-totalacuentas="value" ngx-datatable-cell-template>
+                                <div>
+                                {{
+                                    !totalacuentas || totalacuentas === 0
+                                    ? "-"
+                                    : "$ " + (totalacuentas | number : "1.2-2")
+                                }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Saldo" prop="saldo" [width]="125">
+                            <ng-template let-saldo="value" ngx-datatable-cell-template>
+                                <div>
+                                {{
+                                    !saldo || saldo === 0
+                                    ? "-"
+                                    : "$ " + (saldo | number : "1.2-2")
+                                }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                    <!--FIN Pagos a proveedores-->
+                </div>
+                <div *ngIf="!conpermisos">
+                    <h5>No tienes permisos de administracion</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

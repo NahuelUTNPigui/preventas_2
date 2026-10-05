@@ -1,0 +1,138 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <section class="invoice-add-wrapper">
+      <div
+      class="mb-1"
+      style="color: #e04141; font-weight: 600; font-size: 20px"
+    >
+      {{accion == 'ver' ? 'Ver' : accion == 'add' ? 'Agregar' : 'Editar'}} chofer
+    </div>
+      <div class="row invoice-add">
+        <!-- Invoice Add Left starts -->
+        <div class="col-xl-12 col-md-12 col-12">
+          <form class="form-horizontal" #ProductForm="ngForm">
+            <div class="card invoice-preview-card">
+             
+              <div class="m-0 ml-3 mr-3">
+                <div class="row mt-2">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="nombre">Nombre</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="nombre"
+                        #nombreRef="ngModel"
+                        [disabled]="accion == 'ver'"
+                        id="nombre"
+                        name="nombre"
+                        [class.error]="
+                          ProductForm.submitted && nombreRef.invalid
+                        "
+                        required
+                        (input)="cambioNombreChofer($event)"
+                      />
+                      <div *ngIf="guardado && !nombreValido">
+                        <small class="text-danger">Ingrese nombre</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="m-0 ml-3 mr-3" *ngIf="accion === 'ver'">
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="nombreProveedor">Proveedor</label>
+                      <input
+                        class="form-control"
+                        [(ngModel)]="nombreProveedor"
+                        #nombreProveedorRef="ngModel"
+                        [disabled]="accion == 'ver'"
+                        required
+                        (change)="cambiarProveedor()"
+                        id="nombreProveedor"
+                        name="nombreProveedor"
+                        [ngClass]="{
+                          error:
+                            ProductForm.submitted && nombreProveedorRef.invalid
+                        }"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="accion != 'ver'" class="m-0 ml-3 mr-3">
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="proveedor">Proveedor</label>
+                      <ng-select
+                        [(ngModel)]="proveedor"
+                        [ngClass]="{
+                          error: ProductForm.submitted && proveedorRef.invalid
+                        }"
+                        required
+                        id="proveedor"
+                        name="proveedor"
+                        #proveedorRef="ngModel"
+                        (change)="cambiarProveedor()"
+                      >
+                        <ng-option
+                          *ngFor="let option of proveedores"
+                          [value]="option.id"
+                        >
+                          {{ option.nombre }}
+                        </ng-option>
+                      </ng-select>
+                      <span
+                        *ngIf="ProductForm.submitted && proveedorRef.invalid"
+                        class="invalid-form"
+                      >
+                        <small
+                          class="form-text text-danger"
+                          *ngIf="proveedorRef.errors.required"
+                          >Seleccione proveedor.</small
+                        >
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+              >
+                <button
+                  *ngIf="accion == 'edit'"
+                  type="submit"
+                  class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                  (click)="modificarChofer()"
+                  rippleEffect
+                >
+                  Editar
+                </button>
+                <button
+                  *ngIf="accion == 'add'"
+                  type="submit"
+                  class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                  (click)="agregarChofer()"
+                  rippleEffect
+                >
+                  Guardar
+                </button>
+                <button
+                  type=""
+                  class="btn btn-outline-secondary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                  routerLink="/proveedores/listachoferes"
+                  rippleEffect
+                >
+                  {{ accion != "ver" ? "Cancelar" : "Atrás" }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,443 @@
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <div class="d-flex justify-content-between align-items-center m-1">
+                <div class="d-flex align-items-center">
+                    <a
+                        class="btn btn-outline-secondary float-right"
+                        rippleEffect
+                        (click)="pagar()"
+                    >Pagar</a
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="d-flex justify-content-between align-items-center m-1">
+                <div class="d-flex align-items-center">
+                
+                    <a
+                        class="btn btn-outline-secondary float-right"
+                        rippleEffect
+                        (click)="vistaXCL(true)"
+                    >Vista previa excel</a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <label for="nombreprov"> Proveedor </label>
+            <input [(ngModel)]="nombreprov" name="nombreprov" type="text" class="form-control"
+                placeholder="Proveedor..." />
+        </div>
+        <div class="col-3">
+            <label for="nropago"> Nro de pago </label>
+            <input [(ngModel)]="nropago" name="nropago" type="text" class="form-control"
+                placeholder="Pagar..." />
+        </div>
+        <div class="col-3">
+            <label for="fechapago">Fecha de pago</label>
+            <input
+              class="form-control"
+              
+              [(ngModel)]="fechapago"
+              
+              id="fechapago"
+              name="fechapago"
+              type="date"
+            />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <button
+                class="btn btn-outline-secondary my-1"
+                (click)="openModal(modalCheque)"
+            >
+                Cheque
+            </button> 
+        </div>
+        <div class="col-2">
+            <button
+                class="btn btn-outline-secondary my-1"
+                (click)="openModal(modalTransfer)"
+            >
+                Transferencia
+            </button> 
+        </div>
+        <div class="col-2">
+            <button
+                class="btn btn-outline-secondary my-1"
+                (click)="openModal(modalTrans)"
+            >
+                Efectivo
+            </button> 
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-6 my-1">
+            <span
+                class="badge rounded-pill mx-1 cursor-pointer"
+                [ngClass]="tabactivo==0?'bg-primary':'bg-secondary'"
+                (click)="clickTab(0)"
+            >
+                Oculto
+            </span>
+            <span
+                class="badge rounded-pill mx-1 cursor-pointer"
+                [ngClass]="tabactivo==1?'bg-primary':'bg-secondary'"
+                (click)="clickTab(1)"
+            >
+                Pagos
+            </span>
+            <span
+                class="badge rounded-pill mx-1 cursor-pointer"
+                [ngClass]="tabactivo==2?'bg-primary':'bg-secondary'"
+                (click)="clickTab(2)"
+            >
+                Adicionales
+            </span>
+        </div>
+    </div>
+    <!--Pagos-->
+    <div *ngIf="tabactivo==1" class="row ">
+        <div class="col-12">
+            <ngx-datatable
+                [rows]="pagos"
+                rowHeight="auto"
+                class="bootstrap core-bootstrap"
+                [columnMode]="ColumnMode.force"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [scrollbarH]="true"
+                [limit]="50"
+                [externalPaging]="true"
+                [count]="pagos.length"
+                [offset]="0"
+            >
+                <ngx-datatable-column
+                    name="Acciones"
+                    [width]="50"
+                    [sortable]="false"
+                >
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        <div class="d-flex align-items-center col-actions">
+                            <div ngbDropdown container="body">
+                                <button
+                                ngbDropdownToggle
+                                type="button"
+                                class="btn icon-btn btn-sm hide-arrow px-0"
+                                rippleEffect
+                                >
+                                    <i
+                                        data-feather="more-vertical"
+                                        size="18"
+                                        class="cursor-pointer"
+                                    ></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <a
+                                        href="javascript:void(0)"
+                                        ngbDropdownItem
+                                        *ngIf="row.categoria != 'Cheque'"
+                                        (click)="verFila(row.indice,modalCheque,modalTransfer,modalTrans,false)"
+                                        ><i data-feather="eye" class="mr-1"></i>Ver pago</a
+                                    >
+                                    <a
+                                        href="javascript:void(0)"
+                                        ngbDropdownItem
+                                        (click)="quitarPago(row.indice)"
+                                        ><i data-feather="trash" class="mr-1"></i>Quitar pago</a
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Descripcion" prop="descripcion" [width]="125">
+                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                        <div>
+                        {{ descripcion }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Total" prop="total" [width]="125">
+                    <ng-template let-total="value" ngx-datatable-cell-template>
+                        <div>
+                        {{ total }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Tipo" prop="categoria" [width]="125">
+                    <ng-template let-categoria="value" ngx-datatable-cell-template>
+                        <div>
+                        {{ categoria }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+    <!--Adicionales-->
+    <div *ngIf="tabactivo==2" class="row ">
+        <div class="col-12">
+            <ngx-datatable
+                [rows]="adicionales"
+                rowHeight="auto"
+                class="bootstrap core-bootstrap"
+                [columnMode]="ColumnMode.force"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [scrollbarH]="true"
+                [limit]="50"
+                [externalPaging]="true"
+                [count]="adicionales.length"
+                [offset]="0"
+            >
+                <ngx-datatable-column
+                    name="Acciones"
+                    [width]="50"
+                    [sortable]="false"
+                >
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        <div class="d-flex align-items-center col-actions">
+                            <div ngbDropdown container="body">
+                                <button
+                                ngbDropdownToggle
+                                type="button"
+                                class="btn icon-btn btn-sm hide-arrow px-0"
+                                rippleEffect
+                                >
+                                    <i
+                                        data-feather="more-vertical"
+                                        size="18"
+                                        *ngIf="row.categoria != 'Cheque'"
+                                        class="cursor-pointer"
+                                    ></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <a
+                                        href="javascript:void(0)"
+                                        ngbDropdownItem
+                                        *ngIf="row.categoria != 'Cheque'"
+                                        (click)="verFila(row.indice,modalCheque,modalTransfer,modalTrans,true)"
+                                        ><i data-feather="eye" class="mr-1"></i>Ver adicional</a
+                                    >
+                                    <a
+                                        href="javascript:void(0)"
+                                        ngbDropdownItem
+                                        (click)="quitarAdicional(row.indice)"
+                                        ><i data-feather="trash" class="mr-1"></i>Quitar adicional</a
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Descripcion" prop="descripcion" [width]="125">
+                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                        <div>
+                        {{ descripcion }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Total" prop="total" [width]="125">
+                    <ng-template let-total="value" ngx-datatable-cell-template>
+                        <div>
+                        {{ total }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Tipo" prop="categoria" [width]="125">
+                    <ng-template let-tipo="value" ngx-datatable-cell-template>
+                        <div>
+                        {{ tipo }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-2 my-1">
+            <h3>Total ordenes: </h3>
+            <h3>{{formatPeso(totalordenes)}}</h3>
+        </div>
+        <div class="col-2 my-1">
+            <h3>Total pagos: </h3>
+            <h3>{{formatPeso(totalpagos)}}</h3>
+        </div>
+        <div class="col-2 my-1">
+            <h3>Total adicionales: </h3>
+            <h3>{{formatPeso(totaladicionales)}}</h3>
+        </div>
+        <div class="col-2 my-1">
+            <h3>Saldo: </h3>
+            <h3>{{formatPeso(saldo)}}</h3>
+        </div>
+    </div>
+    <ngx-datatable
+        [rows]="datapagar"
+        rowHeight="auto"
+        class="bootstrap core-bootstrap mt-1"
+        [columnMode]="ColumnMode.force"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [scrollbarH]="true"
+        [limit]="page.size"
+        [externalPaging]="true"
+        [count]="page.count"
+        [offset]="page.offset"
+        (page)="onPage($event)"
+    >
+        <ngx-datatable-column
+            name="Acciones"
+            [width]="50"
+            [sortable]="false"
+        >
+            <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="d-flex align-items-center col-actions">
+                    <div ngbDropdown container="body">
+                        <button
+                            ngbDropdownToggle
+                            type="button"
+                            class="btn icon-btn btn-sm hide-arrow px-0"
+                            rippleEffect
+                        >
+                            <i
+                                data-feather="more-vertical"
+                                size="18"
+                                class="cursor-pointer"
+                            ></i>
+                        </button>
+                        <div ngbDropdownMenu>
+                            <a
+                                href="javascript:void(0)"
+                                ngbDropdownItem
+                                (click)="quitarHR(row.id)"
+                            >
+                                <i data-feather="minus-circle" class="mr-1"></i>
+                                Quitar hoja de ruta
+                            </a>
+                            <a
+                                class="hidden"
+                                href="javascript:void(0)"
+                                ngbDropdownItem
+                                (click)="detalle(row.id,modalDetalleHR)"
+                                ><i data-feather="eye" class="mr-1"></i>Detalle</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+            name="Numero"
+            prop="numero"
+            [width]="110"
+        >
+            <ng-template let-numero="value" ngx-datatable-cell-template>
+                <div>
+                {{ numero }}
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+            name="Total"
+            prop="total"
+            [width]="110"
+        >
+            <ng-template let-total="value" ngx-datatable-cell-template>
+                <div>
+                {{ total }}
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+            name="Fecha orden"
+            prop="fechaorden"
+            [width]="110"
+        >
+            <ng-template let-fechaorden="value" ngx-datatable-cell-template>
+                <div>
+                {{ fechaorden | date : "dd/MM/yyyy"}}
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column
+                name="Proveedor"
+                prop="expand.proveedor.nombre"
+                [width]="125"
+        >
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <div>
+                    {{ row.expand?.proveedor?.nombre }}
+                    </div>
+                </ng-template>
+        </ngx-datatable-column>
+    
+    </ngx-datatable>
+</div>
+<!--Modal cheques-->
+<ng-template #modalCheque let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">Elegir cheque</h2>
+        <button
+            type="button"
+            class="close"
+            (click)="modal.dismiss('Cross click')"
+            aria-label="Close"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>    
+        <div class="container">
+            <app-modalcheque (chequeEvent)="guardarFila($event,modal)"></app-modalcheque>
+        </div>
+    </div>
+</ng-template>
+<!--FIN Modal cheques-->
+<!--Modal transfer-->
+<ng-template #modalTransfer let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">{{indicefila==""?"Nueva":"Ver"}} transferencia - {{esDetalle?"Detalle":"Adicional"}}</h2>
+        <button
+            type="button"
+            class="close"
+            (click)="modal.dismiss('Cross click')"
+            aria-label="Close"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>    
+        <div class="container">
+            <app-modaltransfer (transferEvent)="guardarFila($event,modal)" [indice]="indicefila" [transfer]="fila"></app-modaltransfer>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal transfer-->
+<!--Modal trans-->
+<ng-template #modalTrans let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">{{indicefila==""?"Nueva":"Ver"}} Transacción - {{esDetalle?"Detalle":"Adicional"}}</h2>
+        <button
+            type="button"
+            class="close"
+            (click)="modal.dismiss('Cross click')"
+            aria-label="Close"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>    
+        <div class="container">
+            <app-modalflujo (transEvent)="guardarFila($event,modal)"  [indice]="indicefila" [trans]="fila"></app-modalflujo>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal trans-->

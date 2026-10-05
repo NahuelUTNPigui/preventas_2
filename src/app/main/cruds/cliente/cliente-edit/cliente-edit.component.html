@@ -1,0 +1,132 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <section class="invoice-add-wrapper">
+      <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+        Editar cliente
+      </div>
+      <div class="row invoice-add">
+        <div class="col-xl-12 col-md-12 col-12">
+          <form class="form-horizontal" #ClienteForm="ngForm" (ngSubmit)="onSubmit(ClienteForm.form.valid)">
+            <div class="card invoice-preview-card">
+
+              <div class="m-0 ml-3 mr-3 ">
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="nombre">Nombre</label>
+                      <input class="form-control" [class.error]="ClienteForm.submitted && nombreRef.invalid"
+                        [(ngModel)]="nombre" #nombreRef="ngModel" required id="nombre" name="nombre" />
+                      <span *ngIf="ClienteForm.submitted && nombreRef.invalid" class="invalid-form">
+                        <small class="form-text text-danger" *ngIf="nombreRef.errors.required">Ingrese
+                          nombre.</small></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="cuit">CUIT</label>
+                      <input class="form-control" [class.error]="ClienteForm.submitted && cuitRef.invalid"
+                        [(ngModel)]="cuit" #cuitRef="ngModel" required pattern="\d{11}" [pattern]="cuitPattern"
+                        id="cuit" name="cuit" />
+                      <span *ngIf="ClienteForm.submitted && cuitRef.invalid" class="invalid-form">
+                        <small class="form-text text-danger" *ngIf="cuitRef.errors.required">Ingrese CUIT.</small>
+                        <small class="form-text text-danger" *ngIf="cuitRef.errors.pattern">
+                          El formato del CUIT no es válido.
+                        </small>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="razonSocial">Razón social</label>
+                      <input class="form-control" [class.error]="ClienteForm.submitted && razonSocialRef.invalid"
+                        [(ngModel)]="razonSocial" #razonSocialRef="ngModel" required id="razonSocial"
+                        name="razonSocial" />
+                      <span *ngIf="ClienteForm.submitted && razonSocialRef.invalid" class="invalid-form">
+                        <small class="form-text text-danger" *ngIf="razonSocialRef.errors.required">Ingrese razón
+                          social.</small></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="formaPago">Forma de pago</label>
+                      <ng-select [(ngModel)]="formaPago" [ngClass]="{
+                          error: ClienteForm.submitted && formaPagoRef.invalid
+                        }" required id="formaPago" name="formaPago" #formaPagoRef="ngModel">
+                        <ng-option *ngFor="let option of formaPagoOptions" [value]="option.id">
+                          {{ option.nombre }}
+                        </ng-option>
+                      </ng-select>
+                      <span *ngIf="ClienteForm.submitted && formaPagoRef.invalid" class="invalid-form">
+                        <small class="form-text text-danger" *ngIf="formaPagoRef.errors.required">Seleccione forma de
+                          pago.</small>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="observacion">Observación</label>
+                      <input class="form-control" [class.error]="ClienteForm.submitted && observacionRef.invalid"
+                        [(ngModel)]="observacion" #observacionRef="ngModel" id="observacion" name="observacion" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-6 ">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                      <input class="custom-control-input" type="checkbox" name="inlineCheckbox2" id="inlineCheckbox2"
+                        [(ngModel)]="responsableinscripto" />
+                      <label class="custom-control-label" for="inlineCheckbox2">Responsable inscripto</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="operador">Operador</label>
+                      <ng-select [(ngModel)]="operador" id="operador" name="operador">
+                        <ng-option *ngFor="let option of allUsers" [value]="option.id">
+                          {{ option.username }}
+                        </ng-option>
+                      </ng-select>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-12">
+                    <h4 class="text-primary invoice-logo">Destinatarios</h4>
+                    <app-tabladestinatarios [nuevocliente]="false" [idCliente]="idCliente"></app-tabladestinatarios>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-12">
+                    <h4 class="text-primary invoice-logo">Remitentes</h4>
+                    <app-tablaremitentes [idCliente]="idCliente"></app-tablaremitentes>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end">
+                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect>
+                  Editar
+                </button>
+                <button type="button" class="btn btn-outline-secondary" routerLink="/clientes" rippleEffect>
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

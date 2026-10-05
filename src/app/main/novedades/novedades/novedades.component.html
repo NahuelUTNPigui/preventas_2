@@ -1,0 +1,24 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-list-wrapper">
+        <div
+          class="mb-1"
+          style="color: #e04141; font-weight: 600; font-size: 20px"
+        >
+          Actualizaciones
+        </div>
+        <div class="card">
+            <div class="row" *ngFor="let act of actualizaciones">
+                <div class="col-12 p-1 mx-2">
+                    <h3>{{act.fecha}}</h3>
+                    <ul *ngFor ="let mej of act.mejoras">
+                        <li>
+                            {{mej.item}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+      </section>
+    </div>
+</div>

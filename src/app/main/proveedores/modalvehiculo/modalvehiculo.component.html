@@ -1,0 +1,86 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-add-wrapper">
+        <div class="row invoice-add">
+          <!-- Invoice Add Left starts -->
+          <div class="col-xl-12 col-md-12 col-12">
+            <form class="form-horizontal" #ProductForm="ngForm">
+              <div class="card invoice-preview-card">
+                <div class="card-body invoice-padding pb-0">
+                  <div
+                    class="d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0"
+                  >
+                    <div>
+                      <div class="logo-wrapper">
+                        <h3 class="text-primary invoice-logo">Vehículo</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-0 ml-3 mr-3">
+                  <div class="row mt-1">
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input
+                          class="form-control"
+                          [(ngModel)]="nombre"
+                          #nombreRef="ngModel"
+                          id="nombre"
+                          required
+                          name="nombre"
+                          (input)="cambioNombreVehiculo()"
+                          [class.error]="
+                          ProductForm.submitted && nombreRef.invalid
+                        "
+                        />
+                        <div *ngIf="guardado && !nombreValido">
+                          <small class="text-danger"
+                            >Ingrese nombre</small
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="m-0 ml-3 mr-3">
+                  <div class="row mt-1">
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="observacion">Observación</label>
+                        <textarea
+                          class="form-control"
+                          [(ngModel)]="observacion"
+                          #observacionRef="ngModel"
+                          id="observacion"
+                          name="observacion"
+                          rows="3"
+                          style="resize: none;"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+                >
+                  
+                  <button
+                    type="button"
+                    class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                    (click)="agregarVehiculo()"
+                    rippleEffect
+                  >
+                    Guardar
+                  </button>
+  
+                  
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  

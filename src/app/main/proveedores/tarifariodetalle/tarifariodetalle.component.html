@@ -1,0 +1,181 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-add-wrapper">
+        <div
+        class="mb-1"
+        style="color: #e04141; font-weight: 600; font-size: 20px"
+        >
+            {{accion == 'actualizar' ? 'Actualizar' : accion == 'add' ? 'Agregar' :accion=="programar"?"Programar":'Editar'}} tarifario proveedor
+        </div>
+      </section>
+      <div class="row invoice-add">
+        <div class="col-xl-12 col-md-12 col-12">
+            <form
+                class="form-horizontal"
+                #TarProveedorForm="ngForm"
+            >
+                <div class="card invoice-preview-card">
+                    <div class="m-0 ml-3 mr-3">
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fechadesde">Fecha desde</label>
+                                    <input
+                                      class="form-control"
+                                      [class.error]="
+                                        TarProveedorForm.submitted && fechaDesdeRef.invalid
+                                      "
+                                      [(ngModel)]="fechadesde"
+                                      #fechaDesdeRef="ngModel"
+                                      required
+                                      id="fechadesde"
+                                      name="fechadesde"
+                                      type="date"
+                                    />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label for="fechahasta">Fecha hasta</label>
+                                        <input
+                                          class="form-control"
+                                          [class.error]="
+                                            TarProveedorForm.submitted && fechahastaRef.invalid
+                                          "
+                                          [(ngModel)]="fechahasta"
+                                          #fechahastaRef="ngModel"
+                                          required
+                                          id="fechahasta"
+                                          name="fechahasta"
+                                          type="date"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                          <div class="col-4">
+                            <label for="precio">Tarifa</label>
+                            <input
+                              class="form-control"
+                              [class.error]="TarProveedorForm.submitted && precioRef.invalid"
+                              [(ngModel)]="precio"
+                              #precioRef="ngModel"
+                              id="precio"
+                              name="precio"
+                              positiveNumbersOnly
+                              required
+                            />
+                          </div>
+                          <div class="col-8">
+                            <label for="descripcion">Descripcion</label>
+                            <input 
+                              type="text"
+                              class="form-control"
+                              [(ngModel)]="descripcion"
+                              id="descripcion"
+                              name="descripcion"
+                              [disabled]="accion==='actualizar'"
+                            >
+                          </div>
+                        </div>
+                        <div class="row mt-2">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="proveedor">Proveedor</label>
+                              <ng-select
+                                [(ngModel)]="proveedor"
+                                [ngClass]="{
+                                  error: TarProveedorForm.submitted && proveedorRef.invalid
+                                }"
+                                required
+                                id="proveedor"
+                                name="proveedor"
+                                #proveedorRef="ngModel"
+                                require
+                                disabled
+                              >
+                                <ng-option
+                                  *ngFor="let option of proveedores"
+                                  [value]="option.id"
+                                >
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span
+                                *ngIf="TarProveedorForm.submitted && proveedorRef.invalid"
+                                class="invalid-form"
+                              >
+                                <small
+                                  class="form-text text-danger"
+                                  *ngIf="clienteRef.errors.required"
+                                  >Seleccione proveedor.</small
+                                >
+                              </span>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="unidad">Unidad</label>
+                              <ng-select
+                                [(ngModel)]="unidad"
+                                [ngClass]="{
+                                  error: TarProveedorForm.submitted && unidadRef.invalid
+                                }"
+                                required
+                                id="unidad"
+                                name="unidad"
+                                #unidadRef="ngModel"
+                                required
+                                [disabled]="accion==='actualizar'"
+                                
+                              >
+                                <ng-option
+                                  *ngFor="let option of unidades"
+                                  [value]="option.id"
+                                >
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span
+                                *ngIf="TarProveedorForm.submitted && unidadRef.invalid"
+                                class="invalid-form"
+                              >
+                                <small
+                                  class="form-text text-danger"
+                                  *ngIf="clienteRef.errors.required"
+                                  >Seleccione unidad.</small
+                                >
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div
+                      class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                        rippleEffect
+                        (click)="guardar()"
+                      >
+                        Guardar
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        routerLink="/proveedores/tarpro/{{proveedor}}"
+                        rippleEffect
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+      

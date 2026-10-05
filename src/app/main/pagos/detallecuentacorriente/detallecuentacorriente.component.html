@@ -1,0 +1,124 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Detalle cuenta corriente</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos">
+                                <div class="container">
+                                    
+                                    <div class="row">
+
+                                        <div class="col-6">
+                                            <h2>Proveedor: {{nombreproveedor}}</h2>
+                                            
+                                        </div>
+                                        <div class="col-4">
+                                            
+                                            <a
+                                                class="btn btn-outline-secondary float-right"
+                                                rippleEffect
+                                                (click)="exportarXLX()"
+                                                >Exportar EXCEL</a
+                                            >
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <h2>Total ordenes: ${{ordenestotal}}</h2>
+                                        </div>
+                                        <div class="col-3">
+                                            <h2>Total pagos: ${{pagostotal}}</h2>
+                                        </div>
+                                        <div class="col-3">
+                                            <h2>Total adicionales: ${{adicionalestotal}}</h2>
+                                        </div>
+                                        <div class="col-3">
+                                            <h2>Total saldo: ${{saldototal}}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 ">
+                                            <label for="fechadesde">Fecha Desde</label>
+                                            <input  [(ngModel)]="fechadesde" id="first-name-vertical" class="form-control" name="fechadesde" type="date"
+                                             (change)="filterUpdate($event)"  />
+                                             <br>
+                                        </div>
+                                        <div class="col-4 ">
+                                            <label for="fechahasta">Fecha Hasta</label>
+                                            <input  [(ngModel)]="fechahasta" id="first-name-vertical" class="form-control" name="fechahasta" type="date"
+                                             (change)="filterUpdate($event)"  />
+                                            <br>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <ngx-datatable
+                                                [rows]="rowstrans"
+                                                rowHeight="auto"
+                                                class="bootstrap core-bootstrap"
+                                                [columnMode]="ColumnMode.force"
+                                                [headerHeight]="50"
+                                                [footerHeight]="50"
+                                                [scrollbarH]="true"
+                                                [limit]="pagetrans.size"
+                                                [externalPaging]="true"
+                                                [count]="pagetrans.count"
+                                                [offset]="pagetrans.offset"
+                                            >
+                                                <ngx-datatable-column name="Fecha" prop="fecha" [width]="125">
+                                                    <ng-template let-fecha="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ fecha | date : "dd/MM/yyyy" }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Numero" prop="numero" [width]="125">
+                                                    <ng-template let-numero="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ numero }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Total" prop="total" [width]="125">
+                                                    <ng-template let-total="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ total }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Pago" prop="pago" [width]="125">
+                                                    <ng-template let-pago="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ pago }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Retenciones" prop="retenciones" [width]="125">
+                                                    <ng-template let-retenciones="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ adicionales }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                            </ngx-datatable>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

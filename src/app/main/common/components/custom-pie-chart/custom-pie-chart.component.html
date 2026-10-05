@@ -1,0 +1,28 @@
+<section id="apex-radar-and-donut-charts">
+  <div class="card">
+    <div class="card-header flex-column align-items-start">
+      <h4 class="card-title mb-75">{{ data.title }}</h4>
+      <span class="card-subtitle text-muted">{{ data.subtitle }} </span>
+    </div>
+    <div class="card-body">
+      <div id="donut-chart" #apexDonutChartRef>
+        <apx-chart
+          [series]="apexDonutChart.series"
+          [chart]="{
+            height: 350,
+            width:
+              isMenuToggled === false
+                ? apexDonutChartRef.offsetWidth
+                : apexDonutChart.chart.width,
+            type: 'donut'
+          }"
+          [labels]="apexDonutChart.labels"
+          [plotOptions]="apexDonutChart.plotOptions"
+          [responsive]="apexDonutChart.responsive"
+          [colors]="apexDonutChart.colors"
+          [legend]="apexDonutChart.legend"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+</section>

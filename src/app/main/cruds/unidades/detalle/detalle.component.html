@@ -1,0 +1,92 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-add-wrapper">
+        <div
+        class="mb-1"
+        style="color: #e04141; font-weight: 600; font-size: 20px"
+      >
+        {{ accion == 'add' ? 'Agregar' : 'Editar'}} unidad
+      </div>
+        <div class="row invoice-add">
+          <!-- Invoice Add Left starts -->
+          <div class="col-xl-12 col-md-12 col-12">
+            <form
+              class="form-horizontal"
+              #UnidadForm="ngForm"
+              (ngSubmit)="onSubmit(UnidadForm.form.valid)"
+            >
+              <div class="card invoice-preview-card">
+                
+                <div class="m-0 ml-3 mr-3">
+                  <div class="row mt-2">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input
+                          class="form-control"
+                          [(ngModel)]="nombre"
+                          #nombreRef="ngModel"
+                          id="nombre"
+                          required
+                          name="nombre"
+                          (input)="cambioNombre()"
+                        />
+                        <span
+                          *ngIf="UnidadForm.submitted && nombreRef.invalid"
+                          class="invalid-form"
+                        >
+                          <small
+                            class="form-text text-danger"
+                            *ngIf="nombreRef.errors.required"
+                            >Ingrese nombre.</small
+                          ></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="descripcion">Descripcion</label>
+                        <textarea
+                            class="form-control"
+                            [(ngModel)]="descripcion"
+                            #descripcionRef="ngModel"
+                            id="descripcion"
+                            name="descripcion"
+                            rows="5"
+                            style="resize: none"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>         
+                <div
+                  class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+                >
+                  <button
+                    type="submit"
+                    class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                    rippleEffect
+                    
+                  >
+                    {{ accion === "add" ? "Guardar" : "Editar" }}
+                  </button>
+
+                  <button
+                    type=""
+                    class="btn btn-outline-secondary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                    routerLink="/unidades/lista"
+                    rippleEffect
+                  >
+                    {{ accion != "ver" ? "Cancelar" : "Atrás" }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  

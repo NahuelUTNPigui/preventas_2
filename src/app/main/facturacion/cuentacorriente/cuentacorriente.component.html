@@ -1,0 +1,333 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Cuenta corriente clientes</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <a class="btn btn-outline-secondary" rippleEffect
+                                                (click)="exportarXLX()">Exportar Cuente Corriente</a>
+                                            <br>
+                                            <br>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 ">
+                                            <h2>Filtros generales</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 ">
+                                            <label for="fechadesde">Fecha Desde</label>
+                                            <input [(ngModel)]="fechadesde" id="first-name-vertical"
+                                                class="form-control" name="fechadesde" type="date"
+                                                (change)="filterUpdate($event)" />
+
+                                        </div>
+                                        <div class="col-4 ">
+                                            <label for="fechahasta">Fecha Hasta</label>
+                                            <input [(ngModel)]="fechahasta" id="first-name-vertical"
+                                                class="form-control" name="fechahasta" type="date"
+                                                (change)="filterUpdate($event)" />
+
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="cboCliente"> Cliente </label>
+                                            <select id="cboCliente" name="cboCliente" class="form-control mx-25"
+                                                [(ngModel)]="cliente" (change)="filterUpdate({})">
+                                                <option value="">Todos</option>
+                                                <option *ngFor="let clie of clientes" [value]="clie.id">{{clie.nombre}}
+                                                </option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-4 ">
+                                            <h2>Filtros Facturacion</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-6"><br>
+                                            <h4>Estado facturas</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2 ">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox2"
+                                                    [(ngModel)]="todos" (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label" for="inlineCheckbox2">Todos</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox4"
+                                                    [(ngModel)]="enrevision" (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label" for="inlineCheckbox4">En
+                                                    revisión</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox3"
+                                                    [(ngModel)]="enliquidacion" (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label" for="inlineCheckbox3">En
+                                                    liquidación</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox5"
+                                                    [(ngModel)]="aceptadocliente" (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label" for="inlineCheckbox5">Aceptado
+                                                    cliente</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox6"
+                                                    [(ngModel)]="cobrados" (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label"
+                                                    for="inlineCheckbox6">Cobrado</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox7"
+                                                    [(ngModel)]="cerrada" (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label"
+                                                    for="inlineCheckbox7">Cerrada</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+
+                                            <label for="nroFactura">Numero factura </label>
+                                            <input [(ngModel)]="nroFactura" name="nroFactura" type="search"
+                                                class="form-control" placeholder="Buscar..."
+                                                (change)="filterUpdate($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-3">
+                                            <h3>Total facturas: {{formatPeso(totalfacturas)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total IVA: {{formatPeso(totaliva)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total notas: {{formatPeso(totalnotas)}}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-4 ">
+                                            <h2>Filtros Cobros</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-6"><br>
+                                            <h4>Estado cobro</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-2 ">
+
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    id="inlineCheckbox99" [(ngModel)]="todoscobro"
+                                                    (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label" for="inlineCheckbox99">Todos</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 ">
+
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    id="inlineCheckbox100" [(ngModel)]="cobrocompleto"
+                                                    (change)="filterUpdate($event)" />
+                                                <label class="custom-control-label"
+                                                    for="inlineCheckbox100">Completo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-3">
+                                            <h3>Total pagos: {{formatPeso(totalpagos)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total retenciones: {{formatPeso(totalretenciones)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total descuentos: {{formatPeso(totaldescuentos)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total a cuentas: {{formatPeso(totalacuentas)}}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-4 ">
+                                            <h2>Saldos</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-4">
+                                            <label for="saldoInicial">Saldo inicial </label>
+                                            <input [(ngModel)]="saldoinicial" name="saldoinicial" 
+                                                type="number"
+                                                class="form-control" placeholder="Buscar..."
+                                                (change)="filterUpdate($event)" />
+                                        </div>
+                                        <div class="col-4">
+                                            <h3>Saldo final: {{formatPeso(saldofinal)}}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <div class="d-flex align-items-center">
+                                                    <label class="d-flex align-items-center">Mostrar
+                                                        <select class="form-control mx-25" [(ngModel)]="page.size"
+                                                            (change)="onPageSizeChange()">
+                                                            <option value="5">5</option>
+                                                            <option value="10">10</option>
+                                                            <option value="25">25</option>
+                                                            <option value="50">50</option>
+                                                            <option value="100">100</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Tabla cuenta corriente-->
+                                    <ngx-datatable [rows]="cuentas" rowHeight="auto" class="bootstrap core-bootstrap"
+                                        [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50"
+                                        [scrollbarH]="true" [limit]="page.size" [externalPaging]="true"
+                                        [count]="page.count" [offset]="page.offset" (page)="onPage($event)">
+                                        
+                                        <ngx-datatable-column name="Nro" prop="numero" [width]="80">
+                                            <ng-template let-numero="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ numero}}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Fecha" prop="fecha" [width]="100">
+                                            <ng-template let-fecha="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ fecha | date : "dd/MM/yyyy" }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Cliente" prop="nombrecliente" [width]="100">
+                                            <ng-template let-nombrecliente="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ nombrecliente }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="A cuenta" prop="acuenta" [width]="100">
+                                            <ng-template let-acuenta="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(acuenta) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Factura" prop="total" [width]="100">
+                                            <ng-template let-total="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(total) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="IVA" prop="iva" [width]="100">
+                                            <ng-template let-iva="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(iva) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Pagos" prop="pagos" [width]="100">
+                                            <ng-template let-pagos="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(pagos) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Retenciones" prop="retenciones" [width]="100">
+                                            <ng-template let-retenciones="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(retenciones) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Descuentos" prop="descuentos" [width]="100">
+                                            <ng-template let-descuentos="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(descuentos) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        
+                                        <ngx-datatable-column name="Notas" prop="notas" [width]="100">
+                                            <ng-template let-notas="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(notas) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="A cuentas" prop="acuentas" [width]="100">
+                                            <ng-template let-acuentas="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(acuentas) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Saldo" prop="saldo" [width]="100">
+                                            <ng-template let-saldo="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ toPesoString(saldo) }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                    </ngx-datatable>
+                                    <!--FIN Tabla cuenta corriente-->
+                                </div>
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

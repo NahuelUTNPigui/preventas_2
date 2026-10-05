@@ -1,0 +1,671 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <section class="invoice-add-wrapper">
+      <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+        Editar remito
+      </div>
+      <div class="row invoice-add">
+        <div class="col-xl-12 col-md-12 col-12">
+          <div class="card invoice-preview-card">
+
+            <!-- Horizontal Wizard -->
+            <section class="horizontal-wizard">
+              <div id="stepper1" class="bs-stepper horizontal-wizard-example">
+                <div class="bs-stepper-header">
+                  <div class="step" data-target="#pendiente-details">
+                    <button class="step-trigger">
+                      <span class="bs-stepper-box">1</span>
+                      <span class="bs-stepper-label">
+                        <span class="bs-stepper-title">Pendiente</span>
+                        <span class="bs-stepper-subtitle">Etapa inicial</span>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="line" [hidden]="estadoNombre === 'Pendiente'">
+                    <i data-feather="chevron-right" class="font-medium-2"></i>
+                  </div>
+                  <div class="step" data-target="#transito-details" [hidden]="estadoNombre === 'Pendiente'">
+                    <button class="step-trigger">
+                      <span class="bs-stepper-box">2</span>
+                      <span class="bs-stepper-label">
+                        <span class="bs-stepper-title">En tránsito</span>
+                        <span class="bs-stepper-subtitle">Etapa intermedia</span>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="line" [hidden]="
+                      estadoNombre === 'Pendiente' ||
+                      estadoNombre === 'Tránsito'
+                    ">
+                    <i data-feather="chevron-right" class="font-medium-2"></i>
+                  </div>
+                  <div class="step" data-target="#final-details" [hidden]="
+                      estadoNombre === 'Pendiente' ||
+                      estadoNombre === 'Tránsito'
+                    ">
+                    <button class="step-trigger">
+                      <span class="bs-stepper-box">3</span>
+                      <span class="bs-stepper-label">
+                        <span class="bs-stepper-title">{{ estadoNombre }}</span>
+                        <span class="bs-stepper-subtitle">Etapa final</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div class="bs-stepper-content">
+                  <form (ngSubmit)="(RemitoForm.form.valid)" #RemitoForm="ngForm">
+                    <div id="pendiente-details" class="content">
+                      <form #pendienteForm="ngForm">
+                        <div class="content-header">
+                          <h5 class="mb-0">Pendiente</h5>
+                          <!-- <small class="text-muted"
+                            >Información inicial del remito.</small
+                          > -->
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="fechaIngreso">Fecha de ingreso</label>
+                              <input class="form-control" [class.error]="
+                                  pendienteForm.submitted &&
+                                  fechaIngresoRef.invalid
+                                " [(ngModel)]="remito.fechaIngreso" #fechaIngresoRef="ngModel" required
+                                id="fechaIngreso" name="fechaIngreso" max="{{ currentDate | date : 'yyyy-MM-dd' }}"
+                                type="date" />
+                              <span *ngIf="
+                                  pendienteForm.submitted &&
+                                  fechaIngresoRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="fechaIngresoRef.errors.required">Seleccione
+                                  fecha de ingreso.</small></span>
+                            </div>
+                          </div>
+                          <!-- </div>
+                        <div class="row"> -->
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="nroRemito">Número de remito</label>
+                              <input class="form-control" [class.error]="
+                                  pendienteForm.submitted &&
+                                  nroRemitoRef.invalid
+                                " [(ngModel)]="remito.nroRemito" #nroRemitoRef="ngModel" required id="nroRemito"
+                                name="nroRemito" />
+                              <span *ngIf="
+                                  pendienteForm.submitted &&
+                                  nroRemitoRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="nroRemitoRef.errors.required">Ingrese número
+                                  de remito.</small></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label for="etiqueta">Etiqueta</label>
+                              <input class="form-control" [(ngModel)]="remito.etiqueta" #etiquetaRef="ngModel"
+                                id="etiqueta" name="etiqueta" />
+
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="form-group">
+                              <label for="prioridad">Prioridad</label>
+                              <ng-select [(ngModel)]="remito.prioridad" id="prioridad" name="prioridad"
+                                #prioridadRef="ngModel">
+                                <ng-option *ngFor="let option of prioridadOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="cliente">Cliente</label>
+                              <ng-select [(ngModel)]="remito.cliente" [ngClass]="{
+                                  error:
+                                    pendienteForm.submitted &&
+                                    clienteRef.invalid
+                                }" required id="cliente" name="cliente" #clienteRef="ngModel"
+                                (ngModelChange)="onClienteChange($event)">
+                                <ng-option *ngFor="let option of clienteOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span *ngIf="
+                                  pendienteForm.submitted && clienteRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="clienteRef.errors.required">Seleccione
+                                  cliente.</small>
+                              </span>
+                            </div>
+                          </div>
+                          <!-- </div>
+                        <div class="row"> -->
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="remitente">Remitente</label>
+                              <ng-select [(ngModel)]="remito.remitente" [ngClass]="{
+                                  error:
+                                    pendienteForm.submitted &&
+                                    remitenteRef.invalid
+                                }" required id="remitente" name="remitente" #remitenteRef="ngModel">
+                                <ng-option *ngFor="let option of remitenteOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span *ngIf="
+                                  pendienteForm.submitted &&
+                                  remitenteRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="remitenteRef.errors.required">Seleccione
+                                  remitente.</small>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="kilos">Kilos</label>
+                              <input class="form-control" [class.error]="
+                                  pendienteForm.submitted && kilosRef.invalid
+                                " [(ngModel)]="remito.kilos" #kilosRef="ngModel" id="kilos" name="kilos"
+                                positiveNumbersOnly />
+                              <span *ngIf="
+                                  pendienteForm.submitted && kilosRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="kilosRef.errors.required">Ingrese cantidad
+                                  de kilos.</small></span>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="bultos">Bultos</label>
+                              <input class="form-control" [class.error]="
+                                  pendienteForm.submitted && bultosRef.invalid
+                                " [(ngModel)]="remito.bultos" #bultosRef="ngModel" id="bultos" name="bultos"
+                                integersOnly />
+                              <span *ngIf="
+                                  pendienteForm.submitted && bultosRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="bultosRef.errors.required">Ingrese cantidad
+                                  de bultos.</small></span>
+                            </div>
+                          </div>
+                          <!-- </div>
+                        <div class="row"> -->
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="destinatario">Destinatario</label>
+                              <ng-select [(ngModel)]="remito.destinatario" [ngClass]="{
+                                  error:
+                                    pendienteForm.submitted &&
+                                    destinatarioRef.invalid
+                                }" required id="destinatario" name="destinatario" #destinatarioRef="ngModel"
+                                (ngModelChange)="onDestinatarioChange($event)">
+                                <ng-option *ngFor="let option of destinatarioOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span *ngIf="
+                                  pendienteForm.submitted &&
+                                  destinatarioRef.invalid
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="destinatarioRef.errors.required">Seleccione
+                                  destinatario.</small>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label for="localidad">Localidad</label>
+                              <input class="form-control" id="localidad" name="localidad" [(ngModel)]="localidad">
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="row">
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="porcentajeCobro">Porcentaje de cobro</label>
+                              <div class="input-group input-group-merge mb-2">
+                                <input class="form-control" [class.error]="
+                                    pendienteForm.submitted &&
+                                    porcentajeCobroRef.invalid
+                                  " [(ngModel)]="remito.porcentajeCobro" #porcentajeCobroRef="ngModel"
+                                  id="porcentajeCobro" name="porcentajeCobro" positiveNumbersOnly />
+                                <div class="input-group-append">
+                                  <span class="input-group-text">%</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="valorDeclarado">Valor declarado</label>
+                              <div class="input-group input-group-merge mb-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input class="form-control" [class.error]="
+                                    pendienteForm.submitted &&
+                                    valorDeclaradoRef.invalid
+                                  " [(ngModel)]="remito.valorDeclarado" #valorDeclaradoRef="ngModel"
+                                  id="valorDeclarado" name="valorDeclarado" positiveNumbersOnly />
+                              </div>
+                            </div>
+                          </div>
+                          <!-- </div>
+                        <div class="row"> -->
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="precioUnitario">Precio unitario</label>
+                              <div class="input-group input-group-merge mb-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input class="form-control" placeholder="" [class.error]="
+                                    pendienteForm.submitted &&
+                                    precioUnitarioRef.invalid
+                                  " [(ngModel)]="remito.precioUnitario" #precioUnitarioRef="ngModel"
+                                  id="precioUnitario" name="precioUnitario" positiveNumbersOnly />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="totalViaje">Total</label>
+                              <div class="input-group input-group-merge mb-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input class="form-control" [class.error]="
+                                    pendienteForm.submitted &&
+                                    totalViajeRef.invalid
+                                  " [(ngModel)]="remito.totalViaje" #totalViajeRef="ngModel" id="totalViaje"
+                                  name="totalViaje" positiveNumbersOnly />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="custom-control custom-control-primary custom-switch mb-1">
+                              <input type="checkbox" class="custom-control-input" id="facturar"
+                                [(ngModel)]="remito.facturar" name="facturar" />
+                              <label class="custom-control-label" for="facturar">Facturar</label>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-3">
+                            <br>
+
+                            <button type="button" class="btn btn-primary btn-block"
+                              (click)="calcularTotal('porcentaje')" rippleEffect>
+                              Total por porcentaje
+                            </button>
+                          </div>
+                          <div class="col-md-3">
+                            <br>
+
+                            <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('kilos')"
+                              rippleEffect>
+                              Total por kilo
+                            </button>
+                          </div>
+                          <div class="col-md-3">
+                            <br>
+                            <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('bultos')"
+                              rippleEffect>
+                              Total por bulto
+                            </button>
+                          </div>
+                          <div class="col-md-3">
+                            <br>
+                            <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('unitario')"
+                              rippleEffect>
+                              Total por precio unitario
+                            </button>
+                          </div>
+
+                        </div>
+                        <div class="row">
+
+                          <div class="col-lg-12">
+                            <br>
+                            <div class="form-group">
+                              <label for="observacion">Observaciones</label>
+                              <textarea class="form-control" [class.error]="
+                                pendienteForm.submitted && observacionRef.invalid
+                                " [(ngModel)]="remito.observacion" #observacionRef="ngModel" id="observacion"
+                                name="observacion" rows="5" style="resize: none"></textarea>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-1">
+                          <button routerLink="/remitos" class="btn btn-outline-secondary btn-prev" rippleEffect>
+                            <span class="align-middle ">Cancelar</span>
+                          </button>
+                          <button *ngIf="estadoNombre === 'Pendiente'" (click)="editar()"
+                            class="btn btn-primary btn-next" rippleEffect
+                            [disabled]="objectCompare(remito, initialRemito)">
+                            <span class="align-middle ">Editar</span>
+                          </button>
+                          <button *ngIf="estadoNombre !== 'Pendiente'"
+                            (click)="horizontalWizardStepperNext(pendienteForm)" type="submit"
+                            class="btn btn-primary btn-next" rippleEffect>
+                            <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
+                            <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                          </button>
+                        </div>
+                        <div class="container mt-2">
+                          <div class="row">
+                            <div class="col-4">
+                              <button *ngIf="!openTarifario" type="button"
+                                class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect (click)="verTarifario()">
+                                Ver tarifario
+                              </button>
+                              <button *ngIf="openTarifario" type="button"
+                                class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect
+                                (click)="cerrarTarifario()">
+                                Cerrar tarifario
+                              </button>
+                            </div>
+                            <div class="col-4">
+                              <button *ngIf="!openTarifarioHistorial" type="button"
+                                class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect
+                                (click)="verTarifarioHistorial()">
+                                Ver tarifario historial
+                              </button>
+                              <button *ngIf="openTarifarioHistorial" type="button"
+                                class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect
+                                (click)="cerrarTarifarioHistorial()">
+                                Cerrar tarifario historial
+                              </button>
+                            </div>
+                          </div>
+                          <div *ngIf="openTarifario" class="row mt-2">
+                            <div class="col-12">
+                              <ngx-datatable [rows]="tarifario" rowHeight="auto" class="bootstrap core-bootstrap"
+                                [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50"
+                                [scrollbarH]="true" [limit]="tarifario.length" [externalPaging]="true"
+                                [count]="tarifario.length" [offset]="">
+                                <ngx-datatable-column prop="precio" name="Precio" [width]="40" [sortable]="false">
+                                  <ng-template let-precio="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{precio}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="Unidad" prop="expand.unidad.nombre" [width]="60">
+                                  <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <div>
+                                      {{ row.expand?.unidad?.nombre }}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column prop="descripcion" name="Descripcion" [width]="125"
+                                  [sortable]="false">
+                                  <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{descripcion}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column prop="fechadesde" name="Fecha Desde" [width]="50">
+                                  <ng-template let-fechadesde="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{fechadesde | date : "dd/MM/yyyy"}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column prop="fechahasta" name="Fecha Hasta" [width]="50">
+                                  <ng-template let-fechahasta="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{fechahasta | date : "dd/MM/yyyy"}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                              </ngx-datatable>
+                            </div>
+
+                          </div>
+                          <div *ngIf="openTarifarioHistorial" class="row mt-2">
+                            <div class="col-12">
+                              <ngx-datatable [rows]="tarifarioHistorial" rowHeight="auto"
+                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force" [headerHeight]="50"
+                                [footerHeight]="50" [scrollbarH]="true" [limit]="tarifarioHistorial.length"
+                                [externalPaging]="true" [count]="tarifarioHistorial.length" [offset]="">
+                                <ngx-datatable-column prop="precio" name="Precio" [width]="40" [sortable]="false">
+                                  <ng-template let-precio="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{precio}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column name="Unidad" prop="expand.unidad.nombre" [width]="60">
+                                  <ng-template let-row="row" ngx-datatable-cell-template>
+                                    <div>
+                                      {{ row.expand?.unidad?.nombre }}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column prop="descripcion" name="Descripcion" [width]="125"
+                                  [sortable]="false">
+                                  <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{descripcion}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column prop="fechadesde" name="Fecha Desde" [width]="50">
+                                  <ng-template let-fechadesde="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{fechadesde | date : "dd/MM/yyyy"}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column prop="fechahasta" name="Fecha Hasta" [width]="50">
+                                  <ng-template let-fechahasta="value" ngx-datatable-cell-template>
+                                    <div>
+                                      {{fechahasta | date : "dd/MM/yyyy"}}
+                                    </div>
+                                  </ng-template>
+                                </ngx-datatable-column>
+                              </ngx-datatable>
+                            </div>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div id="transito-details" class="content">
+                      <form #transitoForm="ngForm">
+                        <div class="content-header">
+                          <h5 class="mb-0">En tránsito</h5>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="fechaEntrega">Fecha de entrega</label>
+                              <input class="form-control" [class.error]="
+                                  transitoForm.submitted &&
+                                  fechaEntregaRef.invalid &&
+                                  !esAnulado
+                                " [(ngModel)]="remito.fechaEntrega" #fechaEntregaRef="ngModel" [required]="!esAnulado"
+                                id="fechaEntrega" name="fechaEntrega" min="{{ currentDate | date : 'yyyy-MM-dd' }}"
+                                type="date" />
+                              <span *ngIf="
+                                  transitoForm.submitted &&
+                                  fechaEntregaRef.invalid &&
+                                  !esAnulado
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="fechaEntregaRef.errors.required">Seleccione
+                                  fecha de entrega.</small></span>
+                            </div>
+                          </div>
+                          <!-- </div>
+                        <div class="row"> -->
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="proveedor">Proveedor</label>
+                              <ng-select [(ngModel)]="remito.proveedor" [ngClass]="{
+                                  error:
+                                    transitoForm.submitted &&
+                                    proveedorRef.invalid &&
+                                  !esAnulado
+                                }" [required]="!esAnulado" id="proveedor" name="proveedor" #proveedorRef="ngModel"
+                                (ngModelChange)="onProveedorChange($event)">
+                                <ng-option *ngFor="let option of proveedorOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span *ngIf="
+                                  transitoForm.submitted && proveedorRef.invalid &&
+                                  !esAnulado
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="proveedorRef.errors.required">Seleccione
+                                  proveedor.</small>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="chofer">Chofer</label>
+                              <ng-select [(ngModel)]="remito.chofer" [ngClass]="{
+                                  error:
+                                    transitoForm.submitted && choferRef.invalid &&
+                                  !esAnulado
+                                }" [required]="!esAnulado" id="chofer" name="chofer" #choferRef="ngModel">
+                                <ng-option *ngFor="let option of choferOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span *ngIf="
+                                  transitoForm.submitted && choferRef.invalid &&
+                                  !esAnulado
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="choferRef.errors.required">Seleccione
+                                  chofer.</small>
+                              </span>
+                            </div>
+                          </div>
+                          <!-- </div>
+                        <div class="row"> -->
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="vehiculo">Vehículo</label>
+                              <ng-select [(ngModel)]="remito.vehiculo" [ngClass]="{
+                                  error:
+                                    transitoForm.submitted &&
+                                    vehiculoRef.invalid &&
+                                  !esAnulado
+                                }" [required]="!esAnulado" id="vehiculo" name="vehiculo" #vehiculoRef="ngModel">
+                                <ng-option *ngFor="let option of vehiculoOptions" [value]="option.id">
+                                  {{ option.nombre }}
+                                </ng-option>
+                              </ng-select>
+                              <span *ngIf="
+                                  transitoForm.submitted && vehiculoRef.invalid &&
+                                  !esAnulado
+                                " class="invalid-form">
+                                <small class="form-text text-danger" *ngIf="vehiculoRef.errors.required">Seleccione
+                                  vehículo.</small>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                          <button type="button" (click)="horizontalWizardStepperPrevious()"
+                            class="btn btn-outline-secondary btn-prev" rippleEffect>
+                            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+                            <span class="align-middle d-sm-inline-block d-none">Anterior</span>
+                          </button>
+                          <button *ngIf="
+                              estadoNombre !== 'Tránsito' &&
+                              estadoNombre !== 'Pendiente'
+                            " (click)="horizontalWizardStepperNext(transitoForm)" class="btn btn-primary btn-next"
+                            rippleEffect>
+                            <span class="align-middle d-sm-inline-block d-none">Siguiente</span>
+                            <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+                          </button>
+                          <button *ngIf="estadoNombre === 'Tránsito'" (click)="editar()"
+                            class="btn btn-primary btn-next" rippleEffect
+                            [disabled]="objectCompare(remito, initialRemito)">
+                            <span class="align-middle ">Editar</span>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    <div id="final-details" class="content">
+                      <form #finalForm="ngForm">
+                        <div class="content-header">
+                          <h5 class="mb-0">{{estadoNombre}}</h5>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="custom-control custom-control-primary custom-switch mb-1">
+                              <input type="checkbox" disabled class="custom-control-input" id="conformado"
+                                [(ngModel)]="remito.confirmado" name="conformado" />
+                              <label class="custom-control-label" for="conformado">Conformado</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="observacion">Observaciones</label>
+                              <textarea class="form-control" [class.error]="
+                                  finalForm.submitted && observacionRef.invalid
+                                " [(ngModel)]="remito.observacion" #observacionRef="ngModel" id="observacion"
+                                name="observacion" rows="5" style="resize: none"></textarea>
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="novedad">Novedades</label>
+                              <textarea class="form-control" [class.error]="
+                                  finalForm.submitted && novedadRef.invalid
+                                " [(ngModel)]="remito.novedad" #novedadRef="ngModel" id="novedad" name="novedad"
+                                rows="5" style="resize: none"></textarea>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                          <button type="button" (click)="horizontalWizardStepperPrevious()"
+                            class="btn btn-outline-secondary btn-prev" rippleEffect>
+                            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+                            <span class="align-middle d-sm-inline-block d-none">Anterior</span>
+                          </button>
+
+                          <button class="btn btn-primary btn-submit" rippleEffect (click)="editar()"
+                            [disabled]="objectCompare(remito, initialRemito)">
+                            Editar
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </section>
+            <!--/ Horizontal Wizard -->
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

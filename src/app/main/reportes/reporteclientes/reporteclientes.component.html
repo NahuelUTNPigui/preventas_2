@@ -1,0 +1,360 @@
+
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-list-wrapper">
+        <div
+          class="mb-1"
+          style="color: #e04141; font-weight: 600; font-size: 20px"
+        >
+          Reporte clientes
+        </div>
+        <div *ngIf="conpermisos">
+          <div class="card container">
+            <div class="row">
+              <div class="col-3">
+                <div class="d-flex justify-content-between align-items-center m-1">
+                  <div class="d-flex align-items-center">
+                    <label class="d-flex align-items-center"
+                      >Mostrar
+                      <select
+                        class="form-control mx-25"
+                        [(ngModel)]="page.size"
+                        (change)="onPageSizeChange()"
+                      >
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-3 
+                d-flex justify-content-start
+                align-items-center container"
+              >
+                  <div class="row pb-1 pb-md-0 align-items-center ">            
+                      <div class="col-md-11 col-lg-3 col-10 ml-1 ml-lg-0 pr-0">
+                        <br>
+                        <button
+                          (click)="exportarXLX()"
+                          class="btn btn-outline-secondary"
+                          rippleEffect
+                          >Exportar</button
+                        >
+                      </div>
+                  </div>
+              </div>
+              <div
+                class="col-3 
+                d-flex justify-content-start
+                align-items-center container"
+              >
+                  <div class="row pb-1 pb-md-0 align-items-center ">            
+                      <div class="col-md-11 col-lg-3 col-10 ml-1 ml-lg-0 pr-0">
+                        <br>
+                        <button
+                          *ngIf="this.dataprocesada.length != 0"
+                          (click)="open(modalAnalisis)"
+                          class="btn btn-outline-secondary"
+                          rippleEffect
+                          >Analisis</button
+                        >
+                      </div>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="row" >
+              <div class="col-4">
+                <br>
+                <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar filtros</button>
+              </div>
+            </div>
+            <br>
+            <h4>FECHAS</h4>
+            <div class="row">
+              <div class="col-2">
+                <label for="fechaDesde">Fecha Ingreso Desde</label>
+                <input [(ngModel)]="fechaIngresoDesde" id="first-name-vertical" class="form-control" name="fechaIngresoDesde" type="date"
+                  (change)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <label for="fechaHasta">Fecha Ingreso Hasta</label>
+                <input [(ngModel)]="fechaIngresoHasta" id="first-name-vertical" class="form-control" name="fechaIngresoHasta" type="date"
+                   (change)="filterUpdate($event)" />
+              </div>       
+              <div class="col-2">
+                <br>
+                <div class="custom-control custom-control-primary custom-switch">
+                  <input class="custom-control-input" type="checkbox" id="inlineCheckbox1" [(ngModel)]="porFechaEntrega" (change)="filterUpdate($event)"/>
+                  <label class="custom-control-label" for="inlineCheckbox1">Por fecha Entrega</label>
+                </div>
+              </div>     
+              <div class="col-2">
+                  <label for="fechaDesde">Fecha Entrega Desde</label>
+                  <input  [(ngModel)]="fechaEntregaDesde" id="first-name-vertical" class="form-control" name="fechaDesde" type="date"
+                    (keyup)="filterUpdate($event)" (change)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                  <label for="fechaHasta">Fecha Entrega Hasta</label>
+                  <input  [(ngModel)]="fechaEntregaHasta" id="first-name-vertical" class="form-control" name="fechaHasta" type="date"
+                    (keyup)="filterUpdate($event)" (change)="filterUpdate($event)"  />
+                      <br>
+              </div>   
+            </div>
+            <h4>PROVEEDORES Y CLIENTES</h4>
+            <div class="row">
+              <div class="col-2">
+                <label for="searchValue"> Proveedor </label>
+                <select
+                  id="cboProveedor" name ="cboProveedor"
+                  class="form-control mx-25"
+                  [(ngModel)]="nombreProveedor"
+                  (change)="filterUpdate($event)"
+                >
+                  <option value="">Todos</option>
+                  <option *ngFor = "let est of proveedores" [value]="est.nombre">{{est.nombre}}</option>
+                </select>
+                <!--<input [(ngModel)]="nombreProveedor" name="searchValue" type="search" class="form-control" placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />-->
+              </div>
+              <div class="col-2">
+                <label for="searchValue"> Vehiculo </label>
+                <input [(ngModel)]="nombreVehiculo" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <label for="searchValue"> Chofer </label>
+                <input [(ngModel)]="nombreChofer" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <label for="searchValue"> Cliente </label>
+                <input [(ngModel)]="nombreCliente" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <label for="searchValue"> Destinatario </label>
+                <input [(ngModel)]="nombreDestinatario" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <label for="searchValue"> Remitente </label>
+                <input [(ngModel)]="nombreRemitente" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-4">
+                <h4>GEOGRAFIA</h4>
+              </div>
+              <div class="col-4">
+                <h4>ESTADO Y FORMA DE PAGO</h4>
+              </div>
+              <div class="col-4">
+                <h4>REUBICADO Y CONFORMADO</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-2">
+                <label for="searchValue"> Provincia </label>
+                <input [(ngModel)]="provincia" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <label for="searchValue"> Localidad </label>
+                <input [(ngModel)]="localidad" name="searchValue" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+              </div>
+              <div class="col-2">
+                <div class=" align-items-center">
+                    <label  for="cboEstado" 
+                      >Estado</label>
+                      <select
+                        id="cboEstado" name ="cboEstado"
+                        class="form-control mx-25"
+                        [(ngModel)]="estado"
+                        (change)="filterUpdate($event)"
+                      >
+                        <option value="">Todos</option>
+                        <option value="nopen">Sin pendientes</option>
+                        <option *ngFor = "let est of estados" [value]="est.id">{{est.nombre}}</option>
+                      </select>
+                    
+                  </div>
+              </div>
+              <div class="col-2">
+                <div class="">
+                    <label  for="cboForma" class="d-flex align-items-center"
+                      >Formas de pago</label>
+                      <select
+                        id="cboForma" name ="cboForma"
+                        class="form-control mx-25"
+                        [(ngModel)]="formaPago"
+                        (change)="filterUpdate($event)"
+                      >
+                        <option value="">Todas</option>
+                        <option *ngFor="let prov of formas" [value]="prov.id">{{prov.nombre}}</option>
+                      </select>
+                      <br>
+                  </div>
+              </div>
+              <div class="col-1 ">
+                <br>
+                <div class="custom-control custom-control-primary custom-switch">
+                  
+                  <input class="custom-control-input" type="checkbox" id="inlineCheckbox2" [(ngModel)]="todos" (change)="filterUpdate($event)"/>
+                  <label class="custom-control-label" for="inlineCheckbox2">Todos</label>
+                </div>
+              </div>
+              <div class="col-1">
+                <br>
+                <div class="custom-control custom-control-primary custom-switch">
+                  
+                  <input class="custom-control-input" type="checkbox" id="inlineCheckbox3" [(ngModel)]="reubicado" (change)="filterUpdate($event)"/>
+                  <label class="custom-control-label" for="inlineCheckbox3">Reubicado</label>
+                </div>
+              </div>
+              <div class="col-1">
+                <br>
+                <div class="custom-control custom-control-primary custom-switch">
+                  
+                  <input class="custom-control-input" type="checkbox" id="inlineCheckbox4" [(ngModel)]="confirmado" (change)="filterUpdate($event)"/>
+                  <label class="custom-control-label" for="inlineCheckbox4">Conf.</label>
+                </div>
+              </div>
+              <div class="col-1">
+                <br>
+                <div class="custom-control custom-control-primary custom-switch">
+                  
+                  <input class="custom-control-input" type="checkbox" id="inlineCheckbox5" [(ngModel)]="facturar" (change)="filterUpdate($event)"/>
+                  <label class="custom-control-label" for="inlineCheckbox5">Fact.</label>
+                </div>
+              </div>
+              
+            </div>
+            <div class="row mb-1">
+              <div class="col-3">
+                <label for="zona"> Zona </label>
+                <input [(ngModel)]="zona" name="zona" type="search" class="form-control"
+                  placeholder="Buscar..." (change)="filterUpdate($event)" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <h2 class="hidden">Total: ${{piso(total)}}</h2>
+                <h2>Total: {{stotal}}</h2>
+              </div>
+              <div class="col-6">
+                <h2 class="hidden">Total kilos: {{piso(totalkilos)}}</h2>
+                <h2>Total kilos: {{stotalkilos}}</h2>
+              </div>
+            </div>
+          
+            <ngx-datatable
+                [rows]="rows"
+                rowHeight="auto"
+                class="bootstrap core-bootstrap"
+                [columnMode]="ColumnMode.force"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [scrollbarH]="true"
+                [limit]="page.size"
+                [externalPaging]="true"
+                [count]="page.count"
+                [offset]="page.offset"
+                (page)="onPage($event)"
+            >
+              <ngx-datatable-column name="Cliente" prop="nombre" [width]="80">
+                <ng-template let-nombre="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ nombre }}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Total" prop="total" [width]="125">
+                <ng-template let-total="value" ngx-datatable-cell-template>
+                  <div>
+                    {{
+                      !total || total === 0
+                        ? "-"
+                        : "$ " + (total | number : "1.2-2")
+                    }}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column
+                  name="KG"
+                  prop="kilos"
+                  [width]="80"
+                  [sortable]="false"
+                >
+                  <ng-template let-kilos="value" ngx-datatable-cell-template>
+                    <div>
+                      {{ kilos === 0 ? "-" : piso(kilos) }}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column
+                  name="Boca/bultos"
+                  prop="bultos"
+                  [width]="80"
+                  [sortable]="false"
+                >
+                  <ng-template let-column="column" ngx-datatable-header-template>
+                    <div>
+                      <span style="white-space: nowrap">Boca/</span>
+                      <br />
+                      <span style="white-space: nowrap">bultos</span>
+                    </div>
+                  </ng-template>
+                  <ng-template let-bultos="value" ngx-datatable-cell-template>
+                    <div>
+                      {{ bultos === 0 ? "-" : bultos }}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+        <div *ngIf="!conpermisos">
+          <h5>No tienes permisos de administracion</h5>
+        </div>
+      </section>
+    </div>
+</div>
+<ng-template #modalAnalisis let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="analisis">Análisis de datos</h5>
+    <button
+      type="button"
+      class="close"
+      (click)="modal.dismiss('Cross click')"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+  </div>
+  <div class="modal-body" tabindex="0" ngbAutofocus>
+    <div class="content-wrapper container-xxl p-0">
+      <div class="content-body">
+        <section class="invoice-list-wrapper">
+          <div
+            class="mb-1"
+            style="color: #e04141; font-weight: 600; font-size: 20px"
+          >
+            Análisis de clientes
+          </div>
+          <app-dashboardclientes [total] = "total" [totalkilos] = "totalkilos" [totalbultos] = "totalbultos" [filascliente] = "dataprocesada" [filas]="data"></app-dashboardclientes>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+  

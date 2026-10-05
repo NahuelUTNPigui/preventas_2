@@ -1,0 +1,24 @@
+<div class="input-group date">
+    <div class="input-group-prepend">
+      <button
+      class="btn btn-outline-secondary feather icon-calendar"
+      (click)="d2.toggle()"
+      type="button"
+      rippleEffect
+    ></button>
+    </div>
+    <input
+      type="text"
+      class="form-control float-right date-picker-no-editable"
+      id="model"
+      [placeholder]="label"
+      [(ngModel)]="model"
+      [minDate]="minDate"
+      [maxDate]="mxDate"
+      #dateControl
+      #d2="ngbDatepicker"
+      ngbDatepicker
+      value="{{ bsValueSD | date:'yyyy-MM-dd' : 'UTC' }}"
+      [class.is-invalid]="isInvalid"
+    />
+  </div>

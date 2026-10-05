@@ -1,0 +1,104 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <section class="invoice-add-wrapper">
+            <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+                Saldo proveedor - {{nombre}} - {{razonSocial}}
+            </div>
+            <div class="row invoice-add">
+                <div class="col-xl-12 col-md-12 col-12">
+                    <div class="card invoice-preview-card">
+
+                        <div class="m-0 ml-3 mr-3 ">
+                            <div class="row mt-1">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="nombre">Saldo</label>
+                                        <input class="form-control" [(ngModel)]="saldo" #razonSocialRef="ngModel"
+                                            id="saldo" name="saldo" />
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-4">
+                                    <label class="d-flex align-items-center">Mostrar
+                                        <select class="form-control mx-25" [(ngModel)]="page.size"
+                                            (change)="onPageSizeChange()">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="col-3">
+                                    <label for="fechaDesde">Fecha Desde</label>
+                                    <input [(ngModel)]="fechadesde" id="fechadesde" class="form-control"
+                                        name="fechadesde" type="date" (change)="filterUpdate($event)" />
+                                </div>
+                                <div class="col-3">
+                                    <label for="fechahasta">Fecha Hasta</label>
+                                    <input [(ngModel)]="fechahasta" id="fechahasta" class="form-control"
+                                        name="fechahasta" type="date" (change)="filterUpdate($event)" />
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-12">
+                                    <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                                        [columnMode]="ColumnMode.force" [headerHeight]="70" [footerHeight]="50"
+                                        [scrollbarH]="true" [limit]="page.size" [externalPaging]="true"
+                                        [count]="page.count" [offset]="0"
+                                        (page)="onPage($event)"
+                                        >
+
+                                        <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                            <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{
+                                                    !monto || monto === 0
+                                                    ? "-"
+                                                    : "$ " + (monto | number : "1.2-2")
+                                                    }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Fecha" prop="fecha" [width]="110">
+
+                                            <ng-template let-fecha="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ fecha | date : "dd/MM/yyyy" }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Tipo" prop="tipo" [width]="125">
+                                            <ng-template let-tipo="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ tipo }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Descripción" prop="descripcion" [width]="125">
+                                            <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ descripcion }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+
+
+
+
+                                    </ngx-datatable>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

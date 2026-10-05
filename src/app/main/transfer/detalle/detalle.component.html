@@ -1,0 +1,226 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <div
+                    class="mb-1"
+                    style="color: #e04141; font-weight: 600; font-size: 20px"
+                >
+                    {{accion +" transferencia"}}
+                </div>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos" class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="fecha">Fecha*</label>
+                                            <input
+                                                class="form-control"
+                                                [(ngModel)]="fecha"
+                                                id="fecha"
+                                                name="fecha"
+                                                type="date"
+                                                (change)="validarCampo('FECHA')"
+                                            />
+                                            <span
+                                                *ngIf="malfecha"
+                                                class="form-text text-danger"
+                                            >
+                                                Debe seleccionar la fecha
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="importe">Importe</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="importe"
+                                            id="importe"
+                                            name="importe"
+                                            type="number"
+                                        /> 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="cliente">Cliente</label>
+                                        <ng-select
+                                            [(ngModel)]="cliente"
+                                            id="cliente"
+                                            name="cliente"
+                                            (change)="validarCampo('CLIENTE')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of clientes"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malcliente"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar el cliente
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="proveedor">Proveedor</label>
+                                        <ng-select
+                                            [(ngModel)]="proveedor"
+                                            id="proveedor"
+                                            name="proveedor"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of proveedores"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="unidad">Unidad</label>
+                                        <ng-select
+                                            [(ngModel)]="unidad"
+                                            id="unidad"
+                                            name="unidad"
+                                            (change)="validarCampo('UNIDAD')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of unidades"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malunidad"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar la unidad
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="esIngreso">Es ingreso</label>
+                                        <ng-select
+                                            [(ngModel)]="esIngreso"
+                                            id="esIngreso"
+                                            name="esIngreso"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of opcionesIngreso"
+                                                [value]="option.value"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="bancoorigen">Banco origen</label>
+                                        <ng-select
+                                            [(ngModel)]="bancoorigen"
+                                            id="bancoorigen"
+                                            name="bancoorigen"
+                                            (change)="validarCampo('BANCOORI')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of bancos"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malbancoori"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar el banco de origen
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="bancodestino">Banco de destino</label>
+                                        <ng-select
+                                            [(ngModel)]="bancodestino"
+                                            id="bancodestino"
+                                            name="bancodestino"
+                                            (change)="validarCampo('BANCODEST')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of bancos"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malbancodest"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar el banco de destino
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="alias">Alias</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="alias"
+                                            id="alias"
+                                            name="alias"
+                                            
+                                        />
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="cbu">CBU</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="cbu"
+                                            id="cbu"
+                                            name="cbu"
+                                            
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div 
+                                        class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+                                    >
+                                        <button    
+                                            class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                                            [ngClass]="botonhabilitado?'cursor-pointer':'cursor-not-allowed'"
+                                            rippleEffect
+                                            [disabled] = "!botonhabilitado"
+                                            (click)="guardarTransfer()"
+                                        >
+                                            Guardar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary"
+                                            routerLink="/transfer/lista"
+                                            rippleEffect
+                                        >
+                                            Volver
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

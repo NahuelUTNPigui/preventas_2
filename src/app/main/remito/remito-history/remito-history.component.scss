@@ -1,0 +1,44 @@
+@import '@core/scss/base/pages/app-invoice.scss';
+@import '@core/scss/angular/libs/datatables.component.scss';
+@import '@core/scss/angular/libs/select.component.scss';
+
+@import '@core/scss/base/bootstrap-extended/_include'; // Components includes
+
+// invoice list
+.invoice-list-wrapper {
+  .col-actions {
+    a {
+      &:not(.dropdown-item) {
+        color: $body-color;
+      }
+    }
+  }
+}
+
+.ngx-datatable.bootstrap.core-bootstrap .datatable-header {
+  height: 50px !important;
+}
+
+.badge.badge-purple {
+  background-color: #80008017 !important;
+  color: purple !important;
+}
+
+.badge.badge-pink {
+  background-color: rgb(255 192 203 / 19%) !important;
+  color: #ed99a7 !important;
+}
+
+.badge.badge-yellow {
+  background-color: rgb(255 255 0 / 19%) !important;
+  color: #e4e42b !important;
+}
+
+.badge.badge-blue {
+  background-color: rgb(0, 0, 255, 0.09) !important;
+  color: #7367f0 !important;
+}
+
+.last-version {
+  background-color: #FFFF00 !important; /* Amarillo */
+}

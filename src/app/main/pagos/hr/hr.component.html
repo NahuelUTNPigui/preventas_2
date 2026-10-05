@@ -1,0 +1,336 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Liquidación Hojas de ruta</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div>
+                                            <br>
+                                            <a class="btn btn-outline-secondary" rippleEffect
+                                                (click)="retomarOrdenPago()">Retomar orden de pago</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>
+                                            <br>
+                                            <a class="btn btn-outline-secondary " rippleEffect
+                                                (click)="crearOrdenPago()">Crear orden de pago</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <br>
+                                        <a (click)="limpiarFiltros()" class="btn btn-outline-secondary "
+                                            rippleEffect>Limpiar filtros</a>
+                                    </div>
+                                    <div class="col-2">
+                                        <br>
+                                        <a (click)="limpiarSeleccion()" class="btn btn-outline-secondary "
+                                            rippleEffect>Limpiar seleccion</a>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>
+                                            <br>
+                                            <a class="btn btn-outline-secondary " rippleEffect
+                                                (click)="calcularRentabilidad()">Analisis rentabilidad</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="hrpagar.length != 0" class="row mt-2">
+                                    <div class="col-3">
+                                        <label class="font-weight-bolder" for="">Cantidad de hojas de ruta
+                                            cargadas</label>
+                                        <br>
+                                        <label class="">{{hrpagar.length}}</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <label class="font-weight-bolder" for="">Lista de hojas de ruta cargadas</label>
+                                        <br>
+                                        <label
+                                            class="">{{showHRCargadas().length>100?showHRCargadas().substring(0,100)+"
+                                            ...":showHRCargadas()}}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label for="searchValue">Numero </label>
+                                        <input [(ngModel)]="nro" name="nro" type="search" class="form-control"
+                                            placeholder="Buscar..." (change)="filterUpdate($event)" />
+                                    </div>
+                                    <div class="col-4 align-items-center">
+                                        <label for="cboEstado">Estado
+                                        </label>
+                                        <select id="cboEstado" name="cboEstado" class="form-control mx-25"
+                                            [(ngModel)]="estado" (change)="filterUpdate($event)">
+                                            <option value="-1">Todos</option>
+
+                                            <option *ngFor="let est of estados" [value]="est.id">{{est.nombre}}</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+
+                                        <label for="proveedor">Proveedor
+                                        </label>
+                                        <select id="proveedor" name="proveedor" class="form-control mx-25"
+                                            [(ngModel)]="proveedorOption" (change)="onChangeProveedor($event)">
+                                            <option value="">Todos</option>
+
+                                            <option *ngFor="let est of proveedores" [value]="est.id">{{est.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="vehiculo">Vehiculo
+                                        </label>
+                                        <select id="vehiculo" name="vehiculo" class="form-control mx-25"
+                                            [(ngModel)]="vehiculoOption" (change)="onChangeVehiculo($event)">
+                                            <option value="">Todos</option>
+
+                                            <option *ngFor="let est of vehiculosProv" [value]="est.id">{{est.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="chofer">Chofer
+                                        </label>
+                                        <select id="chofer" name="chofer" class="form-control mx-25"
+                                            [(ngModel)]="choferOption" (change)="onChangeChofer($event)">
+                                            <option value="">Todos</option>
+
+                                            <option *ngFor="let est of choferesProv" [value]="est.id">{{est.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="fechaDesde">Fecha Entrega Desde</label>
+                                        <input [(ngModel)]="fechadesde" id="fechadesde" class="form-control"
+                                            name="fechadesde" type="date" (change)="filterUpdate($event)" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="fechahasta">Fecha Entrega Hasta</label>
+                                        <input [(ngModel)]="fechahasta" id="fechahasta" class="form-control"
+                                            name="fechahasta" type="date" (change)="filterUpdate($event)" />
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+
+                                        <label for="conorden">Con orden
+                                        </label>
+                                        <select id="conorden" name="conorden" class="form-control mx-25"
+                                            [(ngModel)]="conorden" (change)="filterUpdate($event)">
+                                            <option *ngFor="let est of conordenOptions" [value]="est.id">{{est.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label class="align-items-center">Mostrar
+                                        </label>
+                                        <select class="form-control mx-25" [(ngModel)]="page.size"
+                                            (change)="onPageSizeChange()">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>
+                                            <br>
+                                            <a class="btn btn-outline-secondary float-right" rippleEffect
+                                                (click)="agregarTodos()">Seleccionar todos</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>
+                                            <br>
+                                            <a class="btn btn-outline-secondary float-right" rippleEffect
+                                                (click)="limpiarLista()">Quitar todos</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 mt-2">
+                                        <button class="btn btn-outline-secondary" (click)="calcularTotal()">Calcular
+                                            total</button>
+
+                                    </div>
+                                    <div class="col-2 mt-2">
+                                        <h3>Total: $ {{total}} </h3>
+
+                                    </div>
+
+                                </div>
+                                <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap mt-1"
+                                    [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50"
+                                    [scrollbarH]="true" [limit]="page.size" [externalPaging]="true" [count]="page.count"
+                                    [offset]="page.offset" (page)="onPage($event)">
+                                    <ngx-datatable-column name="Acciones" [width]="70" [sortable]="false"
+                                        [canAutoResize]="false" [draggable]="false" [resizeable]="false">
+
+                                        <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-row="row"
+                                            let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                            <div class="d-flex">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        [checked]="estaEnPagar(row.id)" (change)="onCheckboxChange(row)"
+                                                        id="rowChkbxRef{{ row.id }}" />
+
+                                                    <label class="custom-control-label"
+                                                        for="rowChkbxRef{{ row.id }}"></label>
+                                                </div>
+                                                <div class="d-flex align-items-center col-actions">
+                                                    <div ngbDropdown container="body">
+                                                        <button ngbDropdownToggle type="button"
+                                                            class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                            <i data-feather="more-vertical" size="18"
+                                                                class="cursor-pointer"></i>
+                                                        </button>
+                                                        <div ngbDropdownMenu>
+                                                            <button (click)="cerrarHR(row.id)" ngbDropdownItem><i
+                                                                    data-feather="credit-card" class="mr-1"></i>Cerrar
+                                                                HR</button>
+                                                            <a *ngIf="!estaEnPagar(row.id)" href="javascript:void(0)"
+                                                                ngbDropdownItem (click)="agregarHR(row.id)">
+                                                                <i data-feather="plus-circle" class="mr-1"></i>
+                                                                Agregar hoja de ruta
+                                                            </a>
+                                                            <a *ngIf="estaEnPagar(row.id)" href="javascript:void(0)"
+                                                                ngbDropdownItem (click)="quitarHR(row.id)">
+                                                                <i data-feather="minus-circle" class="mr-1"></i>
+                                                                Quitar hoja de ruta
+                                                            </a>
+                                                            <a href="javascript:void(0)" ngbDropdownItem
+                                                                (click)="detalle(row.id,modalDetalleHR)"><i
+                                                                    data-feather="eye" class="mr-1"></i>Detalle</a>
+                                                            <a class="hidden" href="javascript:void(0)" ngbDropdownItem
+                                                                (click)="cambiarEstado(row.id)"><i
+                                                                    data-feather="credit-card" class="mr-1"></i>Cambiar
+                                                                estado</a>
+                                                            <a href="javascript:void(0)" ngbDropdownItem
+                                                                (click)="exportarHR(row.id)"><i data-feather="share"
+                                                                    class="mr-1"></i>Exportar</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Estado" prop="estado" [width]="110">
+                                        <ng-template let-estado="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ getEstadoNombre(estado) }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Con orden" prop="pago" [width]="110">
+                                        <ng-template let-pago="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ pago==""?"No":"Sí" }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+
+                                    <ngx-datatable-column name="Numero" prop="codigo" [width]="110">
+                                        <ng-template let-codigo="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ codigo }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Total prov" prop="totalproveedor" [width]="110">
+                                        <ng-template let-totalproveedor="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ totalproveedor }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Fecha Entre" prop="fechaentrega" [width]="110">
+                                        <ng-template let-fechaentrega="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ fechaentrega | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.proveedor?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Chofer" prop="expand.chofer.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.chofer?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Vehiculo" prop="expand.vehiculo.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.vehiculo?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    
+                                </ngx-datatable>
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Modal editar hr-->
+<ng-template #modalDetalleHR let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Detalle de hoja de ruta</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container row" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <app-detallehr [idhr]="idhr" (cerrarModalEvent)="cargarPagina($event)"
+                (editarModalEvent)="cargarPaginaEdicion($event)"></app-detallehr>
+        </div>
+    </div>
+</ng-template>
+<!--Fin Modal editar hr-->
+<!--Pagar HR-->
+<ng-template #modalPagarHR let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Crear orden de pago</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container row" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <app-modelordenes (editarHREvent)="cargarPagina($event)" (quitarHR)="quitarHR($event)"
+                (cerrarModalEvent)="cerrarModalOrdenes(modal)" [datapagar]="hrpagar"></app-modelordenes>
+        </div>
+    </div>
+</ng-template>
+<!--Fin Pagar HR-->

@@ -1,0 +1,380 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <div
+                    class="mb-1"
+                    style="color: #e04141; font-weight: 600; font-size: 20px"
+                >
+                    Transacciones
+                </div>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos" class="container">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label class="d-flex align-items-center"
+                                            >Mostrar
+                                            <select
+                                                class="form-control mx-25"
+                                                [(ngModel)]="page.size"
+                                                (change)="onPageSizeChange()"
+                                            >
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>
+                                            <a
+                                              (click)="exportarXLSX()"
+                                              class="btn btn-outline-secondary float-right"
+                                              rippleEffect
+                                              >Exportar</a
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div>
+                                            <a
+                                                class="btn btn-primary"
+                                                rippleEffect
+                                                (click)="openModal(flujoModal,'0')"
+                                            >
+                                                Guardar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <br>
+                                        <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar filtros</button>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h4>FECHAS</h4>
+                                        
+                                    </div>
+                                    <div class="col-3">
+                                        <h4>CLIENTE</h4>
+                                    </div>
+                                    <div class="col-3">
+                                        <h4>PROVEEDOR</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="fechaDesde">Fecha Desde</label>
+                                        <input [(ngModel)]="fechaDesde" id="fechaDesde" class="form-control" name="fechaDesde" type="date"
+                                             (change)="filterUpdate($event)" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="fechaHasta">Fecha Hasta</label>
+                                        <input [(ngModel)]="fechaHasta" id="fechaHasta" class="form-control" name="fechaHasta" type="date"
+                                             (change)="filterUpdate($event)" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="cboCliente"> Cliente </label>
+                                        <select
+                                          id="cboCliente" name ="cboCliente"
+                                          class="form-control mx-25"
+                                          [(ngModel)]="cliente"
+                                          (change)="filterUpdate($event)"
+                                        >
+                                          <option value="">Todos</option>
+                                          <option *ngFor = "let cli of clientes" [value]="cli.id">{{cli.nombre}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="cboProveedor"> Proveedor </label>
+                                        <select
+                                          id="cboProveedor" name ="cboProveedor"
+                                          class="form-control mx-25"
+                                          [(ngModel)]="proveedor"
+                                          (change)="filterUpdate($event)"
+                                        >
+                                          <option value="">Todos</option>
+                                          <option *ngFor = "let cli of proveedores" [value]="cli.id">{{cli.nombre}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="cboTipo"> Tipo </label>
+                                        <select
+                                          id="cboTipo" name ="cboTipo"
+                                          class="form-control mx-25"
+                                          [(ngModel)]="esIngresoId"
+                                          (change)="filterUpdate($event)"
+                                        >
+                                          <option *ngFor = "let cli of sonIngresos" [value]="cli.id">{{cli.nombre}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <button
+                                          class="btn btn-primary"
+                                          (click)="calcularTotal()"
+                                        >Calcular Total</button>
+                                    </div>
+                                    <div class="col-6">
+                                      <h2>Total: {{total}}</h2>
+                                    </div>
+                                </div>
+                                <ngx-datatable
+                                    [rows]="rows"
+                                    rowHeight="auto"
+                                    class="bootstrap core-bootstrap"
+                                    [columnMode]="ColumnMode.force"
+                                    [headerHeight]="50"
+                                    [footerHeight]="50"
+                                    [scrollbarH]="true"
+                                    [limit]="page.size"
+                                    [externalPaging]="true"
+                                    [count]="page.count"
+                                    [offset]="page.offset"
+                                    (page)="onPage($event)"
+                                >
+                                    <ngx-datatable-column
+                                        name="Acciones"
+                                        [width]="100"
+                                        [sortable]="false"
+                                    >
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <a
+                                                    class="mr-1"
+                                                    href="javascript:void(0)"
+                                                    (click)="openModal(flujoModal,row.id)"
+                                                    container="body"
+                                                    placement="top"
+                                                    ngbTooltip="Editar"
+                                                    ><i size="18" data-feather="edit"></i
+                                                ></a>
+                                                <a
+                                                    class="mr-1"
+                                                    href="javascript:void(0)"
+                                                    (click)="ConfirmDeleteOpen(row.id)"
+                                                    container="body"
+                                                    placement="top"
+                                                    ngbTooltip="Eliminar"
+                                                    ><i size="18" data-feather="trash"></i
+                                                ></a>
+                                                <div>
+                                                    <i 
+                                                        class="text-success"
+                                                        *ngIf="row.proveedor.length==0" size="18"
+                                                        data-feather="arrow-up">
+                                                    </i>
+                                                    <i 
+                                                        class="text-danger"
+                                                        *ngIf="row.proveedor.length>0" size="18"
+                                                        data-feather="arrow-down">
+                                                    </i>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column
+                                        name="Fecha "
+                                        prop="fecha"
+                                        [width]="110"
+                                    >
+                                        <ng-template let-column="column" ngx-datatable-header-template>
+                                            <div>
+                                            <span style="white-space: nowrap">Fecha</span>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-fecha="value" ngx-datatable-cell-template>
+                                            <div>
+                                            {{ fecha | date : "dd/MM/yyyy" }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Importe" prop="importe" [width]="110">
+                                        <ng-template let-importe="value" ngx-datatable-cell-template>
+                                          <div>
+                                            {{ importe }}
+                                          </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column
+                                        name="Cliente"
+                                        prop="expand.cliente.nombre"
+                                        [width]="110"
+                                    >
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <div>
+                                            {{ row.expand?.cliente?.nombre }}
+                                        </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column
+                                        name="Proveedor"
+                                        prop="expand.proveedor.nombre"
+                                        [width]="110"
+                                    >
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <div>
+                                            {{ row.expand?.proveedor?.nombre }}
+                                        </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+
+                                </ngx-datatable>
+
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+<ng-template #flujoModal let-modal>
+    <div class="modal-header">
+        <h5 *ngIf="id=='0'" class="modal-title">Agregar transferencia</h5>
+        <h5 *ngIf="id!='0'" class="modal-title">Editar transferencia</h5>
+        <button
+            type="button"
+            class="close"
+            (click)="modal.dismiss('Cross click')"
+            aria-label="Close"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card invoice-preview-card container">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="fecha">Fecha*</label>
+                                <input
+                                    class="form-control"
+                                    [(ngModel)]="fecha"
+                                    id="fecha"
+                                    name="fecha"
+                                    type="date"
+                                    (change)="validarCampo('FECHA')"
+                                />
+                                <span
+                                    *ngIf="malfecha"
+                                    class="form-text text-danger"
+                                >
+                                    Debe seleccionar la fecha
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <label for="esIngreso">Es ingreso</label>
+                                <ng-select
+                                    [(ngModel)]="esIngreso"
+                                    id="esIngreso"
+                                    name="esIngreso"
+                                >
+                                    <ng-option
+                                        *ngFor="let option of opcionesIngreso"
+                                        [value]="option.value"
+                                    >
+                                        {{ option.nombre }}
+                                    </ng-option>
+                                </ng-select>
+                            </div>
+                            <div class="col-6">
+                                <label for="transcliente">Cliente</label>
+                                <ng-select
+                                    [(ngModel)]="transcliente"
+                                    id="transcliente"
+                                    name="transcliente"
+                                >
+                                    <ng-option
+                                        *ngFor="let option of clientes"
+                                        [value]="option.id"
+                                    >
+                                        {{ option.nombre }}
+                                    </ng-option>
+                                </ng-select>
+                                
+                            </div>
+                            <div class="col-6">
+                                <label for="transproveedor">Proveedor</label>
+                                <ng-select
+                                    [(ngModel)]="transproveedor"
+                                    id="transproveedor"
+                                    name="transproveedor"
+                                >
+                                    <ng-option
+                                        *ngFor="let option of proveedores"
+                                        [value]="option.id"
+                                    >
+                                        {{ option.nombre }}
+                                    </ng-option>
+                                </ng-select>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="importe">Importe</label>
+                                <input
+                                    class="form-control"
+                                    [(ngModel)]="importe"
+                                    id="importe"
+                                    name="importe"
+                                    type="number"
+                                /> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div *ngIf="id=='0'" class="col-2">
+                    <button
+                            
+                        class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                        [ngClass]="botonhabilitado?'cursor-pointer':'cursor-not-allowed'"
+                        (click)="addFlujo()"
+                        [disabled] = "!botonhabilitado"
+                    >
+                        Guardar
+                    </button>
+                </div>
+                <div *ngIf="id!='0'" class="col-2">
+                    <button
+                        
+                        class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                        [ngClass]="botonhabilitado?'cursor-pointer':'cursor-not-allowed'"
+                        (click)="modFlujo()"
+                        [disabled] = "!botonhabilitado"
+                    >
+                        Editar
+                    </button>
+                </div>
+                <div class="col-2">
+                    <button
+                        class="btn btn-outline-secondary "
+                        rippleEffect
+                        (click)="modal.dismiss('Cross click')"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

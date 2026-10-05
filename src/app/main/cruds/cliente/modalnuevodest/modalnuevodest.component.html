@@ -1,0 +1,212 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-add-wrapper">
+        <div
+        class="mb-1"
+        style="color: #e04141; font-weight: 600; font-size: 20px"
+      >
+        Agregar destinatario
+      </div>
+        <div class="row invoice-add">
+          <!-- Invoice Add Left starts -->
+          <div class="col-xl-12 col-md-12 col-12">
+            <form
+              class="form-horizontal"
+              #DestinatarioForm="ngForm"
+              (ngSubmit)="onSubmit(DestinatarioForm.form.valid)"
+            >
+              <div class="card invoice-preview-card">
+               
+                <div class="m-0 ml-3 mr-3">
+                  <div class="row mt-2">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input
+                          class="form-control"
+                          [(ngModel)]="nombre"
+                          #nombreRef="ngModel"
+                          
+                          id="nombre"
+                          required
+                          name="nombre"
+                          (input)="cambioNombreDestinatario()"
+                        />
+                        <span
+                          *ngIf="DestinatarioForm.submitted && nombreRef.invalid"
+                          class="invalid-form"
+                        >
+                          <small
+                            class="form-text text-danger"
+                            *ngIf="nombreRef.errors.required"
+                            >Ingrese nombre.</small
+                          ></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-1">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="provincia">Provincia</label>
+                        <ng-select
+                          [(ngModel)]="selectedProvincia"
+                          [ngClass]="{ 'error': DestinatarioForm.submitted && provinciaRef.invalid }"
+                          required
+                          id="provincia"
+                          name="provincia"
+                          #provinciaRef="ngModel"
+                          
+                          (ngModelChange)="onProvinciaChange($event)"
+                        >
+                          <ng-option *ngFor="let option of provinciaOptions" [value]="option.id">
+                            {{ option.nombre }}
+                          </ng-option>
+                        </ng-select>
+                        <span *ngIf="DestinatarioForm.submitted && provinciaRef.invalid" class="invalid-form">
+                          <small class="form-text text-danger" *ngIf="provinciaRef.errors.required">Seleccione provincia.</small>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mt-1">
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="localidad">Localidad</label>
+                        <ng-select
+                          [(ngModel)]="localidad"
+                          [ngClass]="{ 'error': DestinatarioForm.submitted && localidadRef.invalid }"
+                          required
+                          id="localidad"
+                          
+                          name="localidad"
+                          #localidadRef="ngModel"
+                        >
+                          <ng-option *ngFor="let option of localidadOptions" [value]="option.id">
+                            {{ option.nombre }}
+                          </ng-option>
+                        </ng-select>
+                        <span *ngIf="DestinatarioForm.submitted && localidadRef.invalid" class="invalid-form">
+                          <small class="form-text text-danger" *ngIf="localidadRef.errors.required">Seleccione localidad.</small>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-1">
+                    <div class="col-12">
+                      <div class="form-group">
+                          <label for="direccion">Dirección</label>
+                          <input
+                              class="form-control"
+                              [(ngModel)]="direccion"
+                              #direccionRef="ngModel"
+                              
+                              id="direccion"
+                              name="direccion"
+                              required
+                              style="resize: none"
+                              (input)="cambioDireccionDestinatario()"
+                          >
+                          <span
+                              *ngIf="DestinatarioForm.submitted && direccionRef.invalid"
+                              class="invalid-form"
+                          >
+                              <small
+                                  class="form-text text-danger"
+                                  *ngIf="direccionRef.errors.required"
+                                  >Ingrese alguna direccion.</small
+                              ></span
+                          >
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-1">
+                      <div class="col-12">
+                        <div class="form-group">
+                            <label for="horarios">Horarios</label>
+                            <textarea
+                                class="form-control"
+                                [(ngModel)]="horarios"
+                                #horariosRef="ngModel"
+                                
+                                id="horarios"
+                                name="horarios"
+                                rows="3"
+                                required
+                                style="resize: none"
+                                (input)="cambioHorariosDestinatario()"
+                            ></textarea>
+                            <span
+                                *ngIf="DestinatarioForm.submitted && horariosRef.invalid"
+                                class="invalid-form"
+                            >
+                                <small
+                                    class="form-text text-danger"
+                                    *ngIf="horariosRef.errors.required"
+                                    >Ingrese algún horario.</small
+                                ></span
+                            >
+                        </div>
+                      </div>
+                  </div>
+               
+                  <div class="row mt-1">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="observacion">Observación</label>
+                        <textarea
+                          class="form-control"
+                          [(ngModel)]="observacion"
+                          #observacionRef="ngModel"
+                          
+                          id="observacion"
+                          name="observacion"
+                          rows="3"
+                          style="resize: none"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-1">
+                    <div class="col-12">
+                      <div class="form-group">
+                          <label for="zona">Zona</label>
+                          <input
+                              class="form-control"
+                              [(ngModel)]="zona"
+                              id="zona"
+                              name="zona"
+                              required
+                              style="resize: none"
+                          >
+                      </div>
+                    </div>
+                  </div>
+                
+                </div>
+                
+                <div
+                  class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+                >
+                  <button
+                    
+                    type="submit"
+                    
+                    class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                    rippleEffect
+                  >
+                    Guardar
+                  </button>
+                  
+                  
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+</div>

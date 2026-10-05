@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+
+            <h3>Saldo: {{saldo}}</h3>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-6">
+
+            <h4>Filtros</h4>
+        </div>
+    </div>
+    <div class="row my-1">
+
+        <div class="col-3">
+            <label for="fechaDesde">Fecha Desde</label>
+            <input [(ngModel)]="fechaDesde" id="first-name-vertical" class="form-control" name="fechaIngresoDesde"
+                type="date" (change)="filterUpdate($event)" />
+        </div>
+        <div class="col-3">
+            <label for="fechaHasta">Fecha Hasta</label>
+            <input [(ngModel)]="fechaHasta" id="first-name-vertical" class="form-control" name="fechaIngresoHasta"
+                type="date" (change)="filterUpdate($event)" />
+        </div>
+    </div>
+    <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+        [headerHeight]="70" [footerHeight]="50" [scrollbarH]="true" [limit]="page.count" [externalPaging]="true"
+        [count]="page.count" >
+        <ngx-datatable-column name="Acciones" [width]="40" [sortable]="false">
+            <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="d-flex align-items-center col-actions">
+                    <a class="mr-1" href="javascript:void(0)" (click)="elegirCuenta(row.id)" container="body"
+                        placement="top" ngbTooltip="Elegir"><i size="18" data-feather="circle"></i></a>                    
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Fecha" prop="created" [width]="125">
+            <ng-template let-created="value" ngx-datatable-cell-template>
+                <div>
+                    {{ created|date: 'dd/MM/yyyy'}}
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Descripción" prop="descripcion" [width]="125">
+            <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                <div>
+                    {{ descripcion }}
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+            <ng-template let-monto="value" ngx-datatable-cell-template>
+                <div>
+                    {{ monto }}
+                </div>
+            </ng-template>
+        </ngx-datatable-column>
+
+        
+    </ngx-datatable>
+</div>

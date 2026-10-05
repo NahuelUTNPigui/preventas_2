@@ -1,0 +1,45 @@
+<div class="card invoice-preview-card container">
+    <div class="row">
+    <div class="col-6">
+            <h3>Saldo: {{saldo}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-6">
+            <label for="desc">Descripcion</label>
+            <select id="cboDescripcion" name="cboDescripcion" class="form-control mx-25" 
+            [(ngModel)]="descripcion"
+                >
+                <option value=""></option>
+                <option *ngFor="let tipo of tiporetenciones" [value]="tipo.id">
+                    {{tipo.nombre}}</option>
+            </select>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label for="fecha">Fecha*</label>
+            <input class="form-control" [(ngModel)]="fecha" id="fecha" name="fecha" type="date"
+                (change)="validarCampo('FECHA')" />
+            <span *ngIf="malfecha" class="form-text text-danger">
+                Debe seleccionar la fecha
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label for="monto">Monto</label>
+            <input class="form-control" [(ngModel)]="monto" id="monto" name="monto" type="number" />
+        </div>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary m-1" [ngClass]="botonhabilitado?'cursor-pointer':'cursor-not-allowed'"
+            (click)="guardarRetencion()" [disabled]="!botonhabilitado">
+            <span *ngIf="!esVerFila"> Agregar</span>
+            <span *ngIf="esVerFila">Editar</span>
+            
+        </button>
+    </div>
+</div>

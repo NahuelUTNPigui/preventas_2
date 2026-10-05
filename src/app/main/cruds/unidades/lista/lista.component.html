@@ -1,0 +1,86 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <section class="invoice-list-wrapper">
+        <div
+          class="mb-1"
+          style="color: #e04141; font-weight: 600; font-size: 20px"
+        >
+          Unidades
+        </div>
+        <div class="card">
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="d-flex justify-content-between align-items-center m-1">
+                <div class="d-flex align-items-center">
+                  <button
+                    class="btn btn-primary ml-2"
+                    routerLink="/unidades/add/0"
+                    rippleEffect
+                  >
+                    Agregar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ngx-datatable
+            [rows]="rows"
+            rowHeight="auto"
+            class="bootstrap core-bootstrap"
+            [columnMode]="ColumnMode.force"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [scrollbarH]="true"
+            [limit]="page.size"
+            [externalPaging]="true"
+            [count]="page.count"
+            [offset]="page.offset"
+          >
+            <ngx-datatable-column name="Nombre" prop="nombre" [width]="125">
+              <ng-template let-nombre="value" ngx-datatable-cell-template>
+                <div>
+                  {{ nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column
+              name="Descripcion"
+              prop="descripcion"
+              [width]="125"
+            >
+              <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                <div>
+                  {{ descripcion }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Acciones" [width]="40" [sortable]="false">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="d-flex align-items-center col-actions">
+                  <a
+                    class="mr-1"
+                    routerLink="/unidades/edit/{{ row.id }}"
+                    container="body"
+                    placement="top"
+                    ngbTooltip="Editar"
+                    ><i size="18" data-feather="edit"></i
+                  ></a>
+  
+                  <a
+                    class="mr-1"
+                    href="javascript:void(0)"
+                    (click)="ConfirmDeleteOpen(row.id)"
+                    container="body"
+                    placement="top"
+                    ngbTooltip="Eliminar"
+                    ><i size="18" data-feather="trash"></i
+                  ></a>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+      </section>
+    </div>
+  </div>
+  

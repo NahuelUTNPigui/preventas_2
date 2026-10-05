@@ -1,0 +1,196 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Tabla retenciones</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div *ngIf="conpermisos">
+                                <!--Tabla retenciones-->
+                                <div class="content-wrapper container-xxl p-0">
+                                    <div class="content-body">
+                                        <div class="card container">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="d-flex justify-content-between align-items-center m-1">
+                                                        <div class="d-flex align-items-center">
+                                                            <label class="d-flex align-items-center">Mostrar
+                                                                <select class="form-control mx-25"
+                                                                    [(ngModel)]="page.size"
+                                                                    (change)="onPageSizeChange()">
+                                                                    <option value="5">5</option>
+                                                                    <option value="10">10</option>
+                                                                    <option value="25">25</option>
+                                                                    <option value="50">50</option>
+                                                                    <option value="100">100</option>
+                                                                </select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <br>
+                                                    <a class="btn btn-outline-secondary float-right" rippleEffect
+                                                        (click)="exportarXLX()">Exportar
+                                                        EXCEL</a>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-1">
+                                                <div class="col-6">
+
+                                                    <h4>Filtros</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <label for="cboCliente"> Cliente </label>
+                                                    <select id="cboCliente" name="cboCliente" class="form-control mx-25"
+                                                        [(ngModel)]="buscarcliente" (change)="filterUpdate()">
+                                                        <option value="">Todos</option>
+                                                        <option *ngFor="let cli of clientes" [value]="cli.id">
+                                                            {{cli.nombre}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="cboRete"> Tipo retenciones </label>
+                                                    <select id="cboRete" name="cboRete" class="form-control mx-25"
+                                                        [(ngModel)]="buscardescripcion" (change)="filterUpdate()">
+                                                        <option value="">Todos</option>
+                                                        <option *ngFor="let cli of tiposrete" [value]="cli.id">
+                                                            {{cli.nombre}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="fechaDesde">Fecha Desde</label>
+                                                    <input [(ngModel)]="fechaDesde" id="first-name-vertical"
+                                                        class="form-control" name="fechaIngresoDesde" type="date"
+                                                        (change)="filterUpdate($event)" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="fechaHasta">Fecha Hasta</label>
+                                                    <input [(ngModel)]="fechaHasta" id="first-name-vertical"
+                                                        class="form-control" name="fechaIngresoHasta" type="date"
+                                                        (change)="filterUpdate($event)" />
+                                                </div>
+                                            </div>
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary" (click)="calcularTotal()">Calcular total</button>
+                                                    
+                                                </div>
+                                                <div class="col-3">
+                                                    <h3>Total: $ {{totalretenciones}} </h3>
+                                                    
+                                                </div>
+                                            </div>
+                                            <ngx-datatable [rows]="rows" rowHeight="auto"
+                                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                                [headerHeight]="70" [footerHeight]="50" [scrollbarH]="true"
+                                                [limit]="page.size" [externalPaging]="true" [count]="page.count"
+                                                [offset]="page.offset" (page)="onPage($event)">
+                                                <ngx-datatable-column name="Fecha" prop="expand.cobro.fechacobro" [width]="125">
+                                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ row.expand?.cobro?.fechacobro|date: 'dd/MM/yyyy'}}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Descripción" prop="descripcion" [width]="125">
+                                                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ getNombreDescripcion(descripcion) }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                                    <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ monto }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Cliente" prop="expand.cobro.cliente"
+                                                    [width]="125">
+                                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ getNombreCliente(row.expand?.cobro?.cliente) }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                
+                                            </ngx-datatable>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Fin Tabla notas-->
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal notas-->
+<ng-template #modalCuenta let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Ver a cuenta</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <!--Formulario-->
+            <div class="card invoice-preview-card container">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                
+                                <label for="fechaEntrega">Fecha</label>
+                                <input class="form-control" [(ngModel)]="created" id="created"
+                                    name="created" type="date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="desc"> Descripcion </label>
+                                <input [(ngModel)]="descripcion" name="desc" type="search" class="form-control"
+                                    placeholder="Descripcion..." />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="desc"> Monto </label>
+                            <input [(ngModel)]="monto" name="desc" type="search" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="desc"> Cliente </label>
+                            <input [(ngModel)]="cliente" name="desc" type="search" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ver nota
+            <!--Fin Formulario-->
+
+        </div>
+    </div>
+</ng-template>
+<!--Fin Modal notas-->

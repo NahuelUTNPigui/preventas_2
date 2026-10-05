@@ -1,0 +1,299 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Tabla ordenes de pago</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div *ngIf="conpermisos" class="container">
+
+                    <!--seccion tabla-->
+                    <div class="row">
+
+                        <div class="col-3">
+                            <br>
+                            <a class="btn btn-outline-secondary px-1" rippleEffect (click)="recuperarPago()">Retomar
+                                pago</a>
+                        </div>
+                        <div class="col-3">
+                            <br>
+                            <a class="btn btn-outline-secondary px-1" rippleEffect (click)="abrirPago()">Crear
+                                pago</a>
+                        </div>
+
+                    </div>
+                    <div *ngIf="ordenes.length != 0" class="row mt-2">
+                        <div class="col-3">
+                            <label class="font-weight-bolder" for="">Cantidad de facturas cargadas</label>
+                            <br>
+                            <label class="">{{ordenes.length}}</label>
+                        </div>
+                        <div class="col-9">
+                            <label class="font-weight-bolder" for="">Lista de facturas cargados</label>
+                            <br>
+                            <label class="">{{showOrdenesCargadas().length>100?showOrdenesCargadas().substring(0,100)+"
+                                ...":showOrdenesCargadas()}}</label>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+
+                        <div class="col-3">
+                            <br>
+                            <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar
+                                filtros</button>
+                        </div>
+                        <div class="col-3">
+                            <br>
+                            <button class="btn btn-outline-secondary" (click)="limpiarSeleccion()">Limpiar
+                                selección</button>
+                        </div>
+
+                        <div class="col-3">
+                            <br>
+                            <a class="btn btn-outline-secondary" rippleEffect (click)="exportarXLX()">Exportar EXCEL</a>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-6">
+
+                            <h4>Filtros</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="cboProveedor"> Proveedor </label>
+                            <select id="cboProveedor" name="cboProveedor" class="form-control mx-25"
+                                [(ngModel)]="proveedor" (change)="filterUpdate({})">
+                                <option value="">Todos</option>
+                                <option *ngFor="let pro of proveedores" [value]="pro.id">{{pro.nombre}}</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+
+                            <label for="concepto">Concepto </label>
+                            <input [(ngModel)]="concepto" name="concepto" type="search" class="form-control"
+                                placeholder="Buscar..." (change)="filterUpdate($event)"
+                                (search)="filterUpdate($event)" />
+                        </div>
+                        <div class="col-4">
+
+                            <label for="nroorden">Numero de orden </label>
+                            <input [(ngModel)]="nroorden" name="nroorden" type="search" class="form-control"
+                                placeholder="Buscar..." (search)="filterUpdate($event)"
+                                (change)="filterUpdate($event)" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="fechaDesde">Fecha Desde</label>
+                            <input [(ngModel)]="fechaDesde" id="first-name-vertical" class="form-control"
+                                name="fechaIngresoDesde" type="date" (change)="filterUpdate($event)" />
+                        </div>
+                        <div class="col-4">
+                            <label for="fechaHasta">Fecha Hasta</label>
+                            <input [(ngModel)]="fechaHasta" id="first-name-vertical" class="form-control"
+                                name="fechaIngresoHasta" type="date" (change)="filterUpdate($event)" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-6"><br>
+                            <h4>Pagados</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 ">
+                            <br>
+                            <div class="custom-control custom-control-primary custom-switch">
+
+                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox2"
+                                    [(ngModel)]="todos" (change)="filterUpdate($event)" />
+                                <label class="custom-control-label" for="inlineCheckbox2">Todos</label>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <br>
+                            <div class="custom-control custom-control-primary custom-switch">
+
+                                <input class="custom-control-input" type="checkbox" id="inlineCheckbox3"
+                                    [(ngModel)]="pagado" (change)="filterUpdate($event)" />
+                                <label class="custom-control-label" for="inlineCheckbox3">Pagadas</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-4">
+                            <h3>Total ordenes: {{formatPeso(total)}}</h3>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-3">
+                            <div class="d-flex justify-content-between align-items-center m-1">
+                                <div class="d-flex align-items-center">
+                                    <label class="d-flex align-items-center">Mostrar
+                                        <select class="form-control mx-25" [(ngModel)]="page.size"
+                                            (change)="onPageSizeChange()">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-3">
+                            <br>
+                            <a class="btn btn-outline-secondary" rippleEffect (click)="agregarTodos()">Seleccionar
+                                todos</a>
+                        </div>
+                        <div class="col-3">
+                            <br>
+                            <a class="btn btn-outline-secondary" rippleEffect (click)="limpiarLista()">Quitar todos</a>
+                        </div>
+                    </div>
+                    <br>
+                    <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                        [columnMode]="ColumnMode.force" [headerHeight]="70" [footerHeight]="50" [scrollbarH]="true"
+                        [limit]="page.size" [externalPaging]="true" [count]="page.count" [offset]="page.offset"
+                        (page)="onPage($event)">
+                        <ngx-datatable-column name="Acciones" [width]="70" [sortable]="false" [canAutoResize]="false"
+                            [draggable]="false" [resizeable]="false">
+
+                            <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-row="row"
+                                let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                <div class="d-flex">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            [checked]="inOrdenes(row.id)" (change)="onCheckboxChange(row)"
+                                            id="rowChkbxRef{{ row.id }}" />
+
+                                        <label class="custom-control-label" for="rowChkbxRef{{ row.id }}"></label>
+                                    </div>
+                                    <div class="d-flex align-items-center col-actions">
+                                        <div ngbDropdown container="body">
+                                            <button ngbDropdownToggle type="button"
+                                                class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                            </button>
+                                            <div ngbDropdownMenu>
+                                                <a href="/pagos/detalle/{{row.id}}" ngbDropdownItem><i
+                                                        data-feather="eye" class="mr-1"></i>Detalle</a>
+                                                <a href="javascript:void(0)" ngbDropdownItem *ngIf="!inOrdenes(row.id)"
+                                                    (click)="agregarOrden(row.id)"><i data-feather="check-square"
+                                                        class="mr-1"></i>Agregar a pago</a>
+                                                <a href="javascript:void(0)" ngbDropdownItem *ngIf="inOrdenes(row.id)"
+                                                    (click)="quitarOrden(row.id)"><i data-feather="check-square"
+                                                        class="mr-1"></i>Quitar de pago</a>
+                                                <a href="javascript:void(0)" ngbDropdownItem
+                                                    (click)="ConfirmDeleteOpen(row.id)"><i data-feather="trash"
+                                                        class="mr-1"></i>Eliminar</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="fechaorden" prop="fechaorden" [width]="110">
+                            <ng-template let-column="column" ngx-datatable-header-template>
+                                <div>
+                                    <span style="white-space: nowrap">Fecha Orden</span>
+
+                                </div>
+                            </ng-template>
+                            <ng-template let-fechaorden="value" ngx-datatable-cell-template>
+                                <div>
+                                    {{ fechaorden | date : "dd/MM/yyyy" }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Estado" [width]="120">
+
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{
+                                row.enrevision?
+                                "En revision":
+                                row.enliquidacion?
+                                "En liquidación":
+                                row.escerrada?
+                                "Cerrada":
+                                "Pagado"
+                                }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        
+                        <ngx-datatable-column name="concepto" prop="concepto" [width]="110">
+                            <ng-template let-column="column" ngx-datatable-header-template>
+                                <div>
+                                    <span style="white-space: nowrap">Concepto</span>
+
+                                </div>
+                            </ng-template>
+                            <ng-template let-concepto="value" ngx-datatable-cell-template>
+                                <div>
+                                    {{ concepto }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <div>
+                                    {{ row.expand?.proveedor?.nombre }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="NRO" prop="numero" [width]="125">
+                            <ng-template let-numero="value" ngx-datatable-cell-template>
+                                <div>
+                                    {{ numero }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Total" prop="total" [width]="125">
+                            <ng-template let-total="value" ngx-datatable-cell-template>
+                                <div>
+                                    {{ formatPeso(total) }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Dias sin pagar" prop="diaspasados" [width]="125">
+                            <ng-template let-diaspasados="value" ngx-datatable-cell-template>
+                                <div>
+                                    {{ diaspasados }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                    </ngx-datatable>
+                    <!--FINseccion tabla-->
+
+
+                </div>
+                <div *ngIf="!conpermisos">
+                    <h5>No tienes permisos de administracion</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal de hacer pagos-->
+<ng-template #modalPago let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Realizar pagos</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container row" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <app-modalhr (pagoEvent)="pagarOrden(modal)" (quitarOrdenEvent)="quitarOrden($event)"
+                [datapagar]="ordenes"></app-modalhr>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal de hacer pagos-->

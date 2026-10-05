@@ -1,0 +1,194 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <section class="invoice-list-wrapper">
+            <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+                Hojas de ruta
+            </div>
+            <div class="card container">
+                <div class="row">
+                    <div class="col-4">
+                        <label class="align-items-center">Mostrar
+                        </label>
+                        <select class="form-control mx-25" [(ngModel)]="page.size" (change)="onPageSizeChange()">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <br>
+                        <a (click)="exportarXLSX()" class="btn btn-outline-secondary " rippleEffect>Exportar</a>
+                    </div>
+                    <div class="col-4">
+                        <br>
+                        <a (click)="limpiarFiltros()" class="btn btn-outline-secondary " rippleEffect>Limpiar
+                            filtros</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="searchValue">Numero </label>
+                        <input [(ngModel)]="nro" name="nro" type="search" class="form-control" placeholder="Buscar..."
+                            (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-4 align-items-center">
+                        <label for="cboEstado">Estado
+                        </label>
+                        <select id="cboEstado" name="cboEstado" class="form-control mx-25" [(ngModel)]="estado"
+                            (change)="filterUpdate($event)">
+                            <option value="-1">Todos</option>
+
+                            <option *ngFor="let est of estados" [value]="est.id">{{est.nombre}}</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="searchValue"> Proveedor </label>
+                        <input [(ngModel)]="proveedor" name="proveedor" type="search" class="form-control"
+                            placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-4">
+                        <label for="searchValue"> Vehiculo </label>
+                        <input [(ngModel)]="vehiculo" name="vehiculo" type="search" class="form-control"
+                            placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-4">
+                        <label for="searchValue"> Chofer </label>
+                        <input [(ngModel)]="chofer" name="chofer" type="search" class="form-control"
+                            placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <label for="fechaDesde">Fecha Entrega Desde</label>
+                        <input [(ngModel)]="fechadesde" id="fechadesde" class="form-control" name="fechadesde"
+                            type="date" (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-3">
+                        <label for="fechahasta">Fecha Entrega Hasta</label>
+                        <input [(ngModel)]="fechahasta" id="fechahasta" class="form-control" name="fechahasta"
+                            type="date" (change)="filterUpdate($event)" />
+                    </div>
+
+                </div>
+                <div class="hidden row">
+                    <div class="col-3">
+                        <label for="fechaDesde">Fecha Finalizacion Desde</label>
+                        <input [(ngModel)]="fechafindesde" id="fechafindesde" class="form-control" name="fechadesde"
+                            type="date" (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-3">
+                        <label for="fechahasta">Fecha Finalizacion Hasta</label>
+                        <input [(ngModel)]="fechafinhasta" id="fechafinhasta" class="form-control" name="fechahasta"
+                            type="date" (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-3">
+
+                        <div class="custom-control custom-control-primary custom-switch  mt-2">
+
+                            <input class="custom-control-input" type="checkbox" id="inlineCheckbox5"
+                                [(ngModel)]="confechafin" (change)="filterUpdate($event)" />
+                            <label class="custom-control-label" for="inlineCheckbox5">Con fecha fin</label>
+
+                        </div>
+                    </div>
+                </div>
+                <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap mt-1"
+                    [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                    [limit]="page.size" [externalPaging]="true" [count]="page.count" [offset]="page.offset"
+                    (page)="onPage($event)">
+                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            <div class="d-flex align-items-center col-actions">
+                                <div ngbDropdown container="body">
+                                    <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0"
+                                        rippleEffect>
+                                        <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <a href="javascript:void(0)" ngbDropdownItem
+                                            (click)="detalle(row.id,modalDetalleHR)"><i data-feather="eye"
+                                                class="mr-1"></i>Detalle</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem
+                                            routerLink="/cerrarhr/{{row.id}}"><i data-feather="credit-card"
+                                                class="mr-1"></i>Cerrar HR</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem (click)="exportarHR(row.id)"><i
+                                                data-feather="share" class="mr-1"></i>Exportar</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem (click)="eliminar(row.id)"><i
+                                                data-feather="trash" class="mr-1"></i>Eliminar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Estado" prop="estado" [width]="110">
+                        <ng-template let-estado="value" ngx-datatable-cell-template>
+                            <div>
+                                {{ getEstadoNombre(estado) }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Numero" prop="codigo" [width]="110">
+                        <ng-template let-codigo="value" ngx-datatable-cell-template>
+                            <div>
+                                {{ codigo }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Fecha Entre" prop="fechaentrega" [width]="110">
+                        <ng-template let-fechaentrega="value" ngx-datatable-cell-template>
+                            <div>
+                                {{ fechaentrega | date : "dd/MM/yyyy"}}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div>
+                                {{ row.expand?.proveedor?.nombre }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Chofer" prop="expand.chofer.nombre" [width]="125">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div>
+                                {{ row.expand?.chofer?.nombre }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Vehiculo" prop="expand.vehiculo.nombre" [width]="125">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div>
+                                {{ row.expand?.vehiculo?.nombre }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </section>
+    </div>
+</div>
+<!--Modal del detalle de hoja de ruta-->
+<ng-template #modalDetalleHR let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Detalle de hoja de ruta</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container" tabindex="0" ngbAutofocus>
+        <div class="row">
+            <div class="col-12">
+                <app-detallehr [proveedores]="proveedores" [vehiculos]="vehiculos" [choferes]="choferes" [idhr]="idhr"
+                    (nuevoTotalEvent)="cambiarTotal($event)"
+                    (nuevoProveedorEvent)="cambiarProveedor($event)"></app-detallehr>
+            </div>
+        </div>
+
+    </div>
+</ng-template>
+<!--fin Modal del detalle de hoja de ruta-->

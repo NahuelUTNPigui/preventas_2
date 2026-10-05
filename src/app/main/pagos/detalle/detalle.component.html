@@ -1,0 +1,957 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+            Detalle orden de pago
+        </div>
+        <section id="basic-tabs-components">
+            <div class="card pt-1">
+                <div class="d-flex justify-content-between align-items-center m-1">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-secondary" routerLink="/pagos/ordenes" rippleEffect>
+                            Volver
+                        </button>
+                    </div>
+                </div>
+                <ul ngbNav #navWithIcons="ngbNav" [(activeId)]="tab" class="nav-tabs ml-1 mb-0"
+                    (navChange)="onNavChange($event)">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink> Datos básicos</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <!--Datos basicos-->
+                                        <h2 class="p-2">Datos basicos</h2>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-4">
+                                        <label for="unidad"> Fecha orden </label>
+                                        <input class="form-control" [(ngModel)]="fechaorden" id="fechaorden"
+                                            name="fechaorden" type="date" />
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="unidad"> Unidad </label>
+                                        <select id="cboUnidad" name="cboUnidad" class="form-control mx-25"
+                                            [(ngModel)]="unidad">
+                                            <option *ngFor="let us of unidades" [value]="us.nombre">{{us.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+
+                                        <div class="form-group">
+                                            <label for="mesy"> Nro de orden </label>
+                                            <input [(ngModel)]="numero" name="mesy" type="search" class="form-control"
+                                                placeholder="Orden ..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <br>
+                                            <label for="concepto">Concepto </label>
+                                            <input [(ngModel)]="concepto" name="concepto" type="search"
+                                                class="form-control" placeholder="Concepto..." />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+
+                                        <div class="form-group">
+                                            <br>
+                                            <label for="Proveedor">Proveedor </label>
+                                            <input [(ngModel)]="proveedor" name="Proveedor" type="search"
+                                                class="form-control" placeholder="Proveedor..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Total">Total </label>
+                                            <input [(ngModel)]="total" name="Total" type="search" class="form-control"
+                                                placeholder="Total..." />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox2" id="inlineCheckbox2"
+                                                    [(ngModel)]="enrevision" />
+                                                <label class="custom-control-label" for="inlineCheckbox2">En
+                                                    revisión</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox3" id="inlineCheckbox3"
+                                                    [(ngModel)]="enliquidacion" />
+                                                <label class="custom-control-label" for="inlineCheckbox3">En
+                                                    liquidación</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox4" id="inlineCheckbox4" [(ngModel)]="pagado" />
+                                                <label class="custom-control-label" for="inlineCheckbox4">Pagado</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox5" id="inlineCheckbox5"
+                                                    [(ngModel)]="escerrada" />
+                                                <label class="custom-control-label"
+                                                    for="inlineCheckbox5">Cerrado</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary btn-block" (click)="editarOrden()"
+                                            rippleEffect>
+                                            Editar
+                                        </button>
+                                    </div>
+                                    <div class="col-2">
+
+                                    </div>
+                                </div>
+                                <h3>Sumatorias</h3>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="totalhojas">Total hojas</label>
+                                        <input [(ngModel)]="totalhojas" name="totalhojas" type="search"
+                                            class="form-control" placeholder="Total Hojas..." />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="totaldetalles">Total detalles</label>
+                                        <input [(ngModel)]="totaldetalles" name="totaldetalles" type="search"
+                                            class="form-control" placeholder="Total Remitos..." />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="totalsumado">Sumatoria hojas y detalles</label>
+                                        <input [(ngModel)]="totalsumado" name="totalsumado" type="search"
+                                            class="form-control" placeholder="Total sumatoria..." />
+                                    </div>
+                                    <div class="col-3 my-2">
+                                        <button type="button" class="btn btn-primary " (click)="calcularSuma()"
+                                            rippleEffect>
+                                            Recalcular sumatoria
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                        <a ngbNavLink>Revisión</a>
+                        <ng-template ngbNavContent>
+                            <!--Revision-->
+                            <h2 class="p-2">Revision
+                            </h2>
+                            <div class="container px-2 py-1">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="nota">Nota </label>
+                                                <input [(ngModel)]="notarevision" name="nota" type="text"
+                                                    class="form-control" placeholder="Nota..." />
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="fecharevision">Fecha de revisión</label>
+                                            <input class="form-control" [(ngModel)]="fecharevision" id="fecharevision"
+                                                name="fecharevision" type="date" />
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <button type="button" class="btn btn-primary float-left"
+                                                (click)="ConfirmRevisar()" rippleEffect>
+                                                Revisar
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                        <a ngbNavLink>Liquidación</a>
+                        <ng-template ngbNavContent>
+                            <!--Liquidacion-->
+                            <h2 class="p-2">Liquidación
+                                <div class="container">
+                                    <div class="row my-1">
+
+                                        <div class="col-6">
+                                            <label for="fechaliquidacion">Fecha de liquidacion</label>
+                                            <input class="form-control" [(ngModel)]="fechaliquidacion"
+                                                id="fechaliquidacion" name="fechaliquidacion" type="date" />
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <button type="button" class="btn btn-primary float-left"
+                                                (click)="ConfirmLiquidar()" rippleEffect>
+                                                Liquidar
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h2>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="4">
+                        <a ngbNavLink>
+                            Pago
+                        </a>
+                        <ng-template ngbNavContent>
+                            <!--Pago-->
+                            <h2 class="p-2">Pago
+                            </h2>
+                            <div class="container my-2">
+                                <div class="row">
+                                    <div class="col-3">
+
+                                        <button (click)="irPago()" type="button" class="btn btn-primary float-left"
+                                            rippleEffect>
+                                            Ver pago
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="5">
+                        <a ngbNavLink>Cierre</a>
+                        <ng-template ngbNavContent>
+                            <!--Cierre-->
+                            <h2 class="p-2">Cierre
+                            </h2>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="nota">Nota </label>
+                                            <input [(ngModel)]="notacierre" name="notacierre" type="text"
+                                                class="form-control" placeholder="Nota..." />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="fechacierre">Fecha de cierre</label>
+                                        <input class="form-control" [(ngModel)]="fechacierre" id="fechacierre"
+                                            name="fechacierre" type="date" />
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+
+                                        <button type="button" class="btn btn-primary float-left"
+                                            (click)="ConfirmCerrar()" rippleEffect>
+                                            Cerrar
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="6">
+                        <a ngbNavLink>Hojas de ruta</a>
+                        <ng-template ngbNavContent>
+                            <!--Cierre-->
+                            <h2 class="p-2">Hojas de ruta
+                            </h2>
+                            <div class="m-1 ml-3 mr-3">
+                                <h2>Datos hojas de ruta</h2>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label for="nremito"> Nro de hoja de ruta </label>
+                                            <input [(ngModel)]="numerohr" name="numerohr" type="search"
+                                                class="form-control" placeholder="Hoja de ruta..."
+                                                (keyup)="updateHR($event)" />
+                                        </div>
+                                        <div class="col-3 my-2">
+                                            <button class="btn btn-outline-secondary"
+                                                (click)="openModalBuscarHojas(modalBuscar)" rippleEffect>
+                                                Buscar hojas
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <ngx-datatable [rows]="rowhrs" rowHeight="auto" class="bootstrap core-bootstrap"
+                                    [columnMode]="ColumnMode.force" [headerHeight]="70" [footerHeight]="50"
+                                    [scrollbarH]="true" [limit]="pagehr.size" [externalPaging]="true"
+                                    [count]="rowhrs.length" [offset]="0">
+                                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <div ngbDropdown container="body">
+                                                    <button ngbDropdownToggle type="button"
+                                                        class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                        <i data-feather="more-vertical" size="18"
+                                                            class="cursor-pointer"></i>
+                                                    </button>
+                                                    <div ngbDropdownMenu>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="editarHoja(row,modalDetalleHR)"><i
+                                                                data-feather="edit" class="mr-1"></i>Editar
+                                                            hoja</a>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="quitarHoja(row)"><i data-feather="trash"
+                                                                class="mr-1"></i>Quitar
+                                                            hoja</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Numero" prop="codigo" [width]="110">
+                                        <ng-template let-codigo="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ codigo }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Total prov" prop="totalproveedor" [width]="110">
+                                        <ng-template let-totalproveedor="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ totalproveedor }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Fecha Entre" prop="fechaentrega" [width]="110">
+                                        <ng-template let-fechaentrega="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ fechaentrega | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.proveedor?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Chofer" prop="expand.chofer.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.chofer?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Vehiculo" prop="expand.vehiculo.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.vehiculo?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+
+                                </ngx-datatable>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="7">
+                        <a ngbNavLink>Detalles</a>
+                        <ng-template ngbNavContent>
+                            <!--Cierre-->
+                            <h2 class="p-2">Detalles
+                            </h2>
+                            <div class="m-1 ml-3 mr-3">
+                                <h2>Datos detalles</h2>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-6">
+
+                                            <label for="desc"> Descripcion </label>
+                                            <input [(ngModel)]="descripciondetalle" name="desc" type="search"
+                                                class="form-control" placeholder="Descripcion..." />
+                                        </div>
+                                        <div class="col-3">
+
+                                            <label for="tot"> Total </label>
+                                            <input [(ngModel)]="totaldetalle" name="tot" type="number"
+                                                class="form-control" placeholder="Total..." />
+                                        </div>
+                                        <div class="col-3">
+                                            <button class="btn btn-outline-secondary my-2"
+                                                (click)="agregarDetalle()">Agregar detalle</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ngx-datatable [rows]="detalles" rowHeight="auto" class="bootstrap core-bootstrap"
+                                    [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50"
+                                    [scrollbarH]="true" [limit]="pagedeta.size" [externalPaging]="true"
+                                    [count]="pagedeta.count" [offset]="0">
+                                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <div ngbDropdown container="body">
+                                                    <button ngbDropdownToggle type="button"
+                                                        class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                        <i data-feather="more-vertical" size="18"
+                                                            class="cursor-pointer"></i>
+                                                    </button>
+                                                    <div ngbDropdownMenu>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="quitarDetalle(row)"><i data-feather="trash"
+                                                                class="mr-1"></i>Quitar
+                                                            detalle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Desc" prop="descripcion" [width]="125">
+                                        <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ descripcion }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Total" prop="monto" [width]="125">
+                                        <ng-template let-monto="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ monto }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                </ngx-datatable>
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="navWithIcons" class="mt-2"></div>
+            </div>
+        </section>
+    </div>
+</div>
+<div class="hidden content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <section class="invoice-add-wrapper">
+            <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+                Detalle orden de pago
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <button class="btn btn-outline-secondary" routerLink="/pagos/ordenes" rippleEffect>
+                        Volver
+                    </button>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-secondary" (click)="toggleHojas()" rippleEffect>
+                        <span *ngIf="!verhojas">Ver hojas de rutas</span>
+                        <span *ngIf="verhojas">Cerrar hojas de rutas</span>
+                    </button>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-secondary" (click)="toggleDetalle()" rippleEffect>
+                        <span *ngIf="!verdetalles">Ver detalles</span>
+                        <span *ngIf="verdetalles">Cerrar detalles</span>
+                    </button>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-md-12 col-12">
+                    <form class="form-horizontal">
+                        <br>
+                        <div class="card">
+                            <div class="m-0 ml-3 mr-3 container">
+                                <div class="row mt-2">
+                                    <div class="col-4">
+                                        <label for="unidad"> Fecha orden </label>
+                                        <input class="form-control" [(ngModel)]="fechaorden" id="fechaorden"
+                                            name="fechaorden" type="date" />
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="unidad"> Unidad </label>
+                                        <select id="cboUnidad" name="cboUnidad" class="form-control mx-25"
+                                            [(ngModel)]="unidad">
+                                            <option *ngFor="let us of unidades" [value]="us.nombre">{{us.nombre}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+
+                                        <div class="form-group">
+                                            <label for="mesy"> Nro de orden </label>
+                                            <input [(ngModel)]="numero" name="mesy" type="search" class="form-control"
+                                                placeholder="Orden ..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <br>
+                                            <label for="concepto">Concepto </label>
+                                            <input [(ngModel)]="concepto" name="concepto" type="search"
+                                                class="form-control" placeholder="Concepto..." />
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+
+                                        <div class="form-group">
+                                            <br>
+                                            <label for="Proveedor">Proveedor </label>
+                                            <input [(ngModel)]="proveedor" name="Proveedor" type="search"
+                                                class="form-control" placeholder="Proveedor..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="Total">Total </label>
+                                            <input [(ngModel)]="total" name="Total" type="search" class="form-control"
+                                                placeholder="Total..." />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox2" id="inlineCheckbox2"
+                                                    [(ngModel)]="enrevision" />
+                                                <label class="custom-control-label" for="inlineCheckbox2">En
+                                                    revisión</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox3" id="inlineCheckbox3"
+                                                    [(ngModel)]="enliquidacion" />
+                                                <label class="custom-control-label" for="inlineCheckbox3">En
+                                                    liquidación</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox4" id="inlineCheckbox4" [(ngModel)]="pagado" />
+                                                <label class="custom-control-label" for="inlineCheckbox4">Pagado</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <br>
+                                            <div class="custom-control custom-control-primary custom-switch">
+
+                                                <input class="custom-control-input" type="checkbox"
+                                                    name="inlineCheckbox5" id="inlineCheckbox5"
+                                                    [(ngModel)]="escerrada" />
+                                                <label class="custom-control-label"
+                                                    for="inlineCheckbox5">Cerrado</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-1">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-primary btn-block" (click)="editarOrden()"
+                                            rippleEffect>
+                                            Editar
+                                        </button>
+                                    </div>
+                                    <div class="col-2">
+
+                                    </div>
+                                </div>
+                                <h3>Sumatorias</h3>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="totalhojas">Total hojas</label>
+                                        <input [(ngModel)]="totalhojas" name="totalhojas" type="search"
+                                            class="form-control" placeholder="Total Hojas..." />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="totaldetalles">Total detalles</label>
+                                        <input [(ngModel)]="totaldetalles" name="totaldetalles" type="search"
+                                            class="form-control" placeholder="Total Remitos..." />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="totalsumado">Sumatoria hojas y detalles</label>
+                                        <input [(ngModel)]="totalsumado" name="totalsumado" type="search"
+                                            class="form-control" placeholder="Total sumatoria..." />
+                                    </div>
+                                    <div class="col-3 my-2">
+                                        <button type="button" class="btn btn-primary " (click)="calcularSuma()"
+                                            rippleEffect>
+                                            Recalcular sumatoria
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-1 ml-3 mr-3">
+                                <h2>Revision
+                                    <button class="btn btn-outline-secondary" (click)="toggleRevision()" rippleEffect>
+                                        <span *ngIf="!verrevision">Ver revisión</span>
+                                        <span *ngIf="verrevision">Cerrar revisión</span>
+                                    </button>
+                                </h2>
+                                <div *ngIf="verrevision" class="container">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="nota">Nota </label>
+                                                <input [(ngModel)]="notarevision" name="nota" type="text"
+                                                    class="form-control" placeholder="Nota..." />
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="fecharevision">Fecha de revisión</label>
+                                            <input class="form-control" [(ngModel)]="fecharevision" id="fecharevision"
+                                                name="fecharevision" type="date" />
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <button type="button" class="btn btn-primary float-left"
+                                                (click)="ConfirmRevisar()" rippleEffect>
+                                                Revisar
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="m-1 ml-3 mr-3">
+                                <h2>Liquidacion
+                                    <button class="btn btn-outline-secondary" (click)="toggleLiquidacion()"
+                                        rippleEffect>
+                                        <span *ngIf="!verliquidacion">Ver liquidación</span>
+                                        <span *ngIf="verliquidacion">Cerrar liquidación</span>
+                                    </button>
+                                </h2>
+                                <div *ngIf="verliquidacion" class="container">
+                                    <div class="row my-1">
+
+                                        <div class="col-6">
+                                            <label for="fechaliquidacion">Fecha de liquidacion</label>
+                                            <input class="form-control" [(ngModel)]="fechaliquidacion"
+                                                id="fechaliquidacion" name="fechaliquidacion" type="date" />
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <button type="button" class="btn btn-primary float-left"
+                                                (click)="ConfirmLiquidar()" rippleEffect>
+                                                Liquidar
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="pagado" class="m-1 ml-3 mr-3">
+                                <h2>Pago
+                                    <button class="btn btn-outline-secondary" (click)="togglePago()" rippleEffect>
+                                        <span *ngIf="!verpago">Ver pago</span>
+                                        <span *ngIf="verpago">Cerrar pago</span>
+                                    </button>
+                                </h2>
+                                <div *ngIf="verpago" class="container my-2">
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <button (click)="irPago()" type="button" class="btn btn-primary float-left"
+                                                rippleEffect>
+                                                Ver pago
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-1 ml-3 mr-3">
+                                <h2>Cierre
+                                    <button class="btn btn-outline-secondary" (click)="toggleCierre()" rippleEffect>
+                                        <span *ngIf="!vercerrada">Ver cierre</span>
+                                        <span *ngIf="vercerrada">Cerrar cierre</span>
+                                    </button>
+                                </h2>
+                                <div *ngIf="vercerrada" class="container">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="nota">Nota </label>
+                                                <input [(ngModel)]="notacierre" name="notacierre" type="text"
+                                                    class="form-control" placeholder="Nota..." />
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="fechacierre">Fecha de cierre</label>
+                                            <input class="form-control" [(ngModel)]="fechacierre" id="fechacierre"
+                                                name="fechacierre" type="date" />
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <button type="button" class="btn btn-primary float-left"
+                                                (click)="ConfirmCerrar()" rippleEffect>
+                                                Cerrar
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="verhojas" class="m-1 ml-3 mr-3">
+                                <h2>Datos hojas de ruta</h2>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <label for="nremito"> Nro de hoja de ruta </label>
+                                            <input [(ngModel)]="numerohr" name="numerohr" type="search"
+                                                class="form-control" placeholder="Hoja de ruta..."
+                                                (keyup)="updateHR($event)" />
+                                        </div>
+                                        <div class="col-3 my-2">
+                                            <button class="btn btn-outline-secondary"
+                                                (click)="openModalBuscarHojas(modalBuscar)" rippleEffect>
+                                                Buscar hojas
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <ngx-datatable [rows]="rowhrs" rowHeight="auto" class="bootstrap core-bootstrap"
+                                    [columnMode]="ColumnMode.force" [headerHeight]="70" [footerHeight]="50"
+                                    [scrollbarH]="true" [limit]="pagehr.size" [externalPaging]="true"
+                                    [count]="rowhrs.length" [offset]="0">
+                                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <div ngbDropdown container="body">
+                                                    <button ngbDropdownToggle type="button"
+                                                        class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                        <i data-feather="more-vertical" size="18"
+                                                            class="cursor-pointer"></i>
+                                                    </button>
+                                                    <div ngbDropdownMenu>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="editarHoja(row,modalDetalleHR)"><i
+                                                                data-feather="edit" class="mr-1"></i>Editar
+                                                            hoja</a>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="quitarHoja(row)"><i data-feather="trash"
+                                                                class="mr-1"></i>Quitar
+                                                            hoja</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Numero" prop="codigo" [width]="110">
+                                        <ng-template let-codigo="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ codigo }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Total prov" prop="totalproveedor" [width]="110">
+                                        <ng-template let-totalproveedor="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ totalproveedor }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Fecha Entre" prop="fechaentrega" [width]="110">
+                                        <ng-template let-fechaentrega="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ fechaentrega | date : "dd/MM/yyyy"}}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.proveedor?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Chofer" prop="expand.chofer.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.chofer?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Vehiculo" prop="expand.vehiculo.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.vehiculo?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+
+                                </ngx-datatable>
+                            </div>
+                            <div *ngIf="verdetalles" class="m-1 ml-3 mr-3">
+                                <h2>Datos detalles</h2>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-6">
+
+                                            <label for="desc"> Descripcion </label>
+                                            <input [(ngModel)]="descripciondetalle" name="desc" type="search"
+                                                class="form-control" placeholder="Descripcion..." />
+                                        </div>
+                                        <div class="col-3">
+
+                                            <label for="tot"> Total </label>
+                                            <input [(ngModel)]="totaldetalle" name="tot" type="number"
+                                                class="form-control" placeholder="Total..." />
+                                        </div>
+                                        <div class="col-3">
+                                            <button class="btn btn-outline-secondary my-2"
+                                                (click)="agregarDetalle()">Agregar detalle</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ngx-datatable [rows]="detalles" rowHeight="auto" class="bootstrap core-bootstrap"
+                                    [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50"
+                                    [scrollbarH]="true" [limit]="pagedeta.size" [externalPaging]="true"
+                                    [count]="pagedeta.count" [offset]="0">
+                                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <div ngbDropdown container="body">
+                                                    <button ngbDropdownToggle type="button"
+                                                        class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                        <i data-feather="more-vertical" size="18"
+                                                            class="cursor-pointer"></i>
+                                                    </button>
+                                                    <div ngbDropdownMenu>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="quitarDetalle(row)"><i data-feather="trash"
+                                                                class="mr-1"></i>Quitar
+                                                            detalle</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Desc" prop="descripcion" [width]="125">
+                                        <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ descripcion }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Total" prop="monto" [width]="125">
+                                        <ng-template let-monto="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ monto }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                </ngx-datatable>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<!--Modal buscar hojas-->
+<ng-template #modalBuscar let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Buscar hojas</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <app-hojasbuscar [hojasid]="hrsid" [proveedor]="proveedor"
+                (cerrarModalEvent)="cerrarModalBuscar(modal,$event)"
+                (elegirHojasEvent)="elegirHoja(modal,$event)"></app-hojasbuscar>
+        </div>
+    </div>
+
+</ng-template>
+<!--Fin modal-->
+
+<!--Modal editar hr-->
+<ng-template #modalDetalleHR let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Detalle de hoja de ruta</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container row" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <app-detallehr [idhr]="idhr" (editarModalEvent)="cerrarEditHR(modal,$event)"></app-detallehr>
+        </div>
+    </div>
+</ng-template>

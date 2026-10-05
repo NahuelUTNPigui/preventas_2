@@ -1,0 +1,196 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Rentabilidad</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos">
+                                <!--Pagina rentabilidad-->
+                                <div class="container">
+                                    <div class="row my-1">
+                                        <div class="col-4">
+                                            <a class="btn btn-outline-secondary " rippleEffect
+                                                (click)="exportarXLSX()">Exportar
+                                                EXCEL</a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="btn btn-outline-secondary " rippleEffect
+                                                (click)="limpiarFiltros()">Limpiar filtros</a>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">
+
+                                            <label for="nro">Numero remito </label>
+                                            <input [(ngModel)]="nro" name="nro" type="text" class="form-control"
+                                                placeholder="Remito..." (change)="filterUpdate($event)" />
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="fechadesde">Fecha Desde</label>
+                                            <input [(ngModel)]="fechadesde" id="fechadesde" class="form-control"
+                                                name="fechadesde" type="date" (change)="filterUpdate($event)" />
+                                        </div>
+                                        <div class="col-3">
+                                            <label for="fechahasta">Fecha Hasta</label>
+                                            <input [(ngModel)]="fechahasta" id="fechahasta" class="form-control"
+                                                name="fechahasta" type="date" (change)="filterUpdate($event)" />
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">
+                                            <label for="cboProveedor"> Proveedor </label>
+                                            <select id="cboProveedor" name="cboProveedor" class="form-control mx-25"
+                                                [(ngModel)]="proveedor" (change)="filterUpdate($event)">
+                                                <option value="">Todos</option>
+                                                <option *ngFor="let cli of proveedores" [value]="cli.id">{{cli.nombre}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-2">
+                                            <label for="estado">Estado</label>
+                                            <ng-select [(ngModel)]="estadoremito" bindLabel="name" placeholder="Estado"
+                                                (change)="filterUpdateLocal($event)">
+
+                                                <ng-option *ngFor="let option of estadoOptions" [value]="option.id">
+                                                    {{ option.nombre }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">
+                                            <h3>Total Ingresos: {{formatPeso(totalIngreso)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total Costos: {{formatPeso(totalCosto)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Total Beneficios: {{formatPeso(totalBeneficio)}}</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <h3>Rentabilidad total: {{formatKilo(rentabilidadTotal)}}</h3>
+                                        </div>
+                                    </div>
+                                    <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                                        [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50"
+                                        [scrollbarH]="true" [limit]="page.size" [externalPaging]="true"
+                                        [count]="page.count" [offset]="page.offset" (page)="onPage($event)">
+                                        <ngx-datatable-column name="Fecha ingreso" prop="fechaIngreso" [width]="80">
+                                            <ng-template let-column="column" ngx-datatable-header-template>
+                                                <div>
+                                                    <span style="white-space: nowrap">Fecha</span>
+                                                    <br />
+                                                    <span style="white-space: nowrap">ingreso</span>
+                                                </div>
+                                            </ng-template>
+                                            <ng-template let-fechaIngreso="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ fechaIngreso | date : "dd/MM/yyyy" }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="80">
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ row.expand?.proveedor?.nombre }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Cliente" prop="expand.cliente.nombre" [width]="80">
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ row.expand?.cliente?.nombre }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="RTO" prop="nroRemito" [width]="80">
+                                            <ng-template let-nroRemito="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{ nroRemito }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="estado" prop="expand.estado.nombre" [width]="100">
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                <div class="badge badge-pill" [ngClass]="{
+                                                  'badge-light-warning':
+                                                    row.expand?.estado?.nombre == 'Pendiente',
+                                                  'badge-blue': row.expand?.estado?.nombre == 'Tránsito',
+                                                  'badge-light-danger':
+                                                    row.expand?.estado?.nombre == 'Rechazado',
+                                                  'badge-danger': row.expand?.estado?.nombre == 'Cancelado',
+                                'badge-danger': row.expand?.estado?.nombre == 'Anulado',
+                                                  'badge-light-success':
+                                                    row.expand?.estado?.nombre == 'Entregado'
+                                                }">
+                                                    {{ row.expand?.estado?.nombre }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Total" prop="totalViaje" [width]="125">
+                                            <ng-template let-totalViaje="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{
+                                                    !totalViaje || totalViaje === 0
+                                                    ? "-"
+                                                    : "$ " + (totalViaje | number : "1.2-2")
+                                                    }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Costo" prop="costoViaje" [width]="125">
+                                            <ng-template let-costoViaje="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{
+                                                    !costoViaje || costoViaje === 0
+                                                    ? "-"
+                                                    : "$ " + (costoViaje | number : "1.2-2")
+                                                    }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Beneficio" prop="beneficioViaje" [width]="125">
+                                            <ng-template let-beneficioViaje="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{
+                                                    !beneficioViaje || beneficioViaje === 0
+                                                    ? "-"
+                                                    : "$ " + (beneficioViaje | number : "1.2-2")
+                                                    }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Rentabilidad" prop="rentabilidadViaje" [width]="125">
+                                            <ng-template let-rentabilidadViaje="value" ngx-datatable-cell-template>
+                                                <div>
+                                                    {{
+                                                    !rentabilidadViaje || rentabilidadViaje === 0
+                                                    ? "-"
+                                                    :  (rentabilidadViaje | number : "1.2-2")
+                                                    }}
+                                                </div>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                        
+                                    </ngx-datatable>
+                                </div>
+
+                                <!--Fin Pagina rentabilidad-->
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

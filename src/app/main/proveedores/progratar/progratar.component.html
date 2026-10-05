@@ -1,0 +1,112 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <section class="invoice-list-wrapper">
+            <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+                Tarifario programado de proveedor: {{proveedornombre}}
+            </div>
+            <div class="card">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center m-1">
+                            <div class="d-flex align-items-center">
+                                <label class="d-flex align-items-center">Mostrar
+                                    <select class="form-control mx-25" [(ngModel)]="page.size"
+                                        (change)="onPageSizeChange()">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </label>
+                                <button class="btn btn-primary ml-2" routerLink="/proveedores/tarpro/{{proveedor}}"
+                                    rippleEffect>
+                                    Volver
+                                </button>
+                                <button class="btn btn-primary ml-2" (click)="exportarProgramado()" rippleEffect>
+                                    Exportar tarifario programado
+                                </button>
+                                <button class="btn btn-secondary ml-2" (click)="seleccionarTodos()" rippleEffect>
+                                    Seleccionar todos
+                                </button>
+                                <button class="btn btn-secondary ml-2" (click)="quitarTodos()" rippleEffect>
+                                    Quitar todos
+                                </button>
+                                <button class="btn btn-primary ml-2" (click)="setVigenteSeleccionados()" rippleEffect>
+                                    Poner vigente seleccionados
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="m-1 col-4">
+                        <h4>Seleccionados {{seleccionados.length}}</h4>
+                    </div>
+                </div>
+                <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                    [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                    [limit]="page.size" [externalPaging]="true" [count]="page.count" [offset]="page.offset"
+                    (page)="onPage($event)">
+                    <ngx-datatable-column name="Elegir" [width]="70" [sortable]="false" [canAutoResize]="false"
+                        [draggable]="false" [resizeable]="false">
+
+                        <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-row="row"
+                            let-onCheckboxChangeFn="onCheckboxChangeFn">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" [checked]="estaSeleccionado(row.id)"
+                                    (change)="onCheckboxChange(row.id)" id="rowChkbxRef{{ row.id }}" />
+
+                                <label class="custom-control-label" for="rowChkbxRef{{ row.id }}"></label>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="precio" name="Precio" [width]="40" [sortable]="false">
+                        <ng-template let-precio="value" ngx-datatable-cell-template>
+                            <div>
+                                {{precio}}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Unidad" prop="expand.unidad.nombre" [width]="60">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div>
+                                {{ row.expand?.unidad?.nombre }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="descripcion" name="Descripcion" [width]="125" [sortable]="false">
+                        <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                            <div>
+                                {{descripcion}}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="fechadesde" name="Fecha Desde" [width]="50">
+                        <ng-template let-fechadesde="value" ngx-datatable-cell-template>
+                            <div>
+                                {{fechadesde | date : "dd/MM/yyyy"}}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="fechahasta" name="Fecha Hasta" [width]="50">
+                        <ng-template let-fechahasta="value" ngx-datatable-cell-template>
+                            <div>
+                                {{fechahasta | date : "dd/MM/yyyy"}}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Acciones" [width]="40" [sortable]="false">
+                        <ng-template ngx-datatable-cell-template let-row="row">
+
+
+                            <a class="mr-1" href="javascript:void(0)" (click)="setVigente(row.id)" container="body"
+                                placement="top" ngbTooltip="Poner vigente"><i size="18" data-feather="upload"></i></a>
+                        </ng-template>
+
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </section>
+    </div>
+</div>

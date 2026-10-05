@@ -1,0 +1,60 @@
+<ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+  <ngb-panel title="Histórico económico">
+    <ng-template ngbPanelContent>
+      <div id="evoeco">
+        <apx-chart
+          
+          [series]="ecochartOptions.series"
+          [chart]="ecochartOptions.chart"
+          [colors]="ecochartOptions.colors"
+          [yaxis]="ecochartOptions.yaxis"
+          [dataLabels]="ecochartOptions.dataLabels"
+          [markers]="ecochartOptions.markers"
+          [stroke]="ecochartOptions.stroke"
+          [grid]="ecochartOptions.grid"
+          [xaxis]="ecochartOptions.xaxis"
+          [tooltip]="ecochartOptions.tooltip"
+        ></apx-chart>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="Histórico de kilos">
+      <ng-template ngbPanelContent>
+        <div id="evokil">
+          <apx-chart
+         
+          
+            [series]="kilchartOptions.series"
+            [chart]="kilchartOptions.chart"
+            [colors]="kilchartOptions.colors"
+            [yaxis]="kilchartOptions.yaxis"
+            [dataLabels]="kilchartOptions.dataLabels"
+            [markers]="kilchartOptions.markers"
+            [stroke]="kilchartOptions.stroke"
+            [grid]="kilchartOptions.grid"
+            [xaxis]="kilchartOptions.xaxis"
+            [tooltip]="kilchartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </ng-template>
+  </ngb-panel>
+  <ngb-panel title="Histórico de bultos">
+      <ng-template ngbPanelContent>
+        <div id="evobul">
+          <apx-chart
+            
+            [series]="bulchartOptions.series"
+            [chart]="bulchartOptions.chart"
+            [colors]="bulchartOptions.colors"
+            [yaxis]="bulchartOptions.yaxis"
+            [dataLabels]="bulchartOptions.dataLabels"
+            [markers]="bulchartOptions.markers"
+            [stroke]="bulchartOptions.stroke"
+            [grid]="bulchartOptions.grid"
+            [xaxis]="bulchartOptions.xaxis"
+            [tooltip]="bulchartOptions.tooltip"
+          ></apx-chart>
+        </div>
+      </ng-template>
+  </ngb-panel>
+</ngb-accordion>

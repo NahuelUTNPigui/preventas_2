@@ -1,0 +1,28 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+      Remitos
+    </div>
+    <section id="basic-tabs-components">
+      <div class="card pt-1">
+        <ul ngbNav #navWithIcons="ngbNav" [(activeId)]="tab" class="nav-tabs ml-1 mb-0"
+          (navChange)="onNavChange($event)">
+          <li [ngbNavItem]="1">
+            <a ngbNavLink><span [data-feather]="'package'"></span> Activos</a>
+            <ng-template ngbNavContent>
+              <app-remito-list></app-remito-list>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <a ngbNavLink><app-icon iconName="recycle" height="16" width="16"></app-icon>Eliminados</a>
+            <ng-template ngbNavContent>
+              <app-remito-deleted-list></app-remito-deleted-list>
+            </ng-template>
+          </li>
+        </ul>
+        <div [ngbNavOutlet]="navWithIcons" class="mt-2"></div>
+      </div>
+    </section>
+
+  </div>
+</div>

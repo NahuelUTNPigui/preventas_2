@@ -1,0 +1,168 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Bancos</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <!--Permisos de administracion-->
+                            <div *ngIf="conpermisos" class="container">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-flex justify-content-between align-items-center m-1">
+                                          <div class="d-flex align-items-center">
+                                            <label class="d-flex align-items-center"
+                                              >Mostrar
+                                              <select
+                                                class="form-control mx-25"
+                                                [(ngModel)]="page.size"
+                                                (change)="onPageSizeChange()"
+                                              >
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                              </select>
+                                            </label>
+                                            <button
+                                              class="btn btn-primary ml-2"
+                                              (click)="modalOpen(modalBanco,'0')"
+                                              
+                                            >
+                                              + Agregar
+                                            </button>
+                                            <div class="px-2">
+                                              <a
+                                                (click)="exportarXLSX()"
+                                                class="btn btn-outline-secondary float-right"
+                                                rippleEffect
+                                                >Exportar</a
+                                              >
+                                          
+                                            </div>
+                                            
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                                <ngx-datatable
+                                    [rows]="rows"
+                                    rowHeight="auto"
+                                    class="bootstrap core-bootstrap"
+                                    [limit]="selectedOption"
+                                    [columnMode]="ColumnMode.force"
+                                    [headerHeight]="50"
+                                    [footerHeight]="50"
+                                    [scrollbarH]="true"
+                                    [limit]="page.size"
+                                    [externalPaging]="true"
+                                    [count]="page.count"
+                                    [offset]="page.offset"
+                                    (page)="onPage($event)"
+                                >
+                                    <ngx-datatable-column name="Nombre" prop="nombre" [width]="125">
+                                        <ng-template let-nombre="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Acciones" [width]="40" [sortable]="false">
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <a
+                                                    class="mr-1"
+                                                    href="javascript:void(0)"
+                                                    (click)="modalOpen(modalBanco,row.id)"
+                                                    container="body"
+                                                    placement="top"
+                                                    ngbTooltip="Editar"
+                                                    ><i size="18" data-feather="edit"></i
+                                                ></a> 
+                                                <a
+                                                    class="mr-1"
+                                                    href="javascript:void(0)"
+                                                    (click)="ConfirmDeleteOpen(row.id)"
+                                                    container="body"
+                                                    placement="top"
+                                                    ngbTooltip="Eliminar"
+                                                    ><i size="18" data-feather="trash"></i
+                                                ></a>  
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                </ngx-datatable>
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalBanco let-modal>
+    <div class="modal-header">
+        <h5 *ngIf="id=='0'" class="modal-title">Agregar banco</h5>
+        <h5 *ngIf="id!='0'" class="modal-title">Editar banco</h5>
+    </div>
+    <div class="modal-body" tabindex="0" ngbAutofocus>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card invoice-preview-card">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input
+                              class="form-control"
+                              [(ngModel)]="nombre"
+                              id="nombre"
+                              required
+                              name="nombre"
+                              
+                            />
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div *ngIf="id=='0'" class="col-2">
+                    <button
+                        
+                        class="btn btn-primary ml-2"
+                        (click)="addBanco()"
+                    >
+                        Guardar
+                    </button>
+                </div>
+                <div *ngIf="id!='0'" class="col-2">
+                    <button
+                        
+                        class="btn btn-primary ml-2"
+                        (click)="modBanco()"
+                    >
+                        Editar
+                    </button>
+                </div>
+                <div class="col-2">
+                    <button
+                        
+                        class="btn btn-outline-secondary "
+                        rippleEffect
+                        (click)="closeModal(modalBanco)"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+

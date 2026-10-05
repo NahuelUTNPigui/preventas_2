@@ -1,0 +1,56 @@
+<div class="card invoice-preview-card container">
+    <div class="row">
+        <div class="col-6">
+            <label for="desc">Descripcion</label>
+            <input
+                class="form-control"
+                [(ngModel)]="descripcion"
+                id="desc"
+                name="desc"
+            />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label for="fecha">Fecha*</label>
+            <input
+                class="form-control"
+                [(ngModel)]="fecha"
+                id="fecha"
+                name="fecha"
+                type="date"
+                (change)="validarCampo('FECHA')"
+            />
+            <span
+                *ngIf="malfecha"
+                class="form-text text-danger"
+            >
+                Debe seleccionar la fecha
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label for="monto">Monto</label>
+            <input
+                class="form-control"
+                [(ngModel)]="monto"
+                id="monto"
+                name="monto"
+                type="number"
+            /> 
+        </div>
+    </div>
+    <div class="row">
+        <button        
+            class="btn btn-primary m-1"
+            [ngClass]="botonhabilitado?'cursor-pointer':'cursor-not-allowed'"
+            (click)="guardarDescuento()"
+            [disabled] = "!botonhabilitado"
+        >
+            <span *ngIf="indice==''">Agregar</span>
+            <span *ngIf="indice!=''">Editar</span>
+            
+        </button>
+    </div>
+</div>

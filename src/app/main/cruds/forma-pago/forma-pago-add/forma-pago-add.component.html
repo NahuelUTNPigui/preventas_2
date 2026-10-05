@@ -1,0 +1,103 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <section class="invoice-add-wrapper">
+      <div
+      class="mb-1"
+      style="color: #e04141; font-weight: 600; font-size: 20px"
+    >
+      Agregar forma de pago
+    </div>
+      <div class="row invoice-add">
+        <div class="col-xl-12 col-md-12 col-12">
+          <form
+            class="form-horizontal"
+            #FormaPagoForm="ngForm"
+            (ngSubmit)="onSubmit(FormaPagoForm.form.valid)"
+          >
+            <div class="card invoice-preview-card">
+              
+              <div class="m-0 ml-3 mr-3">
+                <div class="row mt-2">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="nombre">Nombre</label>
+                      <input
+                        class="form-control"
+                        [class.error]="
+                          FormaPagoForm.submitted && nombreRef.invalid
+                        "
+                        [(ngModel)]="nombre"
+                        #nombreRef="ngModel"
+                        required
+                        id="nombre"
+                        name="nombre"
+                      />
+                      <span
+                        *ngIf="FormaPagoForm.submitted && nombreRef.invalid"
+                        class="invalid-form"
+                      >
+                        <small
+                          class="form-text text-danger"
+                          *ngIf="nombreRef.errors.required"
+                          >Ingrese nombre.</small
+                        ></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="descripcion">Descripción</label>
+                      <input
+                        class="form-control"
+                        [class.error]="
+                          FormaPagoForm.submitted && descripcionRef.invalid
+                        "
+                        [(ngModel)]="descripcion"
+                        #descripcionRef="ngModel"
+                        required
+                        id="descripcion"
+                        name="descripcion"
+                      />
+                      <span
+                        *ngIf="FormaPagoForm.submitted && descripcionRef.invalid"
+                        class="invalid-form"
+                      >
+                        <small
+                          class="form-text text-danger"
+                          *ngIf="descripcionRef.errors.required"
+                          >Ingrese descripcion.</small
+                        ></span
+                      >
+                    </div>
+                  </div>
+                </div>
+               
+              </div>
+              <div
+                class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                  rippleEffect
+                >
+                  Guardar
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  routerLink="/formas-de-pago"
+                  rippleEffect
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

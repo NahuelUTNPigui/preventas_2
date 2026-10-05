@@ -1,0 +1,1189 @@
+<div class="content-wrapper container-xxl p-0">
+  <div class="content-body">
+    <section class="invoice-list-wrapper">
+      <div class="card">
+        <div class="row">
+          <div class="d-flex justify-content-between align-items-center m-1">
+            <div class="d-flex align-items-center">
+              <button class="btn btn-primary ml-2" routerLink="/remitos/add" rippleEffect>
+                Agregar remito
+              </button>
+              <button class="btn btn-primary ml-2" routerLink="/remitos/masivo" rippleEffect>
+                Agregar multiples remitos
+              </button>
+              <button class="btn btn-primary ml-2" (click)="onMultiplesRemitos(modalMultipleEstado)" rippleEffect>
+                Editar estado multiples remitos
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-10 col-md-10">
+            <div class="d-flex justify-content-between align-items-center m-1">
+              <div class="d-flex align-items-center">
+                <label class="d-flex align-items-center">Mostrar
+                  <select class="form-control mx-25" [(ngModel)]="page.size" (change)="onPageSizeChange()">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                  </select>
+                </label>
+                <!--
+                <button
+                  class="btn btn-primary ml-2"
+                  routerLink="/remitos/add"
+                  rippleEffect
+                >
+                  Agregar
+                </button>
+                -->
+                <button class="btn btn-primary d-flex justify-content-center m-auto w-auto"
+                  style="margin-left: 15px !important;" rippleEffect [disabled]="selectedRows.length === 0"
+                  (click)="modalOpen(modalHR)">
+                  Crear hoja de ruta
+                </button>
+              </div>
+              <div>
+                <a (click)="exportarXLSX()" class="btn btn-outline-secondary float-right" rippleEffect>Exportar</a>
+              </div>
+              <div>
+                <a (click)="exportarFormatoHojaRuta()" class="btn btn-outline-secondary float-right"
+                  rippleEffect>Exportar formato Hoja de Ruta</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row d-flex justify-content-start">
+          <div
+            class="col-lg-12 col-md-12 col-12 d-flex justify-content-start flex-column flex-md-row justify-content-md-start align-items-center mt-1">
+            <!-- <div class="col-2">
+              <div class="form-group">
+                <label for="proveedor">Buscar proveedor</label>
+                <ng-select [(ngModel)]="proveedorID" required id="proveedor" name="proveedor" #proveedorRef="ngModel">
+            
+                  <ng-option *ngFor="let option of proveedorOptions" [value]="option.id">
+                    {{ option.nombre }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div> -->
+            <div class="col-lg-2 col-md-2 mb-1">
+              <div class="form-group">
+                <label for="fechaEntrega">Fecha de Entrega</label>
+                <input class="form-control" [(ngModel)]="fechaEntrega" #fechaEntregaRef="ngModel" id="fechaEntrega"
+                  name="fechaEntrega" type="date" (change)="filterUpdate($event)" (keyup)="filterUpdate($event)" />
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2 mb-1">
+              <ng2-flatpickr [config]="DateRangeOptions" name="fecha" #fechaPicker placeholder="Fecha de ingreso"
+                (change)="onChangeFecha()"></ng2-flatpickr>
+              <button *ngIf="selectedDates[0] && selectedDates[1]" class="btn btn-link position-absolute"
+                style="right: 3px; top: 50%; transform: translateY(-50%)" (click)="clearDates()">
+                <i size="12" data-feather="x"></i>
+              </button>
+            </div>
+
+            <div class="col-lg-2 col-md-2 mb-1">
+              <input [(ngModel)]="searchValue" name="searchValue" type="search" class="form-control"
+                placeholder="Buscar..." (keyup)="filterUpdateKeyUp($event)"  />
+            </div>
+            <div class="col-lg-2 col-md-2 mb-1">
+              <ng-select [(ngModel)]="selectedStatus" bindLabel="name" placeholder="Estado"
+                (change)="filterByStatus($event)">
+                <ng-option *ngFor="let option of estadoOptions" [value]="option.id">
+                  {{ option.nombre }}
+                </ng-option>
+              </ng-select>
+            </div>
+            <div class="col-lg-2 col-md-2 mb-1">
+              <div>
+                <a (click)="calcularTotal()" class="btn btn-outline-secondary float-right" rippleEffect>Calcular total
+                  peso y viajes</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-start px-1">
+          <div class="col-lg-2 col-md-2 mb-1">
+            <input [(ngModel)]="etiqueta" name="etiqueta" type="search" class="form-control" placeholder="Etiqueta..."
+              (change)="filterUpdate($event)" />
+          </div>
+          <div class="col-3">
+            <h5>Elije una columna a filtrar</h5>
+          </div>
+          <div class="col-3">
+
+            <ng-select [(ngModel)]="selectedOption" bindLabel="name" placeholder="Columna"
+              (change)="changeColumna($event)">
+              <ng-option *ngFor="let option of filtrosOptions" [value]="option.id">
+                {{ option.nombre }}
+              </ng-option>
+            </ng-select>
+          </div>
+
+          <div *ngIf="selectedOption == 'localidad'" class="col-6 form-group row">
+            <label class="col-3" for="localidad">Localidad</label>
+            <input class="form-control col-6" [(ngModel)]="valores.localidad" (change)="cambio('localidad')" />
+          </div>
+
+          <div *ngIf="selectedOption == 'destinatario'" class="col-6 form-group row">
+            <label class="col-3" for="destinatario">Destinatario</label>
+            <input class="col-6 form-control" [(ngModel)]="valores.destinatario" (change)="cambio('destinatario')" />
+          </div>
+          <div *ngIf="selectedOption == 'nro'" class="col-6 form-group row">
+            <label class="col-3" for="nrorem">Nro remito</label>
+            <input class="col-6 form-control" [(ngModel)]="valores.nro" (change)="cambio('nro')" />
+          </div>
+          <div *ngIf="selectedOption == 'cliente'" class="col-6 form-group row">
+            <label class="col-3" for="cliente">Cliente</label>
+            <input class="col-6 form-control" [(ngModel)]="valores.cliente" (change)="cambio('cliente')" />
+          </div>
+          <div *ngIf="selectedOption == 'proveedor'" class="col-6 form-group row">
+            <label class="col-3" for="proveedor">Proveedor</label>
+            <input class="col-6 form-control" [(ngModel)]="valores.proveedor" (change)="cambio('proveedor')" />
+          </div>
+          <div *ngIf="selectedOption == 'zona'" class="col-6 form-group row">
+            <label class="col-3" for="zona">Zona</label>
+            <input class="col-6 form-control" [(ngModel)]="valores.zona" (change)="cambio('zona')" />
+          </div>
+          <div *ngIf="selectedOption == 'hr'" class="col-6 form-group row">
+            <label class="col-3" for="hr">Hoja de ruta</label>
+            <input class="form-control col-6" [(ngModel)]="valores.hojaruta" (change)="cambio('hr')" />
+          </div>
+        </div>
+        <div class="mt-2 row d-flex justify-content-start px-1">
+          <div class="col-3">
+            <h3 class="hidden">Total valor: ${{piso(totalHRLista)}}</h3>
+            <h2>Total valor: {{stotalHRLista}}</h2>
+          </div>
+          <div class="col-3">
+            <h3 class="hidden">Total kilos: {{piso(totalKilosLista)}}</h3>
+            <h2>Total kilos: {{stotalKilosLista}}</h2>
+          </div>
+        </div>
+        <div class="my-1 row d-flex justify-content-start px-1">
+          <div class="col-3">
+            <button class="btn btn-outline-secondary " rippleEffect (click)="toggleSecond()">
+              <span *ngIf="!secondPart">Ver segunda mitad</span>
+              <span *ngIf="secondPart">Cerrar segunda mitad</span>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="!secondPart">
+          <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+            [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" [limit]="page.size" [externalPaging]="true"
+            [count]="page.count" [offset]="page.offset" (page)="onPage($event)">
+            <!-- [selectionType]="SelectionType.checkbox" -->
+
+            <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+              [resizeable]="false">
+
+              <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-row="row"
+                let-onCheckboxChangeFn="onCheckboxChangeFn">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" [checked]="isSelected(row.id)"
+                    (change)="onCheckboxChange(row)" id="rowChkbxRef{{ row.id }}"
+                    [disabled]="row.estado !== pendienteID" />
+
+                  <label class="custom-control-label" for="rowChkbxRef{{ row.id }}">
+                    {{(row.prioridad>0) &&(row.estado==pendienteID || row.estado == transitoID)?"+":""}}
+                  </label>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Acciones" [width]="100" [sortable]="false">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="d-flex align-items-center col-actions">
+                  <a class="mr-1" routerLink="/remitos/edit/{{ row.id }}" container="body" placement="top"
+                    ngbTooltip="Editar"><i size="18" data-feather="edit"></i></a>
+
+                  <a class="mr-1" href="javascript:void(0)" (click)="ConfirmDeleteOpen(row.id)" container="body"
+                    placement="top" ngbTooltip="Eliminar"><i size="18" data-feather="trash"></i></a>
+                  <div ngbDropdown container="body">
+                    <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                      <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                    </button>
+                    <div ngbDropdownMenu>
+                      <a  href="javascript:void(0)" ngbDropdownItem
+                        (click)="anularRemito(row)">
+                        <i data-feather="alert-octagon" class="mr-1"></i>
+                        Anular remito
+                      </a>
+                      <a *ngIf="!isInSelected(row)" href="javascript:void(0)" ngbDropdownItem
+                        (click)="seleccionarRemitoEstado(row)">
+                        <i data-feather="aperture" class="mr-1"></i>
+                        Agregar cambio estado
+                      </a>
+                      <a *ngIf="isInSelected(row)" href="javascript:void(0)" ngbDropdownItem
+                        (click)="quitarRemitoEstado(row)">
+                        <i data-feather="minus" class="mr-1"></i>
+                        Quitar cambio estado
+                      </a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Entregar', row)">
+                        <i data-feather="check-circle" class="mr-1"></i>Entregado</a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Reubicar',row)">
+                        <i data-feather="refresh-cw" class="mr-1"></i>
+                        Reubicar</a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Quitar de hoja de ruta',row)">
+                        <i data-feather="delete" class="mr-1"></i>
+                        Quitar de hoja de ruta</a>
+                      <a *ngIf="row.estado === transitoID" ngbDropdownItem (click)="modalStateOpen('Rechazar', row)">
+                        <app-icon class="mr-1" iconName="reject" height="18" width="18"></app-icon>Rechazar</a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Cancelar', row)">
+                        <i data-feather="x-circle" class="mr-1"></i>
+                        Cancelar</a>
+                      <a *ngIf="row.estado === pendienteID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="seleccionarRemitoHR(row.id, modalAddHR)">
+                        <i data-feather="circle" class="mr-1"></i>
+                        Agregar a hoja de ruta</a>
+                      <a *ngIf="row.estado === entregadoID && !row.confirmado" href="javascript:void(0)" ngbDropdownItem
+                        (click)="onConformar(row)">
+                        <i data-feather="list" class="mr-1"></i>
+                        Conformado</a>
+                      <a *ngIf="row.estado === entregadoID && row.confirmado" href="javascript:void(0)" ngbDropdownItem
+                        (click)="onDesconformar(row)">
+                        <i data-feather="list" class="mr-1"></i>
+                        Quitar conformado</a>
+                      <a href="javascript:void(0)" ngbDropdownItem (click)=onDuplicar(row,modalDuplicar)>
+                        <i data-feather="copy" class="mr-1"></i>
+                        Duplicar</a>
+                      <a href="javascript:void(0)" ngbDropdownItem routerLink="/remitos/history/{{ row.id }}"><i
+                          data-feather="clock" class="mr-1"></i>Historial</a>
+                    </div>
+
+                  </div>
+                  <div *ngIf="isInSelected(row)">
+                    <i data-feather="check" class="mr-1"></i>
+                  </div>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Fecha ingreso" prop="fechaIngreso" [width]="110">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Fecha</span>
+                  <br />
+                  <span style="white-space: nowrap">ingreso</span>
+                </div>
+              </ng-template>
+              <ng-template let-fechaIngreso="value" ngx-datatable-cell-template>
+                <div>
+                  {{ fechaIngreso | date : "dd/MM/yyyy" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Cliente" prop="expand.cliente.nombre" [width]="110">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.cliente?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="RTO" prop="numerorto" [width]="110">
+              <ng-template let-numerorto="value" ngx-datatable-cell-template>
+                <div>
+                  {{ numerorto }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="KG" prop="kilos" [width]="70" [sortable]="false">
+              <ng-template let-kilos="value" ngx-datatable-cell-template>
+                <div>
+                  {{ kilos === 0 ? "-" : kilos }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Boca/bultos" prop="bultos" [width]="70" [sortable]="false">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Boca/</span>
+                  <br />
+                  <span style="white-space: nowrap">bultos</span>
+                </div>
+              </ng-template>
+              <ng-template let-bultos="value" ngx-datatable-cell-template>
+                <div>
+                  {{ bultos === 0 ? "-" : bultos }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Remitente" prop="expand.remitente.nombre" [width]="110">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.remitente?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Destinatario" prop="expand.destinatario.nombre" [width]="110">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div *ngIf="row.expand.destinatario.importancia==0;else other_content">
+                  <span>{{row.expand?.destinatario?.nombre}}</span>
+                </div>
+
+                <ng-template #other_content>
+                  <strong style="color: #e04141;">
+                    {{ row.expand?.destinatario?.nombre.toUpperCase() }}
+                  </strong>
+                </ng-template>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Localidad" prop="expand.destinatario.expand.localidad.nombre" [width]="110">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.destinatario?.expand?.localidad?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="estado" prop="expand.estado.nombre" [width]="100">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div class="badge badge-pill" [ngClass]="{
+                  'badge-light-warning':
+                    row.expand?.estado?.nombre == 'Pendiente',
+                  'badge-blue': row.expand?.estado?.nombre == 'Tránsito',
+                  'badge-light-danger':
+                    row.expand?.estado?.nombre == 'Rechazado',
+                  'badge-danger': row.expand?.estado?.nombre == 'Cancelado',
+                                'badge-danger': row.expand?.estado?.nombre == 'Anulado',
+                  'badge-light-success':
+                    row.expand?.estado?.nombre == 'Entregado'
+                }">
+                  {{ row.expand?.estado?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Conf." prop="confirmado" [width]="60" [sortable]="false">
+              <ng-template let-confirmado="value" ngx-datatable-cell-template>
+                <div>
+                  {{ confirmado ? "Sí" : "No" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Reub." prop="reubicado" [width]="60" [sortable]="false">
+              <ng-template let-reubicado="value" ngx-datatable-cell-template>
+                <div>
+                  {{ reubicado ? "Sí" : "No" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Fact." prop="facturar" [width]="60" [sortable]="false">
+              <ng-template let-facturar="value" ngx-datatable-cell-template>
+                <div>
+                  {{ facturar ? "Sí" : "No" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.proveedor?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Chofer" prop="expand.chofer.nombre" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.chofer?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Vehículo" prop="expand.vehiculo.nombre" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.vehiculo?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Fecha entrega" prop="fechaEntrega" [width]="110">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Fecha</span>
+                  <br />
+                  <span style="white-space: nowrap">entrega</span>
+                </div>
+              </ng-template>
+              <ng-template let-fechaEntrega="value" ngx-datatable-cell-template>
+                <div>
+                  {{ fechaEntrega | date : "dd/MM/yyyy" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Observaciones" prop="observacioncorto" [sortable]="false" [width]="200">
+              <ng-template let-observacioncorto="value" ngx-datatable-cell-template>
+                <div>
+                  {{ observacioncorto }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Novedades" prop="novedad" [width]="160" [sortable]="false">
+              <ng-template let-novedad="value" ngx-datatable-cell-template>
+                <div>
+                  {{ novedad }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="% cobro" prop="porcentajeCobro" [width]="125">
+              <ng-template let-porcentajeCobro="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !porcentajeCobro || porcentajeCobro === 0
+                  ? "-"
+                  : porcentajeCobro + " %"
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Valor Declarado" prop="valorDeclarado" [width]="125">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Valor</span>
+                  <br />
+                  <span style="white-space: nowrap">declarado</span>
+                </div>
+              </ng-template>
+              <ng-template let-valorDeclarado="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !valorDeclarado || valorDeclarado === 0
+                  ? "-"
+                  : "$ " + (valorDeclarado | number : "1.2-2")
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Precio unitario" prop="precioUnitario" [width]="125">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Precio</span>
+                  <br />
+                  <span style="white-space: nowrap">unitario</span>
+                </div>
+              </ng-template>
+              <ng-template let-precioUnitario="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !precioUnitario || precioUnitario === 0
+                  ? "-"
+                  : "$ " + (precioUnitario | number : "1.2-2")
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Total" prop="totalViaje" [width]="125">
+              <ng-template let-totalViaje="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !totalViaje || totalViaje === 0
+                  ? "-"
+                  : "$ " + (totalViaje | number : "1.2-2")
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Facturar" prop="facturar" [width]="100" [sortable]="false">
+              <ng-template let-facturar="value" ngx-datatable-cell-template>
+                <div>
+                  {{ facturar ? "Sí" : "No" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Etiqueta" prop="etiqueta" [width]="125">
+              <ng-template let-etiqueta="value" ngx-datatable-cell-template>
+                <div>
+                  {{ etiqueta }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="forma de pago" prop="expand.cliente.expand.formaPago.nombre" [width]="125">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Forma de</span>
+                  <br />
+                  <span style="white-space: nowrap">pago</span>
+                </div>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.cliente?.expand?.formaPago?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Responsable" prop="expand.responsable.username" [width]="175">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand.responsable.username }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+          </ngx-datatable>
+        </div>
+
+        <div *ngIf="secondPart">
+          <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+            [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" [limit]="page.size" [externalPaging]="true"
+            [count]="page.count" [offset]="page.offset" (page)="onPage($event)">
+            <!-- [selectionType]="SelectionType.checkbox" -->
+
+            <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+              [resizeable]="false">
+
+              <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-row="row"
+                let-onCheckboxChangeFn="onCheckboxChangeFn">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" [checked]="isSelected(row.id)"
+                    (change)="onCheckboxChange(row)" id="rowChkbxRef{{ row.id }}"
+                    [disabled]="row.estado !== pendienteID" />
+
+                  <label class="custom-control-label" for="rowChkbxRef{{ row.id }}"></label>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Acciones" [width]="100" [sortable]="false">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <div class="d-flex align-items-center col-actions">
+                  <a class="mr-1" routerLink="/remitos/edit/{{ row.id }}" container="body" placement="top"
+                    ngbTooltip="Editar"><i size="18" data-feather="edit"></i></a>
+
+                  <a class="mr-1" href="javascript:void(0)" (click)="ConfirmDeleteOpen(row.id)" container="body"
+                    placement="top" ngbTooltip="Eliminar"><i size="18" data-feather="trash"></i></a>
+                  <div ngbDropdown container="body">
+                    <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                      <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                    </button>
+                    <div ngbDropdownMenu>
+                      <a *ngIf="!isInSelected(row)" href="javascript:void(0)" ngbDropdownItem
+                        (click)="seleccionarRemitoEstado(row)">
+                        <i data-feather="aperture" class="mr-1"></i>
+                        Agregar cambio estado
+                      </a>
+                      <a *ngIf="isInSelected(row)" href="javascript:void(0)" ngbDropdownItem
+                        (click)="quitarRemitoEstado(row)">
+                        <i data-feather="minus" class="mr-1"></i>
+                        Quitar cambio estado
+                      </a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Entregar', row)">
+                        <i data-feather="check-circle" class="mr-1"></i>Entregado</a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Reubicar',row)">
+                        <i data-feather="refresh-cw" class="mr-1"></i>
+                        Reubicar</a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Quitar de hoja de ruta',row)">
+                        <i data-feather="delete" class="mr-1"></i>
+                        Quitar de hoja de ruta</a>
+                      <a *ngIf="row.estado === transitoID" ngbDropdownItem (click)="modalStateOpen('Rechazar', row)">
+                        <app-icon class="mr-1" iconName="reject" height="18" width="18"></app-icon>Rechazar</a>
+                      <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="modalStateOpen('Cancelar', row)">
+                        <i data-feather="x-circle" class="mr-1"></i>
+                        Cancelar</a>
+                      <a *ngIf="row.estado === pendienteID" href="javascript:void(0)" ngbDropdownItem
+                        (click)="seleccionarRemitoHR(row.id, modalAddHR)">
+                        <i data-feather="circle" class="mr-1"></i>
+                        Agregar a hoja de ruta</a>
+                      <a *ngIf="row.estado === entregadoID && !row.confirmado" href="javascript:void(0)" ngbDropdownItem
+                        (click)="onConformar(row)">
+                        <i data-feather="list" class="mr-1"></i>
+                        Conformado</a>
+                      <a *ngIf="row.estado === entregadoID && row.confirmado" href="javascript:void(0)" ngbDropdownItem
+                        (click)="onDesconformar(row)">
+                        <i data-feather="list" class="mr-1"></i>
+                        Quitar conformado</a>
+                      <a href="javascript:void(0)" ngbDropdownItem (click)=onDuplicar(row,modalDuplicar)>
+                        <i data-feather="copy" class="mr-1"></i>
+                        Duplicar</a>
+                      <a href="javascript:void(0)" ngbDropdownItem routerLink="/remitos/history/{{ row.id }}"><i
+                          data-feather="clock" class="mr-1"></i>Historial</a>
+                    </div>
+
+                  </div>
+                  <div *ngIf="isInSelected(row)">
+                    <i data-feather="check" class="mr-1"></i>
+                  </div>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Vehículo" prop="expand.vehiculo.nombre" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.vehiculo?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Fecha entrega" prop="fechaEntrega" [width]="110">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Fecha</span>
+                  <br />
+                  <span style="white-space: nowrap">entrega</span>
+                </div>
+              </ng-template>
+              <ng-template let-fechaEntrega="value" ngx-datatable-cell-template>
+                <div>
+                  {{ fechaEntrega | date : "dd/MM/yyyy" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Observaciones" prop="observacioncorto" [sortable]="false" [width]="200">
+              <ng-template let-observacioncorto="value" ngx-datatable-cell-template>
+                <div>
+                  {{ observacioncorto }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Novedades" prop="novedad" [width]="160" [sortable]="false">
+              <ng-template let-novedad="value" ngx-datatable-cell-template>
+                <div>
+                  {{ novedad }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="% cobro" prop="porcentajeCobro" [width]="125">
+              <ng-template let-porcentajeCobro="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !porcentajeCobro || porcentajeCobro === 0
+                  ? "-"
+                  : porcentajeCobro + " %"
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Valor Declarado" prop="valorDeclarado" [width]="125">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Valor</span>
+                  <br />
+                  <span style="white-space: nowrap">declarado</span>
+                </div>
+              </ng-template>
+              <ng-template let-valorDeclarado="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !valorDeclarado || valorDeclarado === 0
+                  ? "-"
+                  : "$ " + (valorDeclarado | number : "1.2-2")
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Precio unitario" prop="precioUnitario" [width]="125">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Precio</span>
+                  <br />
+                  <span style="white-space: nowrap">unitario</span>
+                </div>
+              </ng-template>
+              <ng-template let-precioUnitario="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !precioUnitario || precioUnitario === 0
+                  ? "-"
+                  : "$ " + (precioUnitario | number : "1.2-2")
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Total" prop="totalViaje" [width]="125">
+              <ng-template let-totalViaje="value" ngx-datatable-cell-template>
+                <div>
+                  {{
+                  !totalViaje || totalViaje === 0
+                  ? "-"
+                  : "$ " + (totalViaje | number : "1.2-2")
+                  }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Facturar" prop="facturar" [width]="100" [sortable]="false">
+              <ng-template let-facturar="value" ngx-datatable-cell-template>
+                <div>
+                  {{ facturar ? "Sí" : "No" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Etiqueta" prop="etiqueta" [width]="125">
+              <ng-template let-etiqueta="value" ngx-datatable-cell-template>
+                <div>
+                  {{ etiqueta }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="forma de pago" prop="expand.cliente.expand.formaPago.nombre" [width]="125">
+              <ng-template let-column="column" ngx-datatable-header-template>
+                <div>
+                  <span style="white-space: nowrap">Forma de</span>
+                  <br />
+                  <span style="white-space: nowrap">pago</span>
+                </div>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.cliente?.expand?.formaPago?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Responsable" prop="expand.responsable.username" [width]="175">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand.responsable.username }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+
+          </ngx-datatable>
+        </div>
+
+      </div>
+    </section>
+  </div>
+</div>
+<!-- Modal Hoja de ruta -->
+<ng-template #modalHR let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel160">Hoja de ruta</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" tabindex="0" ngbAutofocus>
+    <div class="col-xl-12 col-md-12 col-12">
+      <form class="form-horizontal" #RemitoForm="ngForm" (ngSubmit)="onSubmit(RemitoForm.form.valid)">
+        <div class="m-0">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label for="nroRemito">Número de hoja de ruta</label>
+                <input class="form-control" [(ngModel)]="codigo" id="codigo" name="codigo" />
+                <label for="fechaEntrega">Si no escribes el codigo, se escribirá automaticamente</label>
+              </div>
+            </div>
+            <div class="col-2">
+
+              <div class="custom-control custom-control-primary custom-switch">
+                <br>
+                <input class="custom-control-input" type="checkbox" id="inlineCheckboxVuelta"
+                  name="inlineCheckboxVuelta" [(ngModel)]="primeravuelta" />
+                <label class="custom-control-label" for="inlineCheckboxVuelta">Primera vuelta</label>
+
+              </div>
+            </div>
+            <div class="col-4" *ngIf="hayImportante()">
+              <h3 style="text-transform: capitalize;">Hay destinos importantes</h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="fechaEntrega">Fecha de entrega</label>
+                <input class="form-control" [class.error]="
+                    RemitoForm.submitted && fechaEntregaRef.invalid
+                  " [(ngModel)]="remito.fechaEntrega" #fechaEntregaRef="ngModel" required id="fechaEntrega"
+                  name="fechaEntrega" min="{{ minDate | date : 'yyyy-MM-ddTHH:mm' }}" type="datetime-local"
+                  (change)="onChangeFechaEntrega($event)" />
+                <span *ngIf="RemitoForm.submitted && fechaEntregaRef.invalid" class="invalid-form">
+                  <small class="form-text text-danger" *ngIf="fechaEntregaRef.errors.required">Seleccione fecha de
+                    entrega.</small></span>
+                <span *ngIf="fecharara" class="hidden invalid-form">
+                  <small class="form-text text-warning " *ngIf="fecharara">El mes o año de la hoja de ruta no coincide
+                    con la fecha actual.</small></span>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="proveedor">Proveedor</label>
+                <ng-select [(ngModel)]="remito.proveedor" [ngClass]="{
+                    error: RemitoForm.submitted && proveedorRef.invalid
+                  }" required id="proveedor" name="proveedor" #proveedorRef="ngModel"
+                  (ngModelChange)="onProveedorChange($event)">
+                  <ng-option *ngFor="let option of proveedorOptions" [value]="option.id">
+                    {{ option.nombre }}
+                  </ng-option>
+                </ng-select>
+                <span *ngIf="RemitoForm.submitted && proveedorRef.invalid" class="invalid-form">
+                  <small class="form-text text-danger" *ngIf="proveedorRef.errors.required">Seleccione
+                    proveedor.</small>
+                </span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="chofer">Chofer</label>
+                <ng-select [(ngModel)]="remito.chofer" [ngClass]="{
+                    error: RemitoForm.submitted && choferRef.invalid
+                  }" required id="chofer" name="chofer" #choferRef="ngModel">
+                  <ng-option *ngFor="let option of choferOptions" [value]="option.id">
+                    {{ option.nombre }}
+                  </ng-option>
+                </ng-select>
+                <span *ngIf="RemitoForm.submitted && choferRef.invalid" class="invalid-form">
+                  <small class="form-text text-danger" *ngIf="choferRef.errors.required">Seleccione chofer.</small>
+                </span>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="vehiculo">Vehículo</label>
+                <ng-select [(ngModel)]="remito.vehiculo" [ngClass]="{
+                    error: RemitoForm.submitted && vehiculoRef.invalid
+                  }" required id="vehiculo" name="vehiculo" #vehiculoRef="ngModel">
+                  <ng-option *ngFor="let option of vehiculoOptions" [value]="option.id">
+                    {{ option.nombre }}
+                  </ng-option>
+                </ng-select>
+                <span *ngIf="RemitoForm.submitted && vehiculoRef.invalid" class="invalid-form">
+                  <small class="form-text text-danger" *ngIf="vehiculoRef.errors.required">Seleccione vehículo.</small>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row my-1" *ngIf="tarifario.length > 0">
+            <div class="col-4" *ngIf="verTarifarioProveedor">
+              <button class="btn btn-primary " (click)="toggleTarifario()">
+                Cerrar tarifario
+              </button>
+            </div>
+            <div class="col-4" *ngIf="!verTarifarioProveedor">
+              <button class="btn btn-primary " (click)="toggleTarifario()">
+                Ver tarifario
+              </button>
+            </div>
+          </div>
+          <div class="row" *ngIf="tarifario.length > 0 && verTarifarioProveedor">
+            <div class="col-12">
+              <h3>Tarifario de proveedor</h3>
+              <ngx-datatable [rows]="tarifario" rowHeight="auto" class="bootstrap core-bootstrap"
+                [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                [limit]="pagetar.size" [externalPaging]="true" [count]="pagetar.count" [offset]="pagetar.offset">
+                <ngx-datatable-column prop="precio" name="Precio" [width]="40" [sortable]="false">
+                  <ng-template let-precio="value" ngx-datatable-cell-template>
+                    <div>
+                      {{precio}}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Unidad" prop="expand.unidad.nombre" [width]="60">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <div>
+                      {{ row.expand?.unidad?.nombre }}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="descripcion" name="Descripcion" [width]="125" [sortable]="false"
+                  [resizeable]="false">
+                  <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                    <div>
+                      {{descripcion}}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="fechadesde" name="Fecha Desde" [width]="50">
+                  <ng-template let-fechadesde="value" ngx-datatable-cell-template>
+                    <div>
+                      {{fechadesde | date : "dd/MM/yyyy"}}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="fechahasta" name="Fecha Hasta" [width]="50">
+                  <ng-template let-fechahasta="value" ngx-datatable-cell-template>
+                    <div>
+                      {{fechahasta | date : "dd/MM/yyyy"}}
+                    </div>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <h3>Total: ${{piso(totalHR)}}</h3>
+
+            </div>
+            <div class="col-6">
+              <h3>Total Kilos: {{piso(totalKilos) }}</h3>
+
+            </div>
+          </div>
+
+          <h6 class="text mt-1">Remitos seleccionados</h6>
+          <ngx-datatable [rows]="selectedRows" rowHeight="auto" class="bootstrap core-bootstrap mt-1" [limit]="10"
+            [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="30" [scrollbarH]="true"
+            [rowHeight]="'auto'">
+            >
+            <ngx-datatable-column name="fecha ingreso" prop="fechaIngreso" [width]="10">
+              <ng-template let-fechaIngreso="value" ngx-datatable-cell-template>
+                <div>
+                  {{ fechaIngreso | date : "dd/MM/yyyy" }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Cliente" prop="expand.cliente.nombre" [width]="10">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.cliente?.nombre }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="RTO" prop="numerorto" [width]="10">
+              <ng-template let-numerorto="value" ngx-datatable-cell-template>
+                <div>
+                  {{ numerorto }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Destinatario" prop="expand.destinatario.nombre" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div *ngIf="row.expand.destinatario.importancia==0;else other_content">
+                  <span>{{row.expand?.destinatario?.nombre}}</span>
+                </div>
+
+                <ng-template #other_content>
+                  <strong style="color: #e04141;">
+
+
+                    {{ row.expand?.destinatario?.nombre.toUpperCase() }}
+
+                  </strong>
+
+                </ng-template>
+
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Direccion" prop="expand.destinatario.direccion" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.destinatario?.direccion }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Observacion" prop="expand.destinatario.observacion" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.destinatario?.observacion }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Horarios" prop="expand.destinatario.horarios" [width]="125">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                  {{ row.expand?.destinatario?.horarios }}
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+        <div class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end">
+          <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect>
+            Guardar
+          </button>
+          <button type="button" class="btn btn-outline-secondary" rippleEffect (click)="modal.dismiss('Cross click')">
+            Cerrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!-- / Modal hoja de ruta -->
+
+<!-- Modal cambio de estado -->
+<ng-template #modalState let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel160">{{ modalTitle }}</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" tabindex="0" ngbAutofocus>
+    <div class="col-xl-12 col-md-12 col-12">
+      <!--<form
+        class="form-horizontal"
+        #StateForm="ngForm"
+        (ngSubmit)="onSubmit(RemitoForm.form.valid)"
+      >-->
+      <form class="form-horizontal" #StateForm="ngForm">
+        <div class="m-0">
+          <div *ngIf="modalTitle=='Confirmar entrega de remito'" class="row">
+            <div class="col-1">
+              <br>
+              <div class="custom-control custom-control-primary custom-switch">
+
+                <input class="custom-control-input" type="checkbox" name="inlinedeliverconformado"
+                  id="inlinedeliverconformado" [(ngModel)]="deliveryConformado" />
+                <label class="custom-control-label" for="inlinedeliverconformado">Conformado</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="observaciones">Observaciones</label>
+                <textarea class="form-control" [class.error]="StateForm.submitted && observacionRef.invalid"
+                  [(ngModel)]="observacion" #observacionRef="ngModel" id="observacion" name="observacion" rows="5"
+                  style="resize: none"></textarea>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="novedad">Novedades</label>
+                <textarea class="form-control" [class.error]="StateForm.submitted && novedadRef.invalid"
+                  [(ngModel)]="novedad" #novedadRef="ngModel" id="novedad" name="novedad" rows="5"
+                  style="resize: none"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 d-flex flex-sm-row flex-column mt-2 m-6 mb-2 justify-content-end">
+          <button type="button" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect
+            (click)="confirmAction()">
+            Confirmar
+          </button>
+          <button type="button" class="btn btn-outline-secondary" rippleEffect (click)="cerrarModalObservacion()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!-- Modal cambio de estado -->
+<!--Modal duplicar remito-->
+<ng-template #modalDuplicar let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel160">Duplicar remito</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" tabindex="0" ngbAutofocus>
+    <div class="col-xl-12 col-md-12 col-12">
+      <h4>El remito se va a duplicar</h4>
+      <form class="form-horizontal" #StateForm="ngForm">
+        <div class="m-0">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="custom-control custom-control-primary custom-switch mb-1">
+                <input type="checkbox" class="custom-control-input" id="facturar" [(ngModel)]="facturarOriginal"
+                  name="facturar" />
+                <label class="custom-control-label" for="facturar">Facturar original</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="custom-control custom-control-primary custom-switch mb-1">
+                <input type="checkbox" class="custom-control-input" id="facturar" [(ngModel)]="reubicadoOriginal"
+                  name="reubicado" />
+                <label class="custom-control-label" for="reubicado">Reubicado original</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 d-flex flex-sm-row flex-column mt-2 m-6 mb-2 justify-content-end">
+          <button type="button" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect
+            (click)="confirmActionDuplicar()">
+            Confirmar
+          </button>
+          <button type="button" class="btn btn-outline-secondary" rippleEffect (click)="cerrarModalDuplicar()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!--FIN Modal duplicar remito-->
+<!--Modal agregar remito-->
+<ng-template #modalAddHR let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="agregarhr">Agregar remito a Hoja de Ruta</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" tabindex="0" ngbAutofocus>
+    <div class="content-wrapper container-xxl p-0">
+      <div class="content-body">
+        <section class="invoice-list-wrapper">
+          <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+            Datos de remito
+          </div>
+          <div class="card container">
+            <div class="row">
+              <div class="col-4">
+
+                <label class="font-weight-bolder">NUMERO: </label>
+                <label class="mx-1 " for="searchValue">{{remitospenhr.nro}} </label>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <label class="font-weight-bolder">CLIENTE: </label>
+                <label class="mx-1" for="searchValue">{{remitospenhr.cliente}} </label>
+              </div>
+              <div class="col-4">
+                <label class="font-weight-bolder">DESTINATARIO: </label>
+                <label class="mx-1" for="searchValue">{{remitospenhr.destinatario}} </label>
+              </div>
+              <div class="col-4">
+                <label class="font-weight-bolder">LOCALIDAD: </label>
+                <label class="mx-1" for="searchValue">{{remitospenhr.localidad}} </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <label class="font-weight-bolder">FECHA INGRESO: </label>
+                <label class="mx-1" for="searchValue">{{remitospenhr.fechaIngreso}} </label>
+              </div>
+              <div class="col-4">
+                <label class="font-weight-bolder">KILOS: </label>
+                <label class="mx-1" for="searchValue">{{remitospenhr.kilos}} </label>
+              </div>
+              <div class="col-4">
+                <label class="font-weight-bolder">BULTOS: </label>
+                <label class="mx-1" for="searchValue">{{remitospenhr.bultos}} </label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <app-modalhr [idremito]="idremito" (hojaRutaEvent)="eventoAgregarHR($event)"></app-modalhr>
+  </div>
+</ng-template>
+<!--FIN Modal agregar remito-->
+<ng-template #modalMultipleEstado let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="agregarhr">Cambio múltiple ({{selectedRemitos.length}})</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body container row" tabindex="0" ngbAutofocus>
+    <div class="col-xl-12 col-md-12 col-12">
+      <app-multipleestado [remitos]="selectedRemitos" [estados]="estadoMultipleOptions"
+        (guardarModalEvent)="guardarMultiple($event)" (limpiarListaEvent)="limpiarRemitoEstado($event)"
+        (quitarRemitoEvent)="quitarRemitoRow($event)"
+        (cerrarModalEvent)="cerrarModalMultiple($event)"></app-multipleestado>
+    </div>
+  </div>
+</ng-template>

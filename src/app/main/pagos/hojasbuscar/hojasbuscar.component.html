@@ -1,0 +1,116 @@
+<div class="card container">
+
+    <h4>NUMERO HOJA</h4>
+    <div class="row">
+        <div class="col-4">
+            <label for="searchValue">Numero </label>
+
+            <input [(ngModel)]="numeroHoja" name="numeroHoja" type="search" class="form-control" placeholder="Buscar..."
+                (change)="filterUpdate($event)" />
+
+        </div>
+
+    </div>
+    <br>
+    <h4>FECHAS</h4>
+    <div class="row">
+        <div class="col-4">
+            <label for="fechaDesde">Fecha Entrega Desde</label>
+            <input [(ngModel)]="fechaEntregaDesde" id="fechaEntregaDesde" class="form-control" name="fechaEntregaDesde"
+                type="date" (change)="filterUpdate($event)" />
+        </div>
+        <div class="col-4">
+            <label for="fechaHasta">Fecha Entrega Hasta</label>
+            <input [(ngModel)]="fechaEntregaHasta" id="fechaEntregaHasta" class="form-control" name="fechaEntregaHasta"
+                type="date" (change)="filterUpdate($event)" />
+        </div>
+        <div class="col-2">
+            <div class=" align-items-center">
+                <label for="cboEstado">Estado
+                </label>
+                <select id="cboEstado" name="cboEstado" class="form-control mx-25" [(ngModel)]="estado"
+                    (change)="filterUpdate($event)">
+                    <option value=-1>Todos</option>
+
+                    <option *ngFor="let est of estadoOptions" [value]="est.id">{{est.nombre}}</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                [limit]="page.size" [externalPaging]="true" [count]="page.count" [offset]="page.offset"
+                (page)="onPage($event)">
+                <!-- [selectionType]="SelectionType.checkbox" -->
+                <ngx-datatable-column name="Acciones" [width]="100" [sortable]="false">
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        <div *ngIf="!hojasid.includes(row.id)" class="d-flex align-items-center col-actions">
+
+                            <div ngbDropdown container="body">
+                                <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0"
+                                    rippleEffect>
+                                    <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <a  href="javascript:void(0)" ngbDropdownItem (click)="elegirHoja(row)">
+                                        <i data-feather="aperture" class="mr-1"></i>
+                                        Elegir Hoja
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Estado" prop="estado" [width]="110">
+                    <ng-template let-estado="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ getEstadoNombre(estado) }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Numero" prop="codigo" [width]="110">
+                    <ng-template let-codigo="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ codigo }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Fecha Entre" prop="fechaentrega" [width]="110">
+                    <ng-template let-fechaentrega="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ fechaentrega | date : "dd/MM/yyyy"}}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Proveedor" prop="expand.proveedor.nombre" [width]="125">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div>
+                            {{ row.expand?.proveedor?.nombre }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Chofer" prop="expand.chofer.nombre" [width]="125">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div>
+                            {{ row.expand?.chofer?.nombre }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Vehiculo" prop="expand.vehiculo.nombre" [width]="125">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div>
+                            {{ row.expand?.vehiculo?.nombre }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+            </ngx-datatable>
+        </div>
+
+    </div>
+</div>

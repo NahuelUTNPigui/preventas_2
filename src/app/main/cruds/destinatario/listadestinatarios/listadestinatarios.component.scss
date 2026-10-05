@@ -1,0 +1,47 @@
+.bootstrap-file-input {
+    display: flex;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+  
+.bootstrap-file-input .btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    cursor: pointer;
+}
+  
+.bootstrap-file-input .btn-primary {
+    color: #fff;
+    background-color: #ff0000;
+    border-color: #ff0000;
+}
+  
+.bootstrap-file-input .btn-primary:hover {
+    color: #fff;
+    background-color: #ff0000;
+    border-color: #ff0000;
+}
+  
+.bootstrap-file-input .btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 21, 0.5);
+}
+  
+.bootstrap-file-input input[type="file"] {
+    position: absolute;
+    left: -9999px;
+}
+  
+.bootstrap-file-input .file-name {
+    margin-left: 10px;
+    color: #6c757d;
+ }

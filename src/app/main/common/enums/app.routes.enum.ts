@@ -1,0 +1,23 @@
+export enum AppRoutesEnum {
+    DEFAULT = '',
+    LOGIN = 'login',
+    PROFILE = 'profile',
+    MESSAGES = 'messages',
+    FAQS = 'faqs',
+    FAQS_LOGIN = 'faqsLogin',
+    NOTIFICATIONS = 'notifications',
+    PETS = 'pets',
+    PETDETAIL = 'detail',
+    NEWPET = 'newPet',
+    HISTORIALCLINIC = 'historialClinic',
+    RECORDATORIOLIST='recordatoriolist',
+    RECORDATORIODETAIL='recordatoriodetail',
+    VET = 'vet',
+    ATTENTION = 'attention',
+    NEW = 'new',
+    LIST = 'list',
+    EMPLOY = 'employ',
+    EDIT = 'edit',
+    PREVIEW = 'preview',
+    PARTNERSOWN= 'partners-owner'
+  }

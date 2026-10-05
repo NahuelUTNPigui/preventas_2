@@ -1,0 +1,23 @@
+  <div class="form-group">
+    <div class="input-group">
+      <input
+        class="form-control"
+        placeholder="dd/mm/aaaa"
+        name="i18n Date Picker"
+        [(ngModel)]="i18nDPdata"
+        ngbDatepicker
+        #i18nDP="ngbDatepicker"
+        [maxDate]="maxDate"
+        [minDate]="minDate"
+      />
+
+      <div class="input-group-append">
+        <button
+          class="btn btn-outline-secondary feather icon-calendar"
+          (click)="i18nDP.toggle()"
+          type="button"
+          rippleEffect
+        ></button>
+      </div>
+    </div>
+  </div>

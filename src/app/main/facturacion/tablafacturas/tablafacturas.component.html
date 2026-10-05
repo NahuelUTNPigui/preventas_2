@@ -1,0 +1,411 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card container">
+            <div class="row px-1">
+                <div class="col-3">
+
+                    <button class="btn btn-outline-secondary " rippleEffect (click)="recuperarCobro()">Retomar cobro</button>
+                </div>
+                <div class="col-3">
+
+                    <a class="btn btn-outline-secondary" rippleEffect (click)="abrirCobro()">Crear cobro</a>
+                </div>
+                <div class="col-3">
+
+                    <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar filtros</button>
+                </div>
+                <div class="col-3">
+                    <a class="btn btn-outline-secondary" rippleEffect (click)="exportarXLX()">Exportar
+                        EXCEL</a>
+                </div>
+            </div>
+            <div *ngIf="facturas.length != 0" class="row mt-2">
+                <div class="col-3">
+                    <label class="font-weight-bolder" for="">Cantidad de facturas cargadas</label>
+                    <br>
+                    <label class="">{{facturas.length}}</label>
+                </div>
+                <div class="col-9">
+                    <label class="font-weight-bolder" for="">Lista de facturas cargados</label>
+                    <br>
+                    <label class="">{{showFacturasCargados().length>100?showFacturasCargados().substring(0,100)+"
+                        ...":showFacturasCargados()}}</label>
+                </div>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-2">
+
+                    <h4>Filtros</h4>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <label for="cboCliente"> Cliente </label>
+                    <select id="cboCliente" name="cboCliente" class="form-control mx-25" [(ngModel)]="cliente"
+                        (change)="changeCliente()">
+                        <option value="">Todos</option>
+                        <option *ngFor="let cli of clientes" [value]="cli.id">{{cli.nombre}}</option>
+                    </select>
+                </div>
+                <div class="col-3">
+
+                    <label for="periodo">Concepto </label>
+                    <input [(ngModel)]="monthyear" name="periodo" type="search" class="form-control"
+                        placeholder="Buscar..." (change)="filterUpdate($event)" (search)="filterUpdate($event)" />
+                </div>
+                <div class="col-3">
+
+                    <label for="identidad">Identidad </label>
+                    <input [(ngModel)]="identidad" name="identidad" type="search" class="form-control"
+                        placeholder="Buscar..." (search)="filterUpdate($event)" (change)="filterUpdate($event)" />
+                </div>
+                <div class="col-3">
+
+                    <label for="nroFactura">Numero factura </label>
+                    <input [(ngModel)]="nroFactura" name="nroFactura" type="search" class="form-control"
+                        placeholder="Buscar..." (search)="filterUpdate($event)" (change)="filterUpdate($event)" />
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col-2">
+                    <label for="fechaDesde">Fecha Creación Desde</label>
+                    <input [(ngModel)]="fechaCreacionDesde" id="first-name-vertical" class="form-control"
+                        name="fechaIngresoDesde" type="date" (change)="filterUpdate($event)" />
+                </div>
+                <div class="col-2">
+                    <label for="fechaHasta">Fecha Creación Hasta</label>
+                    <input [(ngModel)]="fechaCreacionHasta" id="first-name-vertical" class="form-control"
+                        name="fechaIngresoHasta" type="date" (change)="filterUpdate($event)" />
+                </div>
+                <div class="col-2">
+                    <label for="fechaDesde">Fecha Facturación Desde</label>
+                    <input [(ngModel)]="fechaDesde" id="first-name-vertical" class="form-control"
+                        name="fechaIngresoDesde" type="date" (change)="filterUpdate($event)" />
+                </div>
+                <div class="col-2">
+                    <label for="fechaHasta">Fecha Facturación Hasta</label>
+                    <input [(ngModel)]="fechaHasta" id="first-name-vertical" class="form-control"
+                        name="fechaIngresoHasta" type="date" (change)="filterUpdate($event)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6"><br>
+                    <h4>Estado</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+
+                    <select id="estado" name="estado" class="form-control mx-25" [(ngModel)]="opcionSeleccionada"
+                        (change)="onChangeOpcion($event)">
+
+                        <option *ngFor="let est of opciones" [value]="est.id">{{est.nombre}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row hidden">
+                <div class="col-2 ">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                        <input class="custom-control-input" type="checkbox" id="inlineCheckbox2" [(ngModel)]="todos"
+                            (change)="filterUpdate($event)" />
+                        <label class="custom-control-label" for="inlineCheckbox2">Todos</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                        <input class="custom-control-input" type="checkbox" id="inlineCheckbox4"
+                            [(ngModel)]="enrevision" (change)="filterUpdate($event)" />
+                        <label class="custom-control-label" for="inlineCheckbox4">En revisión</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                        <input class="custom-control-input" type="checkbox" id="inlineCheckbox3"
+                            [(ngModel)]="enliquidacion" (change)="filterUpdate($event)" />
+                        <label class="custom-control-label" for="inlineCheckbox3">En liquidación</label>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                        <input class="custom-control-input" type="checkbox" id="inlineCheckbox5"
+                            [(ngModel)]="aceptadocliente" (change)="filterUpdate($event)" />
+                        <label class="custom-control-label" for="inlineCheckbox5">Aceptado cliente</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                        <input class="custom-control-input" type="checkbox" id="inlineCheckbox6" [(ngModel)]="cobrados"
+                            (change)="filterUpdate($event)" />
+                        <label class="custom-control-label" for="inlineCheckbox6">Cobrado</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <br>
+                    <div class="custom-control custom-control-primary custom-switch">
+
+                        <input class="custom-control-input" type="checkbox" id="inlineCheckbox7" [(ngModel)]="cerrada"
+                            (change)="filterUpdate($event)" />
+                        <label class="custom-control-label" for="inlineCheckbox7">Cerrada</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-4">
+                    <h3>Total facturas: {{formatPeso(total)}}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <div class="d-flex justify-content-between align-items-center m-1">
+                        <div class="d-flex align-items-center">
+                            <label class="d-flex align-items-center">Mostrar
+                                <select class="form-control mx-25" [(ngModel)]="page.size"
+                                    (change)="onPageSizeChange()">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <br>
+                    <a class="btn btn-outline-secondary float-right" rippleEffect
+                        (click)="seleccionarTodos()">Seleccionar todos</a>
+                </div>
+                <div class="col-3">
+                    <br>
+                    <a class="btn btn-outline-secondary float-right" rippleEffect (click)="limpiarLista()">Quitar
+                        todos</a>
+                </div>
+
+
+            </div>
+            <br>
+            <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                [columnMode]="ColumnMode.force" [headerHeight]="70" [footerHeight]="50" [scrollbarH]="true"
+                [limit]="page.size" [externalPaging]="true" [count]="page.count" [offset]="page.offset"
+                (page)="onPage($event)">
+                <ngx-datatable-column name="Acciones" [width]="70" [sortable]="false" [canAutoResize]="false"
+                    [draggable]="false" [resizeable]="false">
+
+                    <ng-template ngx-datatable-cell-template let-rowIndex="row.id" let-row="row"
+                        let-onCheckboxChangeFn="onCheckboxChangeFn">
+                        <div class="d-flex">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" [checked]="inFacturas(row.id)"
+                                    (change)="onCheckboxChange(row)" id="rowChkbxRef{{ row.id }}" />
+
+                                <label class="custom-control-label" for="rowChkbxRef{{ row.id }}"></label>
+
+
+                            </div>
+                            <div class="d-flex align-items-center col-actions">
+                                <div ngbDropdown container="body">
+                                    <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0"
+                                        rippleEffect>
+                                        <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <a href="/facturacion/detalle/{{row.id}}" ngbDropdownItem><i data-feather="eye"
+                                                class="mr-1"></i>Detalle</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem
+                                            (click)="openNuevaNotaModal(modalNuevaNota,row.id)"><i
+                                                data-feather="credit-card" class="mr-1"></i>Nueva nota de
+                                            crédito</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem *ngIf="!inFacturas(row.id)"
+                                            (click)="agregarFactura(row.id)"><i data-feather="check-square"
+                                                class="mr-1"></i>Agregar a cobro</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem *ngIf="inFacturas(row.id)"
+                                            (click)="quitarFactura(row.id)"><i data-feather="check-square"
+                                                class="mr-1"></i>Quitar de cobro</a>
+                                        <a href="javascript:void(0)" ngbDropdownItem
+                                            (click)="ConfirmDeleteOpen(row.id)"><i data-feather="trash"
+                                                class="mr-1"></i>Eliminar</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </ng-template>
+
+
+                </ngx-datatable-column>
+                <ngx-datatable-column name="fechafacturacion" prop="fechafacturacion" [width]="110">
+                    <ng-template let-column="column" ngx-datatable-header-template>
+                        <div>
+                            <span style="white-space: nowrap">Fecha Fact.</span>
+
+                        </div>
+                    </ng-template>
+                    <ng-template let-fechafacturacion="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ fechafacturacion | date : "dd/MM/yyyy" }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Estado" [width]="120" [sortable]="false">
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        {{
+                        row.enrevision?
+                        "En revision":
+                        row.enliquidacion?
+                        "En liquidación":
+                        row.aceptacliente?
+                        "Aceptado":
+                        row.cerrada?
+                        "Cerrada":
+                        "Cobrado"
+                        }}
+                    </ng-template>
+                </ngx-datatable-column>
+
+
+                <ngx-datatable-column name="concepto" prop="monthyear" [width]="110">
+                    <ng-template let-column="column" ngx-datatable-header-template>
+                        <div>
+                            <span style="white-space: nowrap">Concepto</span>
+
+                        </div>
+                    </ng-template>
+                    <ng-template let-monthyear="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ monthyear }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Cliente" prop="expand.cliente.nombre" [width]="125">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div>
+                            {{ row.expand?.cliente?.nombre }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ID" prop="identidad" [width]="125">
+                    <ng-template let-identidad="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ identidad }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="NRO" prop="numero" [width]="125">
+                    <ng-template let-numero="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ numero }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Total" prop="total" [width]="125">
+                    <ng-template let-total="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ formatPeso(total) }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Dias sin cobrar" prop="diaspasados" [width]="125">
+                    <ng-template let-diaspasados="value" ngx-datatable-cell-template>
+                        <div>
+                            {{ diaspasados }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Usuario" prop="expand.cliente.nombre" [width]="125">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div>
+                            {{ row.expand?.usuario?.nombre }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+
+
+
+            </ngx-datatable>
+        </div>
+    </div>
+</div>
+<!--Modal de hacer pagos-->
+<ng-template #modalPago let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Realizar cobro</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container row" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <app-modalpago (cobroModalEvent)="cobrarFacturas(modal)" (quitarFacturaEvent)="quitarFactura($event)"
+                [datafacturas]="facturas"></app-modalpago>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal de hacer pagos-->
+<!--Modal Nueva nota de credito-->
+<ng-template #modalNuevaNota let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Nueva nota de crédito</h5>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body container row" tabindex="0" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+            <div class="container form-group">
+                <div class="row">
+                    <div class="col-6">
+                        <br>
+                        <h3>Datos</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="notanumero">Numero</label>
+                        <input class="form-control" [(ngModel)]="notanumero" id="notanumero" name="notanumero"
+                            type="text" />
+                    </div>
+                    <div class="col-6">
+                        <label for="notamonto">Monto</label>
+                        <input class="form-control" [(ngModel)]="notamonto" id="notamonto" name="notamonto"
+                            type="number" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label for="notadescripcion">Descripcion</label>
+                        <textarea class="form-control" rows="5" style="resize: none" name="notadescripcion"
+                            id="notadescripcion" [(ngModel)]="notadescripcion"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <br>
+                        <button class="btn btn-primary" (click)="ConfirmNota(modal)">Guardar</button>
+                    </div>
+                    <div class="col-4">
+                        <br>
+                        <button class="btn btn-outline-secondary" (click)="cerrarModalNota(modal)">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</ng-template>
+<!--Modal FIN Nueva nota de credito-->

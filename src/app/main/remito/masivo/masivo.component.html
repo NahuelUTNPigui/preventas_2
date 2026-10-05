@@ -1,0 +1,83 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <section class="invoice-add-wrapper">
+            <div
+                class="mb-1"
+                style="color: #e04141; font-weight: 600; font-size: 20px"
+            >
+                Multiples remitos
+            </div>
+            <div class="row invoice-add ">
+                <div class="col-12">
+                    <div class="container ">
+                        <div class="card invoice-preview-card p-2" >
+                            <div class="row mt-2">
+                                <div class="col-2">
+                                    <button
+                                        class="btn btn-outline-secondary float-left"
+                                        routerLink="/remitos"
+                                        rippleEffect
+                                    >
+                                        Volver</button>
+                                </div>
+                            </div>
+                            <div *ngIf="listaRemitos.length != 0" class="row mt-2">
+                                <div class="col-12">
+                                    <label class="font-weight-bolder" for="">Lista de remitos cargados</label>
+                                    <br>
+                                    <label class="">{{showRemitosCargados()}}</label>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <label for="fechaIngreso">Fecha de ingreso</label>
+                                    <input
+                                        class="form-control"
+                                        [(ngModel)]="masivo.fechaIngreso"
+                                        required
+                                        id="fechaIngreso"
+                                        name="fechaIngreso"
+                                        max="{{ maxDate | date : 'yyyy-MM-dd' }}"
+                                        type="date"
+                                        (change)="onCambioFecha()"
+                                    />
+                                </div>
+                                
+                            
+                            
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="cliente">Cliente</label>
+                                        <ng-select
+                                            [(ngModel)]="masivo.cliente"
+                                            
+                                            required
+                                            id="cliente"
+                                            name="cliente"
+                                            
+                                            (ngModelChange)="onClienteChange($event)"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of clienteOptions"
+                                                [value]="option.id"
+                                                >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div *ngIf="formhab" class="row p-0">
+                                <div class="col-12 p-0">
+                                    <app-masivonuevo [cliente]="masivo.cliente" [fechaIngreso]="masivo.fechaIngreso" [destinatarioOptions]="destinatarioOptions" [remitenteOptions]="remitenteOptions" (remitoEvento)="guardarRemito($event)"></app-masivonuevo>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

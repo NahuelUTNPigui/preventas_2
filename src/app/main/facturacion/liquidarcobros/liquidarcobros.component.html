@@ -1,0 +1,820 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="mb-1" style="color: #e04141; font-weight: 600; font-size: 20px">
+            Crear cobro
+        </div>
+        <section id="basic-tabs-components">
+            <div class="card pt-1">
+                <div class="d-flex justify-content-between align-items-center m-1">
+                    <div class="d-flex align-items-center">
+                        <a class="btn btn-outline-secondary" rippleEffect (click)="volver()">Volver</a>
+                    </div>
+                </div>
+                <ul ngbNav #navWithIcons="ngbNav" [(activeId)]="tab" class="nav-tabs ml-1 mb-0"
+                    (navChange)="onNavChange($event)">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink>Datos básicos</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <a class="btn btn-primary" rippleEffect (click)="cobro()">Realizar cobro</a>
+                                    </div>
+                                    <div class="col-3">
+                                        <a class="btn btn-outline-secondary " rippleEffect
+                                            (click)="vistaPrevia(true)">Vista previa
+                                            cobro</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <label for="numero">Numero de cobro</label>
+                                        <input class="form-control" [(ngModel)]="numero" id="numero" name="numero"
+                                            (change)="onChangeCampo()" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="fechacobro">Fecha de cobro</label>
+                                        <input class="form-control" [(ngModel)]="fechacobro" id="fechacobro"
+                                            name="fechacobro" (change)="onChangeCampo()" type="date" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="fechacobro">Fecha de cobro completo</label>
+                                        <input class="form-control" [(ngModel)]="fechacobrocompleto"
+                                            id="fechacobrocompleto" (change)="onChangeCampo()" name="fechacobrocompleto"
+                                            type="date" />
+                                    </div>
+                                    <div class="col-2 ">
+                                        <br>
+                                        <div class="custom-control custom-control-primary custom-switch">
+                                            <input class="custom-control-input" type="checkbox" name="nombreCheckbox"
+                                                id="nombreCheckbox" (change)="onChangeCampo()" [(ngModel)]="completo" />
+                                            <label class="custom-control-label" for="nombreCheckbox">Completo</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total facturas IVA: </h3>
+                                        <h3 *ngIf="responsableinscripto">{{formatPeso(totalfactiva)}}</h3>
+                                        <h5 *ngIf="!responsableinscripto">No es responsable inscripto</h5>
+                                    </div>
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total facturas: </h3>
+                                        <h3>{{formatPeso(totalfact)}}</h3>
+                                    </div>
+
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total pagos: </h3>
+                                        <h3>{{formatPeso(totalpagos)}}</h3>
+                                    </div>
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total retenciones: </h3>
+                                        <h3>{{formatPeso(totalretenciones)}}</h3>
+                                    </div>
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total descuentos: </h3>
+                                        <h3>{{formatPeso(totaldescuentos)}}</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total notas de crédito: </h3>
+                                        <h3>{{formatPeso(totalnotas)}}</h3>
+                                    </div>
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Total a cuentas: </h3>
+                                        <h3>{{formatPeso(totalacuentas)}}</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>Saldo: {{formatPeso(saldo)}}</h3>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <br>
+                                        <h3>A cuenta: {{formatPeso(acuenta)}}</h3>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                        <a ngbNavLink>Facturas</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div class="d-flex justify-content-between align-items-center m-1">
+                                            <div class="d-flex align-items-center">
+                                                <label class="d-flex align-items-center">Mostrar
+                                                    <select class="form-control mx-25" [(ngModel)]="page.size"
+                                                        (change)="onPageSizeChange()">
+                                                        <option value="5">5</option>
+                                                        <option value="10">10</option>
+                                                        <option value="25">25</option>
+                                                        <option value="50">50</option>
+                                                        <option value="100">100</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ngx-datatable [rows]="rows" rowHeight="auto" class="bootstrap core-bootstrap"
+                                    [columnMode]="ColumnMode.force" [headerHeight]="70" [footerHeight]="50"
+                                    [scrollbarH]="true" [limit]="page.size" [externalPaging]="true" [count]="page.count"
+                                    [offset]="page.offset" (page)="onPage($event)">
+                                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                        <ng-template ngx-datatable-cell-template let-row="row">
+                                            <div class="d-flex align-items-center col-actions">
+                                                <div ngbDropdown container="body">
+                                                    <button ngbDropdownToggle type="button"
+                                                        class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                        <i data-feather="more-vertical" size="18"
+                                                            class="cursor-pointer"></i>
+                                                    </button>
+                                                    <div ngbDropdownMenu>
+                                                        <a href="/facturacion/detalle/{{row.id}}" ngbDropdownItem><i
+                                                                data-feather="eye" class="mr-1"></i>Detalle</a>
+
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="quitarFactura(row.id)"><i
+                                                                data-feather="check-square" class="mr-1"></i>Quitar
+                                                            factura</a>
+                                                        <a href="javascript:void(0)" ngbDropdownItem
+                                                            (click)="ConfirmDeleteOpen(row.id)"><i data-feather="trash"
+                                                                class="mr-1"></i>Eliminar</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="fechafacturacion" prop="fechafacturacion" [width]="110">
+                                        <ng-template let-column="column" ngx-datatable-header-template>
+                                            <div>
+                                                <span style="white-space: nowrap">Fecha Fact.</span>
+
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-fechafacturacion="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ fechafacturacion | date : "dd/MM/yyyy" }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Cobrado" prop="cobrado" [width]="60">
+                                        <ng-template let-column="column" ngx-datatable-header-template>
+                                            <div>
+                                                <span style="white-space: nowrap">Cobrado</span>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-cobrado="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ cobrado?"Si":"No" }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Periodo" prop="monthyear" [width]="110">
+                                        <ng-template let-column="column" ngx-datatable-header-template>
+                                            <div>
+                                                <span style="white-space: nowrap">Periodo</span>
+
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-monthyear="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ monthyear }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Cliente" prop="expand.cliente.nombre" [width]="125">
+                                        <ng-template let-row="row" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ row.expand?.cliente?.nombre }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="NRO" prop="numero" [width]="125">
+                                        <ng-template let-numero="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ numero }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="Total" prop="total" [width]="125">
+                                        <ng-template let-total="value" ngx-datatable-cell-template>
+                                            <div>
+                                                {{ formatPeso(total) }}
+                                            </div>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                </ngx-datatable>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                        <a ngbNavLink>Cobros</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="container">
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModal(modalBuscarCheque,true)">
+                                                        Buscar Cheque
+                                                    </button>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModal(modalCheque,true)">
+                                                        Crear Cheque
+                                                    </button>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModal(modalTransfer,true)">
+                                                        Transferencia
+                                                    </button>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModal(modalTrans,true)">
+                                                        Transacción
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <ngx-datatable [rows]="rowdetallespago" rowHeight="auto"
+                                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                                [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" [limit]="50"
+                                                [externalPaging]="true" [count]="rowdetallespago.length" [offset]="0">
+                                                <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                                    <ng-template ngx-datatable-cell-template let-row="row">
+                                                        <div class="d-flex align-items-center col-actions">
+                                                            <div ngbDropdown container="body">
+                                                                <button ngbDropdownToggle type="button"
+                                                                    class="btn icon-btn btn-sm hide-arrow px-0"
+                                                                    rippleEffect>
+                                                                    <i data-feather="more-vertical" size="18"
+                                                                        class="cursor-pointer"></i>
+                                                                </button>
+                                                                <div ngbDropdownMenu>
+                                                                    <a href="javascript:void(0)" ngbDropdownItem
+                                                                        (click)="verFila(row.indice,modalCheque,modalTransfer,modalTrans,true)"><i
+                                                                            data-feather="eye" class="mr-1"></i>Ver
+                                                                        detalle</a>
+                                                                    <a href="javascript:void(0)" ngbDropdownItem
+                                                                        (click)="quitarDetalle(row.indice)"><i
+                                                                            data-feather="trash" class="mr-1"></i>Quitar
+                                                                        detalle</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Descripcion" prop="descripcion"
+                                                    [width]="125">
+                                                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ descripcion }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Total" prop="total" [width]="125">
+                                                    <ng-template let-total="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ total }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Tipo" prop="categoria" [width]="125">
+                                                    <ng-template let-categoria="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ categoria }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                            </ngx-datatable>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="4">
+                        <a ngbNavLink>Retenciones</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row ">
+                                    <div class="col-12">
+                                        <div class="container">
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModalRetenciones(modalRetenciones)">
+                                                        Guardar retención
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <ngx-datatable [rows]="rowretenciones" rowHeight="auto"
+                                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                                [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" [limit]="50"
+                                                [externalPaging]="true" [count]="rowretenciones.length" [offset]="0">
+                                                <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                                    <ng-template ngx-datatable-cell-template let-row="row">
+                                                        <div class="d-flex align-items-center col-actions">
+                                                            <div ngbDropdown container="body">
+                                                                <button ngbDropdownToggle type="button"
+                                                                    class="btn icon-btn btn-sm hide-arrow px-0"
+                                                                    rippleEffect>
+                                                                    <i data-feather="more-vertical" size="18"
+                                                                        class="cursor-pointer"></i>
+                                                                </button>
+                                                                <div ngbDropdownMenu>
+                                                                    <a href="javascript:void(0)" ngbDropdownItem
+                                                                        (click)="verFilaRetencion(row.indice,modalRetenciones)"><i
+                                                                            data-feather="eye" class="mr-1"></i>Ver
+                                                                        retencion</a>
+                                                                    <a href="javascript:void(0)" ngbDropdownItem
+                                                                        (click)="quitarRetencion(row.indice)"><i
+                                                                            data-feather="trash" class="mr-1"></i>Quitar
+                                                                        retención</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Descripcion" prop="descripcion"
+                                                    [width]="125">
+                                                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ getNombreRetencion(descripcion) }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                                    <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ monto }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                            </ngx-datatable>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="5">
+                        <a ngbNavLink>Descuentos</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row ">
+                                    <div class="col-12">
+                                        <div class="container">
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModalDecuento(modalDescuento)">
+                                                        Guardar descuento
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <ngx-datatable [rows]="rowdescuentos" rowHeight="auto"
+                                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                                [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" [limit]="50"
+                                                [externalPaging]="true" [count]="rowdescuentos.length" [offset]="0">
+                                                <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                                    <ng-template ngx-datatable-cell-template let-row="row">
+                                                        <div class="d-flex align-items-center col-actions">
+                                                            <div ngbDropdown container="body">
+                                                                <button ngbDropdownToggle type="button"
+                                                                    class="btn icon-btn btn-sm hide-arrow px-0"
+                                                                    rippleEffect>
+                                                                    <i data-feather="more-vertical" size="18"
+                                                                        class="cursor-pointer"></i>
+                                                                </button>
+                                                                <div ngbDropdownMenu>
+                                                                    <a href="javascript:void(0)" ngbDropdownItem
+                                                                        (click)="verFilaDescuento(row.indice,modalDescuento)"><i
+                                                                            data-feather="eye" class="mr-1"></i>Ver
+                                                                        descuento</a>
+                                                                    <a href="javascript:void(0)" ngbDropdownItem
+                                                                        (click)="quitarDescuento(row.indice)"><i
+                                                                            data-feather="trash" class="mr-1"></i>Quitar
+                                                                        descuento</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Descripcion" prop="descripcion"
+                                                    [width]="125">
+                                                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ descripcion }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                                    <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ monto }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                            </ngx-datatable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="6">
+                        <a ngbNavLink>Notas de crédito</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row ">
+
+                                    <div class="col-12">
+                                        <div class="container">
+
+                                            <ngx-datatable [rows]="notascredito" rowHeight="auto"
+                                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                                [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                                                [limit]="notascredito.length" [externalPaging]="true"
+                                                [count]="notascredito.length" [offset]="0">
+                                                <ngx-datatable-column name="Factura" [width]="50" [sortable]="false">
+                                                    <ng-template ngx-datatable-cell-template let-row="row">
+                                                        <div class="d-flex align-items-center col-actions">
+                                                            {{row.expand?.factura.monthyear}}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Número" prop="numero" [width]="125">
+                                                    <ng-template let-numero="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ numero }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                                    <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ monto }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Descripcion" prop="descripcion"
+                                                    [width]="125">
+                                                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ descripcion }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                            </ngx-datatable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="7">
+                        <a ngbNavLink>Cuenta corriente</a>
+                        <ng-template ngbNavContent>
+                            <div class="container">
+                                <div class="row ">
+                                    <div class="col-12">
+                                        <div class="container">
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModal(modalBuscarCuenta,true)">
+                                                        Buscar a cuenta
+                                                    </button>
+                                                </div>
+                                                <div class="col-3 hidden">
+                                                    <button class="btn btn-outline-secondary "
+                                                        (click)="openModal(modalCuenta,true)">
+                                                        Crear a cuenta
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ngx-datatable [rows]="rowsacuentas" rowHeight="auto"
+                                            class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                            [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                                            [limit]="rowsacuentas.length" [externalPaging]="true"
+                                            [count]="rowsacuentas.length" [offset]="0">
+                                            <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                                                <ng-template ngx-datatable-cell-template let-row="row">
+                                                    <div class="d-flex align-items-center col-actions">
+                                                        <div ngbDropdown container="body">
+                                                            <button ngbDropdownToggle type="button"
+                                                                class="btn icon-btn btn-sm hide-arrow px-0"
+                                                                rippleEffect>
+                                                                <i data-feather="more-vertical" size="18"
+                                                                    class="cursor-pointer"></i>
+                                                            </button>
+                                                            <div ngbDropdownMenu>
+                                                                <a href="javascript:void(0)" ngbDropdownItem
+                                                                    (click)="verCuenta(row.indice,modalCuenta)"><i
+                                                                        data-feather="eye" class="mr-1"></i>Ver
+                                                                    cuenta</a>
+                                                                <a href="javascript:void(0)" ngbDropdownItem
+                                                                    (click)="quitarCuenta(row.indice)"><i
+                                                                        data-feather="trash" class="mr-1"></i>Quitar
+                                                                    cuenta</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column name="Descripcion" prop="descripcion" [width]="125">
+                                                <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                    <div>
+                                                        {{ descripcion }}
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                                <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                    <div>
+                                                        {{ monto }}
+                                                    </div>
+                                                </ng-template>
+                                            </ngx-datatable-column>
+
+                                        </ngx-datatable>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="navWithIcons" class="mt-2"></div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+
+<!--Detalles pago lo debo eliminar-->
+<ng-template #modalDetaPago let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">Detalles pago</h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="col-xl-12 col-md-12 col-12">
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <br>
+                        <label for="desc"> Descripcion </label>
+                        <input [(ngModel)]="descripciondetalle" name="desc" type="search" class="form-control"
+                            placeholder="Descripcion..." />
+                    </div>
+                    <div class="col-3">
+                        <br>
+                        <label for="tot"> Total </label>
+                        <input [(ngModel)]="totaldetalle" name="tot" type="number" class="form-control"
+                            placeholder="Total..." />
+                    </div>
+                    <div class="col-2">
+                        <br>
+                        <br>
+                        <a class="btn btn-outline-secondary float-right" rippleEffect (click)="addDetalle()">Agregar
+                            detalle</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <br>
+                        <h3>Total pagos: {{totalpagos}}</h3>
+                    </div>
+
+                </div>
+                <br>
+                <ngx-datatable [rows]="rowdetallespago" rowHeight="auto" class="bootstrap core-bootstrap"
+                    [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+                    [limit]="50" [externalPaging]="true" [count]="rowdetallespago.length" [offset]="0">
+                    <ngx-datatable-column name="Acciones" [width]="50" [sortable]="false">
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            <div class="d-flex align-items-center col-actions">
+                                <div ngbDropdown container="body">
+                                    <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0"
+                                        rippleEffect>
+                                        <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <a href="javascript:void(0)" ngbDropdownItem
+                                            (click)="quitarDetalle(row.indice)"><i data-feather="trash"
+                                                class="mr-1"></i>Quitar detalle</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Descripcion" prop="descripcion" [width]="125">
+                        <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                            <div>
+                                {{ descripcion }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="Total" prop="total" [width]="125">
+                        <ng-template let-total="value" ngx-datatable-cell-template>
+                            <div>
+                                {{ total }}
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+
+    </div>
+</ng-template>
+<!--Fin Detalles pago-->
+<!--Retenciones pago-->
+<ng-template #modalRetenciones let-modal>
+
+    <div class="modal-header">
+        <h2 class="modal-title">{{indiceretencion==""?"Nueva":"Ver"}} retención</h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-modalretencion [fechacobro]="fechacobro" [retencion]="retencion" [indice]="indiceretencion"
+                [esVerFila]="esVerFila" (retencionEvent)="guardarRetencion($event,modal)" [saldo]="saldo">
+
+            </app-modalretencion>
+
+        </div>
+    </div>
+</ng-template>
+<!--Fin Retenciones pago-->
+<!--Descuento-->
+<ng-template #modalDescuento let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">{{indicedescuento==""?"Nuevo":"Ver"}} descuento</h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-modaldescuento [fechacobro]="fechacobro" [descuento]="descuento"
+                (descuentoEvent)="guardarDescuento($event,modal)" [indice]="indicedescuento"
+                [saldo]="saldo"></app-modaldescuento>
+
+        </div>
+    </div>
+</ng-template>
+<!--Fin Descuento-->
+<!--Modal cheques-->
+<ng-template #modalCheque let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">{{indicefila==""?"Nuevo":"Ver"}} cheque </h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-modalcheque (chequeEvent)="guardarFila($event,modal)" [fechacobro]="fechacobro" [esDetalle]="esDetalle"
+                [cuit]="cuit" [indice]="indicefila" [cheque]="fila" [esVerFila]="esVerFila"
+                [saldo]="saldo"></app-modalcheque>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal cheques-->
+<!--Modal transfer-->
+<ng-template #modalTransfer let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">{{indicefila==""?"Nueva":"Ver"}} transferencia
+        </h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-modaltransfer (transferEvent)="guardarFila($event,modal)" [fechacobro]="fechacobro"
+                [esDetalle]="esDetalle" [indice]="indicefila" [transfer]="fila" [esVerFila]="esVerFila"
+                [saldo]="saldo"></app-modaltransfer>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal transfer-->
+<!--Modal trans-->
+<ng-template #modalTrans let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">{{indicefila==""?"Nuevo":"Ver"}} Transaccion </h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-modaltrans (transEvent)="guardarFila($event,modal)" [fechacobro]="fechacobro" [esDetalle]="esDetalle"
+                [indice]="indicefila" [trans]="fila" [esVerFila]="esVerFila" [saldo]="saldo"></app-modaltrans>
+        </div>
+    </div>
+</ng-template>
+<!--fin Modal trans-->
+<!--Buscar modal cheque-->
+<ng-template #modalBuscarCheque let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">Buscar cheque</h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-buscarcheque (chequeEvent)="elegirCheque($event,modal)" [saldo]="saldo"></app-buscarcheque>
+        </div>
+    </div>
+</ng-template>
+<!--Fin Buscar modal cheque-->
+<!--Buscar modal cuenta-->
+<ng-template #modalBuscarCuenta let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">Buscar a cuenta</h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container">
+            <app-buscaracuenta [cliente]="cliente" (cuentaEvent)="elegirCuenta($event,modal)"
+                [saldo]="saldo"></app-buscaracuenta>
+        </div>
+    </div>
+</ng-template>
+<!--Fin Buscar modal cuenta-->
+<!--Crear cuenta-->
+<ng-template #modalCuenta let-modal>
+    <div class="modal-header">
+        <h2 class="modal-title">Ver a cuenta</h2>
+        <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" ngbAutofocus>
+        <div class="container card invoice-preview-card">
+
+            <div class="row">
+                <div class="col-6">
+                    <label for="descripcioncuenta">Descripcion</label>
+                    <input class="form-control" [(ngModel)]="descripcioncuenta" id="descripcioncuenta"
+                        name="descripcioncuenta" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="fechacuenta">Fecha*</label>
+                    <input class="form-control" [(ngModel)]="fechacuenta" id="fechacuenta" name="fechacuenta"
+                        type="date" />
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="montocuenta">Monto</label>
+                    <input class="form-control" [(ngModel)]="montocuenta" id="montocuenta" name="montocuenta"
+                        type="number" />
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!--Fin crear cuenta-->

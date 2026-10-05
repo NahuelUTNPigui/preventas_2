@@ -1,0 +1,295 @@
+<div class="content-wrapper container-xxl p-0">
+    <div  class="container">
+        <div class="row">
+            <div class="col-6">
+                <h3>Saldo: {{saldo}}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <label class="d-flex align-items-center"
+                    >Mostrar
+                    <select
+                        class="form-control mx-25"
+                        [(ngModel)]="page.size"
+                        (change)="onPageSizeChange()"
+                    >
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <h4>NUMERO CHEQUE</h4>
+        <div class="row" >
+            <div class="col-4">
+                <label for="nro">Cheque </label>
+                <!--<input [(ngModel)]="nroRemito" name="nroRemito" type="search" class="form-control"
+                  placeholder="Buscar..." (keyup)="filterUpdate($event)" (search)="filterUpdate($event)" />
+                -->
+                <input [(ngModel)]="nro" name="nro" type="search" class="form-control"
+                  placeholder="Numero..." (change)="filterUpdate($event)" />
+                
+            </div>
+            <div class="col-4">
+                <br>
+                <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar filtros</button>
+            </div>
+        </div>
+        <br>
+        <h4>FECHAS</h4>
+        <div class="row">
+            <div class="col-2">
+                <label for="fechaDesde">Fecha Ingreso Desde</label>
+                <input [(ngModel)]="fechaIngresoDesde" id="first-name-vertical" class="form-control" name="fechaIngresoDesde" type="date"
+                     (change)="filterUpdate($event)" />
+            </div>
+            <div class="col-2">
+                <label for="fechaHasta">Fecha Ingreso Hasta</label>
+                <input [(ngModel)]="fechaIngresoHasta" id="first-name-vertical" class="form-control" name="fechaIngresoHasta" type="date"
+                    (change)="filterUpdate($event)" />
+            </div>
+            
+        </div>
+        <div class="row">
+                                    
+            <div class="col-2">
+                <label for="fechaDesde">Fecha Acreditación Desde</label>
+                <input  [(ngModel)]="fechaAcreditacionDesde" id="first-name-vertical" class="form-control" name="fechaDesde" type="date"
+                  (keyup)="filterUpdate($event)" (change)="filterUpdate($event)" />
+            </div>
+            <div class="col-2">
+                <label for="fechaHasta">Fecha Acreditación Hasta</label>
+                <input  [(ngModel)]="fechaAcreditacionHasta" id="first-name-vertical" class="form-control" name="fechaHasta" type="date"
+                  (keyup)="filterUpdate($event)" (change)="filterUpdate($event)"  />
+                <br>
+            </div>
+            <div class="col-2">
+                <br>
+                <div class="custom-control custom-control-primary custom-switch">
+                  <input class="custom-control-input" type="checkbox" id="inlineCheckbox2" [(ngModel)]="conFechaAcreditacion" (change)="filterUpdate($event)"/>
+                  <label class="custom-control-label" for="inlineCheckbox2">Por fecha acreditación</label>
+                </div>
+            </div> 
+        </div>
+        <h4>CLIENTE, BANCO, TIPO Y EMISOR</h4>
+        <div class="row">
+            <div class="col-2">
+                <label for="cboCliente"> Cliente </label>
+                <select
+                  id="cboCliente" name ="cboCliente"
+                  class="form-control mx-25"
+                  [(ngModel)]="cliente"
+                  (change)="filterUpdate($event)"
+                >
+                  <option value="">Todos</option>
+                  <option *ngFor = "let cli of clientes" [value]="cli.id">{{cli.nombre}}</option>
+                </select>
+            </div>
+            
+            <div class="col-2">
+                <label for="cboBanco"> Banco </label>
+                <select
+                  id="cboBanco" name ="cboBanco"
+                  class="form-control mx-25"
+                  [(ngModel)]="banco"
+                  (change)="filterUpdate($event)"
+                >
+                  <option value="">Todos</option>
+                  <option *ngFor = "let ba of bancos" [value]="ba.id">{{ba.nombre}}</option>
+                </select>
+                
+            </div>
+            <div class="col-2">
+                <label for="cboTipo"> Tipo </label>
+                <select
+                  id="cboTipo" name ="cboTipo"
+                  class="form-control mx-25"
+                  [(ngModel)]="tipo"
+                  (change)="filterUpdate($event)"
+                >
+                  <option *ngFor = "let ti of tipos" [value]="ti.id">{{ti.nombre}}</option>
+                </select>
+                
+            </div>
+            <div class="col-2">
+                <label for="razon"> Razon social </label>
+                <input [(ngModel)]="razonSocial" name="razon" type="search" class="form-control"
+                  placeholder="Buscar..." (change)="filterUpdate($event)" />
+            </div>
+            <div class="col-2">
+                <label for="cuit"> CUIT </label>
+                <input [(ngModel)]="cuit" name="cuit" type="search" class="form-control"
+                  placeholder="Buscar..." (change)="filterUpdate($event)" />
+            </div>
+        </div>
+        <br>
+        <h4>UNIDAD</h4>
+        <div class="row">
+            <div class="col-4">
+                <label for="cboUnidad"> Unidad </label>
+                <select
+                  id="cboUnidad" name ="cboUnidad"
+                  class="form-control mx-25"
+                  [(ngModel)]="unidad"
+                  (change)="filterUpdate($event)"
+                >
+                  <option value="">Todos</option>
+                  <option *ngFor = "let uni of unidades" [value]="uni.id">{{uni.nombre}}</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        
+        
+        <ngx-datatable
+            [rows]="rows"
+            rowHeight="auto"
+            class="bootstrap core-bootstrap"
+            [columnMode]="ColumnMode.force"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [scrollbarH]="true"
+            [limit]="page.size"
+            [externalPaging]="true"
+            [count]="page.count"
+            [offset]="page.offset"
+            (page)="onPage($event)"
+        >
+            <ngx-datatable-column
+                name="Acciones"
+                [width]="100"
+                [sortable]="false"
+            >
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    <div class="d-flex align-items-center col-actions">
+                        
+                        <a
+                            class="mr-1"
+                            href="javascript:void(0)"
+                            (click)="elegirCheque(row)"
+                            container="body"
+                            placement="top"
+                            ngbTooltip="Elegir"
+                            ><i size="18" data-feather="plus-circle"></i
+                        ></a>
+                    </div>
+                </ng-template>
+            </ngx-datatable-column> 
+            <ngx-datatable-column
+                name="Fecha ingreso"
+                prop="fechaIngreso"
+                [width]="110"
+            >
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <div>
+                    <span style="white-space: nowrap">Fecha</span>
+                    <br />
+                    <span style="white-space: nowrap">ingreso</span>
+                    </div>
+                </ng-template>
+                <ng-template let-fechaIngreso="value" ngx-datatable-cell-template>
+                    <div>
+                    {{ fechaIngreso | date : "dd/MM/yyyy" }}
+                    </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column
+                name="Fecha acreditación"
+                prop="fechaAcreditacion"
+                [width]="110"
+            >
+                <ng-template let-column="column" ngx-datatable-header-template>
+                    <div>
+                    <span style="white-space: nowrap">Fecha</span>
+                    <br />
+                    <span style="white-space: nowrap">acreditación</span>
+                    </div>
+                </ng-template>
+                <ng-template let-fechaAcreditacion="value" ngx-datatable-cell-template>
+                    <div>
+                    {{ fechaAcreditacion | date : "dd/MM/yyyy" }}
+                    </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Importe" prop="importe" [width]="110">
+                <ng-template let-importe="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ importe }}
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="NRO" prop="nro" [width]="110">
+                <ng-template let-nro="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ nro }}
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Razon Social" prop="razonSocial" [width]="110">
+                <ng-template let-razonSocial="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ razonSocial }}
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="CUIT" prop="cuit" [width]="110">
+                <ng-template let-cuit="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ cuit }}
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column
+                name="Banco"
+                prop="expand.banco.nombre"
+                [width]="110"
+            >
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                    {{ row.expand?.banco?.nombre }}
+                </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Tipo" prop="tipo" [width]="110">
+                <ng-template let-tipo="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ tipo==1?"Físico":"Electrónico" }}
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column
+                name="Cliente"
+                prop="expand.cliente.nombre"
+                [width]="110"
+            >
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                    {{ row.expand?.cliente?.nombre }}
+                </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column
+                name="Proveedor"
+                prop="expand.proveedor.nombre"
+                [width]="110"
+            >
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                <div>
+                    {{ row.expand?.proveedor?.nombre }}
+                </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Unidad" prop="unidad" [width]="110">
+                <ng-template let-unidad="value" ngx-datatable-cell-template>
+                  <div>
+                    {{ unidad }}
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

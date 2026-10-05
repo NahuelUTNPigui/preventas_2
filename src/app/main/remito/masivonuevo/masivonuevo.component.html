@@ -1,0 +1,329 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end">
+      <button type="button" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect (click)="guardarRemito()">
+        Guardar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <h3>Datos de remito</h3>
+    </div>
+    <div class="col-4">
+      <div class="custom-control custom-control-primary custom-switch">
+        <input class="custom-control-input" type="checkbox" id="inlineCheckboxsb" [(ngModel)]="subirForm" />
+        <label class="custom-control-label" for="inlineCheckboxsb">Subir formulario</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3">
+      <div class="form-group">
+        <label for="nroRemito">Número de remito</label>
+        <input #nroRemito class="form-control" [(ngModel)]="remito.nroRemito" required id="nroRemito"
+          (change)="onCampoChange(nombrescampo.NRO)" name="nroRemito" />
+        <span *ngIf="remitovalidar.malnro" class="invalid-form">
+          <small class="form-text text-danger" *ngIf="remitovalidar.malnro">Ingrese número de remito.</small></span>
+      </div>
+    </div>
+    <div class="col-3 mt-2">
+      <div class="custom-control custom-control-primary custom-switch mb-1">
+        <input type="checkbox" class="custom-control-input" id="facturar" [(ngModel)]="remito.facturar"
+          name="facturar" />
+        <label class="custom-control-label" for="facturar">Facturar</label>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="remitente">Remitente</label>
+        <ng-select [(ngModel)]="remito.remitente" id="remitente" name="remitente" required
+          (change)="onCampoChange(nombrescampo.REMITENTE)">
+          <ng-option *ngFor="let option of remitenteOptions" [value]="option.id">
+            {{ option.nombre }}
+          </ng-option>
+        </ng-select>
+        <span *ngIf="remitovalidar.malremitente" class="invalid-form">
+          <small class="form-text text-danger">Ingrese el remitente.</small></span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label for="etiqueta">Etiqueta</label>
+        <input class="form-control" [(ngModel)]="remito.etiqueta" #etiquetaRef="ngModel" id="etiqueta"
+          name="etiqueta" />
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="prioridad">Prioridad</label>
+        <ng-select [(ngModel)]="remito.prioridad" id="prioridad" name="prioridad" #prioridadRef="ngModel">
+          <ng-option *ngFor="let option of prioridadOptions" [value]="option.id">
+            {{ option.nombre }}
+          </ng-option>
+        </ng-select>
+
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label for="kilos">Kilos</label>
+        <input class="form-control" [(ngModel)]="remito.kilos" id="kilos" name="kilos" positiveNumbersOnly />
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="bultos">Bultos</label>
+        <input class="form-control" [(ngModel)]="remito.bultos" id="bultos" name="bultos" positiveNumbersOnly />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label for="destinatario">Destinatario</label>
+        <ng-select [(ngModel)]="remito.destinatario" required id="destinatario" name="destinatario"
+          (ngModelChange)="onDestinatarioChange($event)">
+          <ng-option *ngFor="let option of destinatarioOptions" [value]="option.id">
+            <div *ngIf="option.importancia==0;else other_content">
+              <span>{{option.nombre}}</span>
+            </div>
+
+            <ng-template #other_content>
+              <strong>
+                {{ capitalize(option.nombre) }}
+              </strong>
+            </ng-template>
+          </ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="localidad">Localidad</label>
+        <input class="form-control" id="localidad" name="localidad" [(ngModel)]="localidad">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="porcentajeCobro">Porcentaje de cobro</label>
+        <div class="input-group input-group-merge mb-2">
+          <input class="form-control" [(ngModel)]="remito.porcentajeCobro" id="porcentajeCobro" name="porcentajeCobro"
+            positiveNumbersOnly />
+          <div class="input-group-append">
+            <span class="input-group-text">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="valorDeclarado">Valor declarado</label>
+        <div class="input-group input-group-merge mb-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input class="form-control" [(ngModel)]="remito.valorDeclarado" id="valorDeclarado" name="valorDeclarado"
+            positiveNumbersOnly />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="precioUnitario">Precio unitario</label>
+        <div class="input-group input-group-merge mb-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input class="form-control" placeholder="" [(ngModel)]="remito.precioUnitario" id="precioUnitario"
+            name="precioUnitario" positiveNumbersOnly />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="totalViaje">Total</label>
+        <div class="input-group input-group-merge mb-2">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input class="form-control" [(ngModel)]="remito.totalViaje" id="totalViaje" name="totalViaje" required
+            (change)="onCampoChange(nombrescampo.TOTALVIAJE)" positiveNumbersOnly />
+          <span *ngIf="remitovalidar.maltotal" class="invalid-form">
+            <small class="form-text text-danger">Debe tener un total.</small></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <br>
+      <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('porcentaje')" rippleEffect>
+        Total por porcentaje
+      </button>
+    </div>
+    <div class="col-md-3">
+      <br>
+      <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('kilos')" rippleEffect>
+        Total por kilo
+      </button>
+    </div>
+    <div class="col-md-3">
+      <br>
+      <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('bultos')" rippleEffect>
+        Total por bulto
+      </button>
+    </div>
+    <div class="col-md-3">
+      <br>
+      <button type="button" class="btn btn-primary btn-block" (click)="calcularTotal('unitario')" rippleEffect>
+        Total por precio unitario
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end">
+      <button type="button" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1" rippleEffect (click)="guardarRemito()">
+        Guardar
+      </button>
+    </div>
+  </div>
+  <div class="row" *ngIf="tarifario.length > 0">
+    <div class="col-12">
+      <hr>
+      <div class="container ">
+        <div class="row">
+          <div class="col-6">
+            <h3>Tarifario de cliente {{nombrecliente}}</h3>
+          </div>
+          <div class="col-6"><a rippleEffect (click)="openHistorialModal(modalHistorial)"
+              class="btn btn-outline-secondary">Historial de tarifario</a></div>
+
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <ngx-datatable [rows]="tarifario" rowHeight="auto" class="bootstrap core-bootstrap"
+              [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+              [limit]="page.size" [externalPaging]="true" [count]="page.count" [offset]="page.offset">
+              <ngx-datatable-column prop="precio" name="Precio" [width]="40" [sortable]="false">
+                <ng-template let-precio="value" ngx-datatable-cell-template>
+                  <div>
+                    {{precio}}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Unidad" prop="expand.unidad.nombre" [width]="60">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  <div>
+                    {{ row.expand?.unidad?.nombre }}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column prop="descripcion" name="Descripcion" [width]="125" [sortable]="false">
+                <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                  <div>
+                    {{descripcion}}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column prop="fechadesde" name="Fecha Desde" [width]="50">
+                <ng-template let-fechadesde="value" ngx-datatable-cell-template>
+                  <div>
+                    {{fechadesde | date : "dd/MM/yyyy"}}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column prop="fechahasta" name="Fecha Hasta" [width]="50">
+                <ng-template let-fechahasta="value" ngx-datatable-cell-template>
+                  <div>
+                    {{fechahasta | date : "dd/MM/yyyy"}}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label for="observacion">Observaciones</label>
+        <textarea class="form-control" [(ngModel)]="remito.observacion" id="observacion" name="observacion" rows="5"
+          style="resize: none"></textarea>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label for="novedad">Novedades</label>
+        <textarea class="form-control" [(ngModel)]="remito.novedad" id="novedad" name="novedad" rows="5"
+          style="resize: none"></textarea>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<ng-template #modalHistorial let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Historial tarifario del cliente {{nombrecliente}}</h5>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body container row" tabindex="0" ngbAutofocus>
+    <div class="col-xl-12 col-md-12 col-12">
+      <ngx-datatable [rows]="tarifariohistorial" rowHeight="auto" class="bootstrap core-bootstrap"
+        [columnMode]="ColumnMode.force" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
+        [limit]="tarifariohistorial.length" [externalPaging]="true" [count]="tarifariohistorial.length">
+        <ngx-datatable-column prop="precio" name="Precio" [width]="40" [sortable]="false">
+          <ng-template let-precio="value" ngx-datatable-cell-template>
+            <div>
+              {{precio}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Unidad" prop="expand.unidad.nombre" [width]="60">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div>
+              {{ row.expand?.unidad?.nombre }}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="descripcion" name="Descripcion" [width]="125" [sortable]="false">
+          <ng-template let-descripcion="value" ngx-datatable-cell-template>
+            <div>
+              {{descripcion}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="fechadesde" name="Fecha Desde" [width]="50">
+          <ng-template let-fechadesde="value" ngx-datatable-cell-template>
+            <div>
+              {{fechadesde | date : "dd/MM/yyyy"}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column prop="fechahasta" name="Fecha Hasta" [width]="50">
+          <ng-template let-fechahasta="value" ngx-datatable-cell-template>
+            <div>
+              {{fechahasta | date : "dd/MM/yyyy"}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+      </ngx-datatable>
+    </div>
+  </div>
+</ng-template>

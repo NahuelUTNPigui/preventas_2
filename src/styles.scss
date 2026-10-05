@@ -1,0 +1,56 @@
+@import '@core/scss/core.scss';
+@import './assets/scss/styles';
+@import '@core/scss/base/pages/app-invoice.scss';
+@import '@core/scss/angular/libs/datatables.component.scss';
+@import '@core/scss/angular/libs/select.component.scss';
+@import '@core/scss/angular/libs/sweet-alerts.component.scss';
+@import '@core/scss/base/bootstrap-extended/_include';
+@import '@core/scss/angular/libs/toastr.component.scss';
+@import '@core/scss/base/plugins/charts/chart-apex';
+@import '@core/scss/angular/libs/flatpickr.component.scss';
+@import '@core/scss/angular/libs/date-time-picker.component.scss';
+
+// invoice list
+.invoice-list-wrapper {
+  .col-actions {
+    a {
+      &:not(.dropdown-item) {
+        color: $body-color;
+      }
+    }
+  }
+}
+
+.invalid {
+  color: red;
+  font-size: 12px;
+  margin: 0
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+  top: 0
+}
+
+.btn-icon {
+  border: 1px solid transparent !important
+}
+
+
+.is-invalid .ng-select-container {
+  border: 1px solid $danger !important;
+ border-radius: 4px !important;
+}
+
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row .datatable-body-cell {
+  overflow-wrap: anywhere !important;
+}
+
+.badge.badge-yellow {
+  background-color: rgb(255 255 0 / 19%) !important;
+  color: #e4e42b !important ;
+}
+
+.badge.badge-blue {
+  background-color: rgb(0, 0, 255, 0.09) !important;
+  color: #7367f0 !important;
+}

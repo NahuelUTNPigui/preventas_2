@@ -1,0 +1,275 @@
+
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <div
+                    class="mb-1"
+                    style="color: #e04141; font-weight: 600; font-size: 20px"
+                >
+                    {{accion +" cheque"}}
+                </div>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div *ngIf="conpermisos" class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="nro">Numero*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="nro"
+                                            id="nro"
+                                            name="nro"
+                                            (keyup)="validarCampo('NRO')"
+                                            (change)="verificarNumero()"
+                                        />
+                                        <span
+                                            *ngIf="malnro"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe escribir el numero
+                                        </span>
+                                        <span
+                                            *ngIf="chequerepetido"
+                                            class="form-text text-danger"
+                                        >
+                                            El numero de cheque ya esta usado
+                                        </span>   
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="fechaIngreso">Fecha de ingreso*</label>
+                                            <input
+                                                class="form-control"
+                                                [(ngModel)]="fechaIngreso"
+                                                id="fechaIngreso"
+                                                name="fechaIngreso"
+                                                type="date"
+                                                (change)="validarCampo('FECHAINGRESO')"
+                                            />
+                                            <span
+                                                *ngIf="malfechaIngreso"
+                                                class="form-text text-danger"
+                                            >
+                                                Debe seleccionar la fecha de ingreso
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="fechaAcreditacion">Fecha de acreditación*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="fechaAcreditacion"
+                                            id="fechaAcreditacion"
+                                            name="fechaAcreditacion"
+                                            type="date"
+                                            (change)="validarCampo('FECHACREDITACION')"
+                                        />
+                                        <span
+                                            *ngIf="malfechaAcreditacion"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar la fecha de acreditación
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="fechaEntrega">Fecha de entrega</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="fechaEntrega"
+                                            id="fechaEntrega"
+                                            name="fechaEntrega"
+                                            type="date"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="razonSocial">Razón Social*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="razonSocial"
+                                            id="razonSocial"
+                                            name="razonSocial"
+                                            (keyup)="validarCampo('RAZON')"
+                                        />
+                                        <span
+                                            *ngIf="malrazonsocial"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe escribir la razón social
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="cuit">CUIT*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="cuit"
+                                            id="cuit"
+                                            name="cuit"
+                                            (keyup)="validarCampo('CUIT')"
+                                        />
+                                        <span
+                                            *ngIf="malcuit"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe escribir el cuit
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="cliente">Cliente*</label>
+                                        <ng-select
+                                            [(ngModel)]="cliente"
+                                            id="cliente"
+                                            name="cliente"
+                                            [disabled] = "accion==='Editar'"
+                                            (change)="validarCampo('CLIENTE')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of clientes"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malcliente"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar el cliente
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="proveedor">Proveedor</label>
+                                        <ng-select
+                                            [(ngModel)]="proveedor"
+                                            id="proveedor"
+                                            name="proveedor"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of proveedores"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="banco">Banco*</label>
+                                        <ng-select
+                                            [(ngModel)]="banco"
+                                            id="banco"
+                                            name="banco"
+                                            (change)="validarCampo('BANCO')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of bancos"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malbanco"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar el banco
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="tipo">Tipo</label>
+                                        <ng-select
+                                            [(ngModel)]="tipo"
+                                            id="tipo"
+                                            name="tipo"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of tipos"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="importe">Importe</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="importe"
+                                            id="importe"
+                                            name="importe"
+                                            type="number"
+                                            [disabled] = "accion==='Editar'"
+                                        /> 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="unidad">Unidad*</label>
+                                        <ng-select
+                                            [(ngModel)]="unidad"
+                                            id="unidad"
+                                            name="unidad"
+                                            (change)="validarCampo('UNIDAD')"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of unidades"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        <span
+                                            *ngIf="malunidad"
+                                            class="form-text text-danger"
+                                        >
+                                            Debe seleccionar la unidad
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div 
+                                        class="col-12 d-flex flex-sm-row flex-column mt-3 m-6 mb-2 justify-content-end"
+                                    >
+                                        <button
+                                            
+                                            class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1"
+                                            [ngClass]="botonhabilitado?'cursor-pointer':'cursor-not-allowed'"
+                                            rippleEffect
+                                            [disabled] = "!botonhabilitado"
+                                            (click)="guardarCheque()"
+                                        >
+                                            Guardar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary"
+                                            routerLink="/cheques/lista"
+                                            rippleEffect
+                                        >
+                                            Volver
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

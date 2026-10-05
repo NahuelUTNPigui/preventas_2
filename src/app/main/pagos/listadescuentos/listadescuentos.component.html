@@ -1,0 +1,136 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Tabla descuentos proveedores</h2>
+            </div>
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div *ngIf="conpermisos">
+                                <!--Tabla retenciones-->
+                                <div class="content-wrapper container-xxl p-0">
+                                    <div class="content-body">
+                                        <div class="card container">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="d-flex justify-content-between align-items-center m-1">
+                                                        <div class="d-flex align-items-center">
+                                                            <label class="d-flex align-items-center">Mostrar
+                                                                <select class="form-control mx-25"
+                                                                    [(ngModel)]="page.size"
+                                                                    (change)="onPageSizeChange()">
+                                                                    <option value="5">5</option>
+                                                                    <option value="10">10</option>
+                                                                    <option value="25">25</option>
+                                                                    <option value="50">50</option>
+                                                                    <option value="100">100</option>
+                                                                </select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <br>
+                                                    <a class="btn btn-outline-secondary float-right" rippleEffect
+                                                        (click)="exportarXLX()">Exportar
+                                                        EXCEL</a>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-1">
+                                                <div class="col-6">
+
+                                                    <h4>Filtros</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <label for="cboProveedor"> Proveedor </label>
+                                                    <select id="cboProveedor" name="cboProveedor"
+                                                        class="form-control mx-25" [(ngModel)]="buscarproveedor"
+                                                        (change)="filterUpdate()">
+                                                        <option value="">Todos</option>
+                                                        <option *ngFor="let cli of proveedores" [value]="cli.id">
+                                                            {{cli.nombre}}</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-3">
+                                                    <label for="fechaDesde">Fecha Desde</label>
+                                                    <input [(ngModel)]="fechaDesde" id="first-name-vertical"
+                                                        class="form-control" name="fechaIngresoDesde" type="date"
+                                                        (change)="filterUpdate($event)" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="fechaHasta">Fecha Hasta</label>
+                                                    <input [(ngModel)]="fechaHasta" id="first-name-vertical"
+                                                        class="form-control" name="fechaIngresoHasta" type="date"
+                                                        (change)="filterUpdate($event)" />
+                                                </div>
+                                            </div>
+                                            <div class="row my-1">
+                                                <div class="col-3">
+                                                    <button class="btn btn-outline-secondary"
+                                                        (click)="calcularTotal()">Calcular total</button>
+
+                                                </div>
+                                                <div class="col-3">
+                                                    <h3>Total: $ {{totaldescuentos}} </h3>
+
+                                                </div>
+                                            </div>
+                                            <ngx-datatable [rows]="rows" rowHeight="auto"
+                                                class="bootstrap core-bootstrap" [columnMode]="ColumnMode.force"
+                                                [headerHeight]="70" [footerHeight]="50" [scrollbarH]="true"
+                                                [limit]="page.size" [externalPaging]="true" [count]="page.count"
+                                                [offset]="page.offset" (page)="onPage($event)">
+                                                <ngx-datatable-column name="Fecha" prop="created" [width]="125">
+                                                    <ng-template let-created="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ created|date: 'dd/MM/yyyy'}}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Descripción" prop="descripcion"
+                                                    [width]="125">
+                                                    <ng-template let-descripcion="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{descripcion}}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Monto" prop="monto" [width]="125">
+                                                    <ng-template let-monto="value" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ monto }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+                                                <ngx-datatable-column name="Proveedor" prop="expand.pago.proveedor"
+                                                    [width]="125">
+                                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                                        <div>
+                                                            {{ getNombreProveedor(row.expand?.pago?.proveedor) }}
+                                                        </div>
+                                                    </ng-template>
+                                                </ngx-datatable-column>
+
+                                            </ngx-datatable>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Fin Tabla notas-->
+                            </div>
+                            <div *ngIf="!conpermisos">
+                                <h5>No tienes permisos de administracion</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+    <ngb-panel title="Gráfico de torta económico">
+      <ng-template ngbPanelContent>
+        <div id="charteco">
+            <apx-chart
+              [series]="chartOptionseco.series"
+              [chart]="chartOptionseco.chart"
+              [labels]="chartOptionseco.labels"
+              [responsive]="chartOptionseco.responsive"
+            ></apx-chart>
+        </div>
+      </ng-template>
+    </ngb-panel>
+    <ngb-panel title="Gráfico de torta de kilos">
+        <ng-template ngbPanelContent>
+          <div id="chartkil">
+              <apx-chart
+                [series]="chartOptionskil.series"
+                [chart]="chartOptionskil.chart"
+                [labels]="chartOptionskil.labels"
+                [responsive]="chartOptionskil.responsive"
+              ></apx-chart>
+          </div>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel title="Gráfico de torta de bultos">
+        <ng-template ngbPanelContent>
+          <div id="chartbul">
+              <apx-chart
+                [series]="chartOptionsbul.series"
+                [chart]="chartOptionsbul.chart"
+                [labels]="chartOptionsbul.labels"
+                [responsive]="chartOptionsbul.responsive"
+              ></apx-chart>
+          </div>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>

@@ -1,0 +1,178 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <div class="card">
+        
+            <div class="card-body pb-1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <h3>Saldo: {{saldo}}</h3>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="nro">Descripcion</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="descripcion"
+                                            id="desc"
+                                            name="desc"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="nro">Numero*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="nro"
+                                            id="nro"
+                                            name="nro"
+                                            
+                                        />
+                                        
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="fechaIngreso">Fecha de ingreso*</label>
+                                            
+                                            <input
+                                                class="form-control"
+                                                [(ngModel)]="fechaIngreso"
+                                                id="fechaIngreso"
+                                                name="fechaIngreso"
+                                                type="date"
+                                                
+                                            />
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="fechaAcreditacion">Fecha de acreditación*</label>
+                                        
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="fechaAcreditacion"
+                                            id="fechaAcreditacion"
+                                            name="fechaAcreditacion"
+                                            type="date"
+                                            
+                                        />
+                                        
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="fechaEntrega">Fecha de entrega</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="fechaEntrega"
+                                            id="fechaEntrega"
+                                            name="fechaEntrega"
+                                            type="date"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="razonSocial">Razón Social*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="razonSocial"
+                                            id="razonSocial"
+                                            name="razonSocial"
+                                            
+                                        />
+                                        
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="cuit">CUIT*</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="cuit"
+                                            id="cuit"
+                                            name="cuit"
+                                            
+                                        />
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="banco">Banco*</label>
+                                        <ng-select
+                                            [(ngModel)]="banco"
+                                            id="banco"
+                                            name="banco"
+                                            
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of bancos"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="tipo">Tipo</label>
+                                        <ng-select
+                                            [(ngModel)]="tipo"
+                                            id="tipo"
+                                            name="tipo"
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of tipos"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="importe">Importe</label>
+                                        <input
+                                            class="form-control"
+                                            [(ngModel)]="importe"
+                                            id="importe"
+                                            name="importe"
+                                            type="number"
+                                            (change) = "onInput()"
+                                        /> 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="unidad">Unidad*</label>
+                                        <ng-select
+                                            [(ngModel)]="unidad"
+                                            id="unidad"
+                                            name="unidad"
+                                        
+                                        >
+                                            <ng-option
+                                                *ngFor="let option of unidades"
+                                                [value]="option.id"
+                                            >
+                                                {{ option.nombre }}
+                                            </ng-option>
+                                        </ng-select>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

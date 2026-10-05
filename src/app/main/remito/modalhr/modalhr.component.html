@@ -1,0 +1,190 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <section class="invoice-list-wrapper">
+            <div
+                  class="mb-1"
+                  style="color: #e04141; font-weight: 600; font-size: 20px"
+            >
+                Hojas de ruta
+            </div>
+            
+            <div class="card container">
+                
+                <div class="row">
+                    <div class="col-4">
+                        <label class="align-items-center"
+                                >Mostrar
+                            </label>
+                            <select
+                                class="form-control mx-25"
+                                [(ngModel)]="page.size"
+                                (change)="onPageSizeChange()"
+                            >
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="searchValue">Numero </label>
+                        <input [(ngModel)]="nro" name="nro" type="search" class="form-control"
+                        placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="hidden col-4 align-items-center">
+                        <label  for="cboEstado" 
+                            >Estado
+                        </label>
+                        <select
+                            id="cboEstado" name ="cboEstado"
+                            class="form-control mx-25"
+                            [(ngModel)]="estado"
+                            (change)="filterUpdate($event)"
+                        >
+                            <option value="-1">Todos</option>
+                            
+                            <option *ngFor = "let est of estados" [value]="est.id">{{est.nombre}}</option>
+                        </select>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="searchValue"> Proveedor </label>
+                        <input [(ngModel)]="proveedor" name="proveedor" type="search" class="form-control"
+                        placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-4">
+                        <label for="searchValue"> Vehiculo </label>
+                        <input [(ngModel)]="vehiculo" name="vehiculo" type="search" class="form-control"
+                        placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-4">
+                        <label for="searchValue"> Chofer </label>
+                        <input [(ngModel)]="chofer" name="chofer" type="search" class="form-control"
+                        placeholder="Buscar..." (change)="filterUpdate($event)" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <label for="fechaDesde">Fecha Entrega Desde</label>
+                        <input [(ngModel)]="fechadesde" id="fechadesde" class="form-control" name="fechadesde" type="date"
+                             (change)="filterUpdate($event)" />
+                    </div>
+                    <div class="col-3">
+                        <label for="fechahasta">Fecha Entrega Hasta</label>
+                        <input [(ngModel)]="fechahasta" id="fechahasta" class="form-control" name="fechahasta" type="date"
+                             (change)="filterUpdate($event)" />
+                    </div>
+                    
+                </div>
+                <ngx-datatable
+                    [rows]="rows"
+                    rowHeight="auto"
+                    class="bootstrap core-bootstrap mt-1"
+                    [columnMode]="ColumnMode.force"
+                    [headerHeight]="50"
+                    [footerHeight]="50"
+                    [scrollbarH]="true"
+                    [limit]="page.size"
+                    [externalPaging]="true"
+                    [count]="page.count"
+                    [offset]="page.offset"
+                    (page)="onPage($event)"
+                >
+                    <ngx-datatable-column
+                        name="Acciones"
+                        [width]="50"
+                        [sortable]="false"
+                    >
+                        <ng-template ngx-datatable-cell-template let-row="row">
+                            <div class="d-flex align-items-center col-actions">
+                                <div ngbDropdown container="body">
+                                    <button
+                                            ngbDropdownToggle
+                                            type="button"
+                                            class="btn icon-btn btn-sm hide-arrow px-0"
+                                            rippleEffect
+                                        >
+                                        <i
+                                                data-feather="more-vertical"
+                                                size="18"
+                                                class="cursor-pointer"
+                                        ></i>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <a
+                                            href="javascript:void(0)"
+                                            ngbDropdownItem
+                                            (click)="agregarHojaRuta(row)"
+                                            ><i data-feather="circle" class="mr-1"></i>Agregar a hoja de ruta</a
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>        
+                    </ngx-datatable-column>
+                    <ngx-datatable-column
+                            name="Numero"
+                            prop="codigo"
+                            [width]="110"
+                        >
+                            <ng-template let-codigo="value" ngx-datatable-cell-template>
+                                <div>
+                                {{ codigo }}
+                                </div>
+                            </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column
+                            name="Fecha Entre"
+                            prop="fechaentrega"
+                            [width]="110"
+                        >
+                            <ng-template let-fechaentrega="value" ngx-datatable-cell-template>
+                                <div>
+                                {{ fechaentrega | date : "dd/MM/yyyy"}}
+                                </div>
+                            </ng-template>
+                    </ngx-datatable-column>
+                    
+                    
+                    <ngx-datatable-column
+                            name="Proveedor"
+                            prop="expand.proveedor.nombre"
+                            [width]="125"
+                        >
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <div>
+                                {{ row.expand?.proveedor?.nombre }}
+                                </div>
+                            </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column
+                            name="Chofer"
+                            prop="expand.chofer.nombre"
+                            [width]="125"
+                        >
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <div>
+                                {{ row.expand?.chofer?.nombre }}
+                                </div>
+                            </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column
+                            name="Vehiculo"
+                            prop="expand.vehiculo.nombre"
+                            [width]="125"
+                        >
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <div>
+                                {{ row.expand?.vehiculo?.nombre }}
+                                </div>
+                            </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </section>
+    </div>
+</div>
