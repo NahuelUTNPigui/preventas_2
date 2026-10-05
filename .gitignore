@@ -46,3 +46,4 @@ package-lock.json
 Thumbs.db
 *.angulardoc.json
 pnpm-lock.yaml
+pnpm-workspace.yaml
