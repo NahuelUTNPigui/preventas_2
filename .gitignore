@@ -45,3 +45,4 @@ package-lock.json
 .DS_Store
 Thumbs.db
 *.angulardoc.json
+pnpm-lock.yaml
