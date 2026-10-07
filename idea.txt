@@ -1,0 +1,123 @@
+# Cuando veo los asientos?
+* Por ahora en el perfil de clientes
+* Por ahora en el perfil de proveedores
+# Tareas
+Solo cuando acepto una factura y orden
+* Agregar asiento y editar saldo cliente y editar saldo proveedor
+
+* Cuando acepto una factura listo
+* Cuando cierro una factura aceptada listo
+* Cuando elimino una factura aceptada listo
+
+
+* Cuando acepto una orden lsito
+* Cuando cierro una orden aceptada listo
+* Cuando elimino una orden aceptada listo	
+
+
+* lista de asientos y saldo de cliente listo
+* lista de asientos y saldo de proveedores listo
+
+
+
+* cuando creo un cheque
+* cuando edito un cheque no se puede editar monto
+* cuando edlimino un cheque
+* cuando entrego un cheque
+
+
+
+* cuando creo un transfer cliente
+* cuando edito un transfer cliente
+* cuando edlimino un transfer cliente
+
+* cuando creo un transfer proveedor
+* cuando edito un transfer proveedor
+* cuando edlimino un transfer proveedor
+
+* cuando creo un efectivo cliente
+* cuando edito un efectivo clietne
+* cuando edlimino un efectivo cliente
+
+* cuando creo un efectivo  proveedor
+* cuando edito un efectivo proveedor
+* cuando edlimino un efectivo proveedor
+
+* Cuando agrego una nota de credito listo
+* Cuando quito una nota de credito listo
+
+
+* lista de asientos general
+* Que tenga el mismo formato que emperador y las columnas son facturación, pagos, tipo  observacin
+
+
+# Saldo cliente
+* Cliente tiene un saldo de remitos facturas sin pagar
+* Cuando se acepta la factura se le crea el saldo al cliente
+* Cuando paga el cliente en cualquiera de sus formas se le quita del saldo
+* Si se elimina o cancela la factura se vuelve para atras
+* Si edito un remito que modifica una factura se modifica el saldo del cliente
+* La nota de crédito es 
+
+# Saldo proveedor
+* Cliente tiene un saldo de hojas de ruta sin cobrar
+* Cuando se acepta la orden se le crea el saldo al proveedor
+* Cuando se a paga al proveedor en cualquiera de sus formas se quita del sueldo
+* Si se elimina o cancela el orden de pagao se vuelve para atras
+* Si edito una hoja de ruta que modifica una factura se modifica el saldo del cliente
+
+# Saldo cliente
+## a cuenta
+* quitar a cuenta
+
+## Saldos
+* crear la estructura de los cliente saldos sin cobrar
+* crear la estructura de los proveedores saldos sin pagar
+* Cliente saldo ( positivo es que me debe, negativo es que le debo)
+* Proveedor saldo ( positivo es que le dbo, negativo es que me debe)
+
+
+
+# Los asientos no se editan sino que se crean nuevos a modo de correccion
+(alguien debe recibir y alguien debe entregar)
+solo permito editar la unidad
+ASIENTO 
+id 
+fecha
+monto (va a poder ser positivo o negativo)(por el tema de que se corrija un remito para arriba o por abajo)
+factura (Vacio sino corresponde)
+cobro (Vacio sino corresponde) (Esta bien para entender de donde viene el  asiento)
+orden (Vacio sino corresponde)
+pago (Vacio sino corresponde) (Esta bien para entender de donde viene el  asiento)
+notacredito (Vacio sino corresponde)
+cheque  (Vacio sino corresponde)
+transferencia  (Vacio sino corresponde)
+flujo  (Vacio sino corresponde)
+tipo ( si es factura,cobro, orden de pago, pago,nota credito)
+unidad (lo unico que se puede modificar)
+cliente (Vacio sino corresponde)
+proveedor (Vacio sino corresponde)
+razon (esta tippificado) (
+	factura,
+	correcion factura, 
+	eliminar factura, 
+	cobro,
+	orden,
+	correccion orden, 
+	eliminar orden
+	pago,
+	nota	
+)
+descripcion
+
+
+CHEQUE TRANSFER TRANSACCION
+Tiene que estar asociados a un cobro y pago
+
+
+
+# Cobro 
+* Una factura puede ser pagada coo mucho 3 veces
+* Disminuye el saldo
+
+                                                 

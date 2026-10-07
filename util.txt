@@ -1,0 +1,7 @@
+Mejor avisar
+
+
+context menu
+https://stackblitz.com/edit/angular-emcjbp?file=src%2Fapp%2Fcontextmenu%2Fcontextmenu.component.ts
+
+Version pb 0.20.7
