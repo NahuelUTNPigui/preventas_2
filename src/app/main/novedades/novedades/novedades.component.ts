@@ -13,6 +13,7 @@ export class NovedadesComponent implements OnInit {
     {
       fecha: "04/09/2026",
       mejoras: [
+        {item:"Corrección tarifario"},
         { item: "Spinning a la hora de asociar destinatarios en clientes para saber si esta cargandose" },
         { item: "Exportar los remitos de una factura" },
         { item: "Editar remitos anulados" },
