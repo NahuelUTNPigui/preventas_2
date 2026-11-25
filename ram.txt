@@ -1,0 +1,43 @@
+# Tareas
+* Terminar lo de los asientos contables
+* Error cuando calculas el total no toma en cuenta los filtros por columna en la lista de remits
+* Ver el error del tarifario de tiberina
+* Imprimir orden de pago
+* Usuarios concurrentes para crear hojas de ruta
+* Spinning en calcular total en lista de remitos
+* Spinning en exportar en lista de remitos
+* Spinning en buscar en reporte
+* Agregar hoja de ruta
+* Combinar hoja de ruta
+* Ver hja de ruta en donde
+* Pendiente de pago o favor de egeo
+* Editar total de orden de pago cuando edito hoja de ruta
+
+* Si edito un remito, se deberia modificar el total de la factura sino esta aceptda
+* Agregar remitentes en nuevo cliente
+* Mejorar el estado de la orden de pago
+* actualizar las hojas de ruta cuando creo las ordenes de pago en la preordenes
+
+
+
+
+
+
+# Listo
+* Imprimir factura con observacin y agregar el total al final. Sacar estado y sacar a fctua
+* Poder modificar remitos anulados. Es cuando queres modificar uno anulado pero tiene proveedo. Ver foto
+* Es molesta la doble tabla en facturacion. Columnas
+fecha_ingres Rto cliente precio kg bulto localidad
+
+* Crear detalles en el preventas
+* Agregar algun spinign cuando este buscando destinatarios
+
+if(!this.conpermisos){
+      Swal.fire("Sin permisos","No tienes permisos para crear cobros","error")
+      return
+    }
+
+if (!this.conpermisos) {
+      Swal.fire("Sin permisos", "No tienes permisos para modificar el estado de la factura", "error")
+      return
+    }
