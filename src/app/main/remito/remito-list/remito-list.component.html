@@ -90,7 +90,7 @@
 
             <div class="col-lg-2 col-md-2 mb-1">
               <input [(ngModel)]="searchValue" name="searchValue" type="search" class="form-control"
-                placeholder="Buscar..." (keyup)="filterUpdateKeyUp($event)"  />
+                placeholder="Buscar..." (keyup)="filterUpdateKeyUp($event)" />
             </div>
             <div class="col-lg-2 col-md-2 mb-1">
               <ng-select [(ngModel)]="selectedStatus" bindLabel="name" placeholder="Estado"
@@ -209,8 +209,7 @@
                       <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
                     </button>
                     <div ngbDropdownMenu>
-                      <a  href="javascript:void(0)" ngbDropdownItem
-                        (click)="anularRemito(row)">
+                      <a href="javascript:void(0)" ngbDropdownItem (click)="anularRemito(row)">
                         <i data-feather="alert-octagon" class="mr-1"></i>
                         Anular remito
                       </a>
@@ -235,6 +234,11 @@
                         (click)="modalStateOpen('Quitar de hoja de ruta',row)">
                         <i data-feather="delete" class="mr-1"></i>
                         Quitar de hoja de ruta</a>
+                      <a *ngIf="row.estado === transitoID"  ngbDropdownItem class="mr-1" routerLink="/cerrarhr/{{row.hojaruta}}" 
+                        ngbTooltip="Hoja de ruta">
+                        <i data-feather="briefcase" class="mr-1"></i>
+                        Ir a hoja de ruta
+                      </a>
                       <a *ngIf="row.estado === transitoID" ngbDropdownItem (click)="modalStateOpen('Rechazar', row)">
                         <app-icon class="mr-1" iconName="reject" height="18" width="18"></app-icon>Rechazar</a>
                       <a *ngIf="row.estado === transitoID" href="javascript:void(0)" ngbDropdownItem

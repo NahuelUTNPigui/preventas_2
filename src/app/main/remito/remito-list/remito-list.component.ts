@@ -74,7 +74,11 @@ export class RemitoListComponent implements OnInit, OnDestroy {
   public idremito = ""
   public remitodatahr = { fechaEntrega: '', proveedor: null, vehiculo: null, chofer: null, estado: null };
   public remitospenhr = { nro: "", cliente: "", destinatario: "", localidad: "", fechaIngreso: "", kilos: 0, bultos: 0 }
+  public remitocompletohr:RemitoData = {} 
 
+
+
+  
 
   public facturarOriginal = true
   public reubicadoOriginal = false
@@ -303,6 +307,7 @@ export class RemitoListComponent implements OnInit, OnDestroy {
   seleccionarRemitoHR(id: string, modalAddHR) {
     this.idremito = id
     let r = this.rows.filter(res => res.id == id)[0]
+    this.remitocompletohr = {...r}
     this.remitospenhr = {
       nro: r.nroRemito,
       cliente: r.expand.cliente.nombre,
@@ -314,7 +319,7 @@ export class RemitoListComponent implements OnInit, OnDestroy {
     }
     this.modalService.open(modalAddHR, {
       centered: true,
-      size: 'lg',
+      size: 'xl',
       windowClass: 'modal modal-primary'
     });
   }
@@ -1452,10 +1457,11 @@ export class RemitoListComponent implements OnInit, OnDestroy {
   }
   eventoAgregarHR(hr) {
     let data = {
+      
       ...hr,
       estado: this.transitoID
     }
-    this._remitoService.agregarHR(this.idremito, data).subscribe(res => {
+    this._remitoService.agregarHR(this.idremito, data,this.remitocompletohr).subscribe(res => {
       Swal.fire("Éxito agregar", "Se logró agregar el remito a la hoja de rutao", "success")
       this.loadPage()
       this.modalService.dismissAll()

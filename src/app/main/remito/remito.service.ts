@@ -1075,9 +1075,16 @@ export class RemitoService implements Resolve<any> {
     let rutacompleta = `${environment.apiUrl}/api/collections/Remito/records/${idremito}`
     return this._httpClient.patch<any>(`${rutacompleta}`, rem, {
       headers: { 'Authorization': this.token }
-    }).pipe(
+    })
+    .pipe(
       catchError(this.handleError<any>("put rem en hr", []))
     )
+    //Agregar el historial en agregar remito
+    //.pipe(
+    //    tap(() => {
+    //      this.registrarHistorial(id, { operacion: operacion ?? 'actualizar', ...remito }).subscribe();
+    //    })
+    //  );
   }
   cambiarTotal(id, totalproveedor) {
     let data = {
